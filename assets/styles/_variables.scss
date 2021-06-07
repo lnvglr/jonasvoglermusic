@@ -1,0 +1,50 @@
+$border-radius-small: 0.25rem;
+$border-radius-large: 0.75rem;
+$letter-spacing: 0.015625em; // 0,25px
+
+$wide: 960px;
+$narrow: 720px;
+
+$font-family: 'Gilroy', sans-serif;
+$font-family-serif: 'Addington', serif;
+
+// colors
+
+
+$primary: hsl(14, 100%, 75%);
+$secondary: hsl(199, 30%, 33%);
+// $primary: hsl(199, 18%, 33%);
+// $secondary: hsl(14, 100%, 75%);
+$white: hsl(0, 0%, 100%);
+$light-01: hsl(0, 0%, 95%);
+$light-02: hsl(0, 0%, 90%);
+$light-03: hsl(0, 0%, 80%);
+$dark-01: hsl(0, 0%, 60%);
+$dark-02: hsl(0, 0%, 35%);
+$black: hsl(0, 0%, 20%);
+
+
+// spacing
+
+$padding-sizes: (
+  small: 0.3125rem,
+  medium: 0.5rem 0.625rem,
+  large: 1rem 1.25rem,
+  xlarge: 1.5rem 1.875rem,
+  xxlarge: 2.5rem 3.125rem,
+);
+
+$breakpoints: (
+  small: 0,
+  medium: 480px,
+  large: 720px,
+  xlarge: 960px,
+  xxlarge: 1200px
+);
+$breakpoints-hidpi: (
+  hidpi-1: 1,
+  hidpi-1-5: 1.5,
+  hidpi-2: 2,
+  retina: 2,
+  hidpi-3: 3
+);

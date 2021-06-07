@@ -1,0 +1,11 @@
+@import "@/styles/_variables.scss";
+
+:export {
+  primary: $primary;
+  info: $info;
+  success: $success;
+  warning: $warning;
+  alert: $alert;
+  light: $light;
+  dark: $dark;
+}
