@@ -38,9 +38,14 @@ export default {
   display: flex;
   list-style: none;
   font-size: 0.875rem;
+  overflow-x: auto;
   padding: 0;
-  flex-wrap: wrap;
-  margin: -5px;
+  @include dynamic-box($axis: horizontal);
+  @include dynamic-box(margin, true, horizontal);
+  max-width: 100% !important;
+  width: 100% !important;
+
+  // $edge: padding, $negative: false, $axis: both
 
   li {
     white-space: nowrap;
