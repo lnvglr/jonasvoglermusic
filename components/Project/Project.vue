@@ -116,7 +116,7 @@ export default {
       return details
         .filter((e) => e !== null)
         .map((e) => `<span>${e}</span>`)
-        .join('<span class="sr-only">,</span>&emsp;')
+        .join('<span class="sr-only">,</span><span class="em-space"> </span>')
         .concat('<span class="sr-only">:</span>')
     },
     idle() {
