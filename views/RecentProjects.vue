@@ -98,7 +98,6 @@ export default {
   },
   async asyncData({ $axios, params, req }) {
     // called every time before loading the component
-    // const apiBasePath = 'https://jonasvoglermusic.com/wp-json/wp/v2/'
     const apiBasePath = 'https://api.jonasvoglermusic.de/wp-json/wp/v2/'
     const { data: projects } = await $axios.get(
       apiBasePath + 'posts?filter[orderby]=date&order=asc&per_page=100'
