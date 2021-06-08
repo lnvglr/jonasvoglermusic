@@ -73,8 +73,7 @@ module.exports = {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     "@nuxtjs/axios",
-    "@nuxtjs/style-resources",
-    "vue-balance-text/nuxt/module"
+    "@nuxtjs/style-resources"
   ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

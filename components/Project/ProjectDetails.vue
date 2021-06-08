@@ -1,5 +1,5 @@
 <template>
-  <ul v-balance-text class="details">
+  <ul class="details">
     <li v-for="(detail, i) in details" :key="detail.value" :style="`--i: ${i}`" class="detail">
 			<span class="detail-label">{{ detail.label }}</span>
 			<span class="detail-value" v-html="detail.value.replace(/, /g,',<br />')"></span>

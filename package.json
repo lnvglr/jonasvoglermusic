@@ -21,7 +21,6 @@
     "lozad": "^1.16.0",
     "nuxt": "^2.14.12",
     "scroll-behavior-polyfill": "^2.0.13",
-    "vue-balance-text": "^1.2.3",
     "vue-cookie-law": "^1.13.3",
     "vue-meta": "^2.4.0"
   },

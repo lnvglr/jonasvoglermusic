@@ -4,7 +4,7 @@
     <div class="festival" v-if="festival.placement">
       <span class="placement">{{ festival.placement }}</span>
       <span class="category" v-if="festival.category">{{ festival.category }}</span>
-      <span v-balance-text>
+      <span>
         <span class="title" v-if="festival.title">{{ festival.title }}</span>
         <span class="subtitle" v-if="festival.subtitle"> – {{ festival.subtitle }}</span>
       </span>
@@ -12,8 +12,8 @@
     </div>
 
     <div class="festival" v-else>
-      <span v-balance-text class="title" v-if="festival.title">{{ festival.title }}</span>
-      <span v-balance-text class="subtitle" v-if="festival.subtitle">{{ festival.subtitle }}</span>
+      <span class="title" v-if="festival.title">{{ festival.title }}</span>
+      <span class="subtitle" v-if="festival.subtitle">{{ festival.subtitle }}</span>
       <span class="year" v-if="festival.year">{{ festival.year }}</span>
     </div>
     <div v-html="laurel" class="laurel-part" style="transform: scale(-1, 1);"></div>
