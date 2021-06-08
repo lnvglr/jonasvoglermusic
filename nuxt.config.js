@@ -1,5 +1,4 @@
 module.exports = {
-  debug: true,
   // Target: https://go.nuxtjs.dev/config-target
   target: "server",
 
@@ -71,29 +70,12 @@ module.exports = {
   buildModules: [],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [
-    "@nuxtjs/axios",
-    "@nuxtjs/style-resources"
-  ],
+  modules: ["@nuxtjs/axios", "@nuxtjs/style-resources"],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     publicPath: "/public",
     extractCSS: true
-    // babel: {
-    //   presets({ envName }) {
-    //     return [
-    //       [
-    //         "@babel/babel-preset-app",
-    //         {
-    //           corejs: {
-    //             version: 3
-    //           }
-    //         }
-    //       ]
-    //     ];
-    //   }
-    // }
   }
   // server: {
   // }
