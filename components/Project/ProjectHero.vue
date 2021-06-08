@@ -39,7 +39,7 @@
             :alt="project.title.rendered"
           ></video>
         </figure>
-        <figure v-else-if="hero.type === 'image_local' || hero.type === 'image_link'">
+        <figure v-else-if="hero.type === 'image_link'">
           <img :class="hero.type" :src="hero.data" :alt="project.title.rendered" />
         </figure>
       </div>
