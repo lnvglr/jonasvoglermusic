@@ -31,7 +31,7 @@ export default {
   }
   @media screen and (min-width: map-get($breakpoints, xlarge)) {
     & {
-      grid-template-columns: minmax(240px, 3fr) minmax(480px, 5fr);
+      grid-template-columns: minmax(240px, 3fr) minmax(480px, 8fr);
     }
     h2 {
       grid-column: 1 / 2;
