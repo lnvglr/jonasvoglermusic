@@ -1,4 +1,5 @@
 <template>
+<div>
   <transition name="fade" mode="out-in">
     <component
       ref="page"
@@ -6,10 +7,11 @@
       :class="{
         fade: !this.fadedIn,
       }"
-      :page="this.pageObject"
+      :page="this.page"
       :is="this.template"
     />
   </transition>
+</div>
 </template>
 
 <script>
@@ -34,23 +36,18 @@ export default {
     }
   },
   computed: {
-    // ...mapGetters({
-    //   page: 'page/getPage',
-    //   allPagesLoaded: 'page/allPagesLoaded',
-    //   siteData: 'siteData',
-    // }),
-    pageObject() {
-      const slug = this.$route.params.pageSlug
-      const field = typeof slug === "number" ? "id" : "slug";
-      return this.$store.state.page.pages.all.filter(page => page[field] === slug)[0];
-      return this.page(this.$route.params.pageSlug)
+    ...mapGetters({
+      getPage: 'pages/getPage',
+      bloginfo: 'getBloginfo',
+    }),
+    page() {
+      return this.getPage(this.$route.params.pageSlug)
     },
     template() {
-      return this.pageObject ? 'page-' + this.pageObject.field.template : 'not-found'
+      return this.page ? 'page-' + this.page.field.template : 'not-found'
     },
   },
   mounted() {
-    this.$store.dispatch('page/getAllPages')
     this.$nextTick(function () {
       const self = this
       setTimeout(function () {
@@ -76,15 +73,15 @@ export default {
   },
   metaInfo() {
     const div = document.createElement('div')
-      div.innerHTML = this.pageObject ? this.pageObject.content.rendered?.replace(/<[^>]*>?/gm, '') : ''
-      const title = this.pageObject
-        ? this.pageObject.title.rendered + ' – ' + this.$store.state.bloginfo.name
-        : this.$store.state.bloginfo.name
-      const description = this.pageObject
-        ? this.pageObject.field.introduction
-          ? this.pageObject.field.introduction
-          : this.pageObject.content.rendered?.replace(/<[^>]*>?/gm, '')
-        : this.$store.state.bloginfo.description
+      div.innerHTML = this.page ? this.page.content.rendered?.replace(/<[^>]*>?/gm, '') : ''
+      const title = this.page
+        ? this.page.title.rendered + ' – ' + this.bloginfo.name
+        : this.bloginfo.name
+      const description = this.page
+        ? this.page.field.introduction
+          ? this.page.field.introduction
+          : this.page.content.rendered?.replace(/<[^>]*>?/gm, '')
+        : this.bloginfo.description
       return {
         title: title,
         meta: [
@@ -98,11 +95,11 @@ export default {
           },
           {
             property: 'og:image',
-            content: this.pageObject ? this.pageObject.thumbnail?.medium?.[0] : this.$store.state.bloginfo.favicon,
+            content: this.page ? this.page.thumbnail?.medium?.[0] : this.bloginfo.favicon,
           },
           {
             property: 'og:url',
-            content: this.pageObject ? this.pageObject.link : this.$store.state.bloginfo.url,
+            content: this.page ? this.page.link : this.bloginfo.url,
           },
         ],
       }
@@ -158,6 +155,21 @@ export default {
       &:last-child {
         margin-bottom: 0;
       }
+      /* These are technically the same, but use both */
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+
+      -ms-word-break: break-all;
+      /* This is the dangerous one in WebKit, as it breaks things wherever */
+      word-break: break-all;
+      /* Instead use this non-standard one: */
+      word-break: break-word;
+
+      /* Adds a hyphen where the word breaks, if supported (No Blink) */
+      -ms-hyphens: auto;
+      -moz-hyphens: auto;
+      -webkit-hyphens: auto;
+      hyphens: auto;
     }
     @media screen and (min-width: map-get($breakpoints, medium)) {
       h1 {

@@ -1,8 +1,11 @@
 <template>
   <NuxtLink
 		:to="{ name: 'Home' }"
-		@click.native="closeProject"
+		@click.native="
+      $store.dispatch('setOpen', null)
+    "
 	>
+      <!-- $store.dispatch('clearFilter'), -->
     <h1 class="logo">{{name}}</h1>
     <span v-if="description" class="subtitle">{{description}}</span>
   </NuxtLink>
@@ -14,11 +17,6 @@ export default {
     name: String,
     description: String
   },
-  methods: {
-    closeProject (event) {
-      this.$store.dispatch('setOpen', null)
-    }
-  }
 }
 </script>
 

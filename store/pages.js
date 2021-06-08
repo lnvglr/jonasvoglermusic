@@ -2,17 +2,17 @@ import api from "@/api";
 
 // initial state
 export const state = () => ({
-  pages: {
-    all: [],
-    header: [],
-    footer: []
-  }
+  all: [],
+  header: [],
+  footer: []
 });
 
 // getters
 export const getters = {
-  getAllPages: state => state.pages.all,
-  getPages: state => position => state.pages[position],
+  getAllPages: state => state.all,
+  getPages: state => position => {
+    return state[position]
+  },
   getPage: state => id => {
     const field = typeof id === "number" ? "id" : "slug";
     const page = state.all.filter(page => page[field] === id);
@@ -28,15 +28,20 @@ export const actions = {
       return pages
     });
   },
+  set({ commit }, pages) {
+    commit('set', pages)
+  },
 };
 
 // mutations
 export const mutations = {
-  setPages(state, pages) {
-    state.pages.all = pages
+  set(state, pages) {
+    state.all = pages
+    state.header = []
+    state.footer = []
     pages.forEach(page => {
       Object.values(page?.field?.page_placement).forEach(position => {
-        state.pages[position].push(page)
+        state[position].push(page)
       })
     })
   }

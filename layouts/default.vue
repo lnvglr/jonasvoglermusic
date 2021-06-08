@@ -37,13 +37,8 @@ export default {
   async fetch() {
     const { data: info } = await axios.get(SETTINGS.API_BASE_PATH + 'bloginfo')
     const { data: pages } = await axios.get(SETTINGS.API_BASE_PATH + 'pages')
-    this.$store.state.bloginfo = info
-    this.$store.state.page.pages.all = pages
-    pages.forEach((page) => {
-      Object.values(page?.field?.page_placement).forEach((position) => {
-        this.$store.state.page.pages[position].push(page)
-      })
-    })
+    this.$store.dispatch('setBloginfo', info)
+    this.$store.dispatch('pages/set', pages)
   },
 }
 </script>

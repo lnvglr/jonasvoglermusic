@@ -1,7 +1,7 @@
 <template>
   <footer class="site-footer" v-if="bloginfo">
     <div class="wrap footer-wrap">
-      <div v-for="page in pages" :key="page.id" class="page-link">
+      <div v-for="page in pages('footer')" :key="page.id" class="page-link">
         <NuxtLink :to="{ name: 'Page', params: { pageSlug: page.slug } }" v-if="page.title">
           {{ page.title.rendered }}</NuxtLink
         >
@@ -24,24 +24,21 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'Footer',
-  data() {
-    return {
-      pages: [],
-      bloginfo: {},
-      buttonLinkText: '',
-    }
-  },
   computed: {
+    ...mapGetters({
+      pages: 'pages/getPages',
+      allPages: 'pages/getAllPages',
+      bloginfo: 'getBloginfo',
+    }),
+    buttonLinkText() {
+      return this.allPages?.find(page => page.slug === 'privacy-policy')?.title.rendered
+    },
     date() {
       return new Date(this.bloginfo?.date * 1000).getFullYear()
     },
-  },
-  mounted() {
-    this.bloginfo = this.$store.state.bloginfo
-    this.pages = this.$store.state.page.pages.footer
-    this.buttonLinkText = this.pages.find(page => page.slug === 'privacy-policy')?.title.rendered
   },
 }
 </script>

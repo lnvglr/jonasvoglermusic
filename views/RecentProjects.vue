@@ -48,7 +48,8 @@ export default {
   computed: {
     ...mapGetters({
       openProject: "openProject",
-			filter: "filter"
+			filter: "filter",
+			bloginfo: "getBloginfo"
     }),
     filterElements() {
       const genres = this.projects?.map(project => project?.field?.genre)
@@ -67,14 +68,14 @@ export default {
   watch: {
     openProject(slug) {
       this.slug = slug
-    }
+    },
   },
   updated() {
     this.$meta().refresh()
 		if (this.slug) this.$store.dispatch('setOpen', this.slug)
   },
   metaInfo() {
-    const siteTitle = this.$store.state.bloginfo.name
+    const siteTitle = this.bloginfo.name
     const title = this.slug ? `${this.project?.title.rendered} – ${siteTitle}` : siteTitle
     const description = this.project?.excerpt.rendered?.replace(/<[^>]*>?/gm, '') || ''
     return {
@@ -119,12 +120,13 @@ export default {
   margin-bottom: 50px;
   & > *:not(:last-child):after {
     content: '';
+    position: absolute;
     width: 100px;
-    height: 0;
-    display: block;
-    margin: 0 auto;
-    box-shadow: 0 0 0 1px $light-02;
+    height: 2px;
     z-index: -1;
+    left: 50%;
+    transform: translateX(-50%);
+    background: $light-02;
   }
 }
 .filter-container {

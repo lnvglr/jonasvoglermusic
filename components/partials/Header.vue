@@ -5,9 +5,15 @@
         <Logo class="logo-wrap" :name="bloginfo.name" :description="bloginfo.description" />
         <ul class="pages">
           <li class="page-link">
-            <NuxtLink :to="{ name: 'Home' }">Projects</NuxtLink>
+            <NuxtLink
+              :to="{ name: 'Home' }"
+		          @click.native="
+                $store.dispatch('setOpen', null)
+              "
+            >Projects</NuxtLink>
           </li>
-          <li v-for="page in pages" :key="page.id" class="page-link">
+          <!-- $store.dispatch('clearFilter'), -->
+          <li v-for="page in pages('header')" :key="page.id" class="page-link">
             <NuxtLink :to="{ name: 'Page', params: { pageSlug: page.slug } }">
               {{ page.title.rendered }}</NuxtLink
             >
@@ -19,26 +25,19 @@
 </template>
 <script>
 import Logo from './Logo.vue'
-import { mapGetters } from "vuex"
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Header',
   components: {
     Logo,
   },
-  data: () => ({
-    pages: [],
-    bloginfo: {},
-  }),
-  mounted() {
-    this.bloginfo = this.$store.state.bloginfo
-    this.pages = this.$store.state.page.pages.header
-  },
-	computed: {
-		...mapGetters({
-			openProject: "openProject",
-		}),
-	}
+  computed: {
+    ...mapGetters({
+      pages: 'pages/getPages',
+      bloginfo: 'getBloginfo'
+    }),
+  }
 }
 </script>
 

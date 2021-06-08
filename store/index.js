@@ -20,11 +20,17 @@ export const actions = {
       commit('setBloginfo', info)
     });
   },
+  setBloginfo({ commit }, info) {
+		commit('setBloginfo', info)
+  },
   setOpen({ commit }, slug) {
 		commit('setOpen', slug)
   },
   updateFilter({ commit }, slug) {
 		commit('updateFilter', slug)
+	},
+  clearFilter({ commit }, slug) {
+		commit('clearFilter', slug)
 	},
 };
 
@@ -36,6 +42,9 @@ export const mutations = {
   setOpen(state, slug) {
     state.openProject = slug;
   },
+  clearFilter(state) {
+		state.filter = []
+	},
   updateFilter(state, slug) {
 		if (state.filter.includes(slug)) {
 			state.filter = state.filter.filter(item => item !== slug)
