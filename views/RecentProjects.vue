@@ -122,7 +122,6 @@ export default {
     position: absolute;
     width: 100px;
     height: 2px;
-    z-index: -1;
     left: 50%;
     transform: translateX(-50%);
     background: $light-02;

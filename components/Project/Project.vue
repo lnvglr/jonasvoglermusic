@@ -332,6 +332,7 @@ export default {
     width: 100%;
     transition: $moderate-02;
     color: $white;
+    z-index: 10;
     @include dynamic-box($axis: vertical);
     .clipped {
       background: $black;
