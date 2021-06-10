@@ -68,6 +68,11 @@ export default {
   watch: {
     openProject(slug) {
       this.slug = slug
+      this.$ga.page({
+        page: '/project/' + slug,
+        title: this.project?.title?.rendered,
+        location: window.location.href
+      })
     },
   },
   updated() {

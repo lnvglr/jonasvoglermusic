@@ -2,6 +2,10 @@ module.exports = {
   // Target: https://go.nuxtjs.dev/config-target
   target: "server",
 
+  env: {
+    GOOGLE_ANALYTICS_ID: 'G-VD3PRV9QE9'
+  },
+
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: "Jonas Vogler Music",
@@ -67,7 +71,25 @@ module.exports = {
   components: true,
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
-  buildModules: [],
+  buildModules: [
+    '@nuxtjs/google-analytics'
+  ],
+
+  // Google Analytics
+  googleAnalytics: {
+    id: process.env.GOOGLE_ANALYTICS_ID, // Use as fallback if no runtime config is provided
+    autoTracking: {
+      screenview: true
+    }
+  },
+  publicRuntimeConfig: {
+    googleAnalytics: {
+      id: process.env.GOOGLE_ANALYTICS_ID,
+      autoTracking: {
+        screenview: true
+      }
+    }
+  },
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: ["@nuxtjs/axios", "@nuxtjs/style-resources"],
