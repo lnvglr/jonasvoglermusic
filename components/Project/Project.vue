@@ -264,7 +264,7 @@ export default {
       img,
       iframe,
       figure {
-        transition: $moderate-02 $expressive;
+        transition: $slow-01 $expressive;
         transform: scale(1.02) translateZ(0);
         will-change: transform;
       }
@@ -324,7 +324,7 @@ export default {
     img,
     iframe,
     figure {
-      transition: $moderate-02 $expressive;
+      transition: $slow-01 $expressive;
     }
   }
   .project-header {
