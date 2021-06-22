@@ -1,6 +1,6 @@
 const build = process.env.NODE_ENV === 'production'
 const relativeBase = 'jonasvoglermusic'
-let apiBasePath = 'https://api.jonasvoglermusic.de/wp-json/wp/v2/'
+let apiBasePath = process.env.API_BASE_PATH
 
 export function setApiBasePath (path) {
   apiBasePath = path

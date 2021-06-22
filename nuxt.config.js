@@ -1,9 +1,16 @@
+const getRoutes = require("./utils/getRoutes.js");
+const fs = require('fs')
+const packageJson = fs.readFileSync('./package.json')
+const version = JSON.parse(packageJson).version || 0
+
 module.exports = {
   // Target: https://go.nuxtjs.dev/config-target
   target: "server",
-
+  rootDir: process.cwd(),
   env: {
-    GOOGLE_ANALYTICS_ID: 'G-VD3PRV9QE9'
+    GOOGLE_ANALYTICS_ID: "G-VD3PRV9QE9",
+    API_BASE_PATH: "https://api.jonasvoglermusic.de/wp-json/wp/v2/",
+    PACKAGE_VERSION: version
   },
 
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -71,9 +78,7 @@ module.exports = {
   components: true,
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
-  buildModules: [
-    '@nuxtjs/google-analytics'
-  ],
+  buildModules: ["@nuxtjs/google-analytics"],
 
   // Google Analytics
   googleAnalytics: {
@@ -92,13 +97,25 @@ module.exports = {
   },
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ["@nuxtjs/axios", "@nuxtjs/style-resources"],
+  modules: ["@nuxtjs/axios", "@nuxtjs/style-resources", "@nuxtjs/sitemap"],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     publicPath: "/public",
     extractCSS: true
+  },
+
+  // Sitemap
+  sitemap: {
+    hostname: "https://jonasvoglermusic.com",
+    gzip: true,
+    routes() {
+      return getRoutes();
+    },
+    defaults: {
+      changefreq: "weekly",
+      priority: 1,
+      lastmod: new Date()
+    }
   }
-  // server: {
-  // }
 };

@@ -1,20 +1,23 @@
 {
   "name": "jonasvoglermusic",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
-    "start": "nuxt start",
+    "start": "nuxt build && pm2-runtime start ecosystem.config.js --env production",
     "generate": "nuxt generate",
     "npm": "npm",
-    "pm2": "pm2",
+    "npx": "npx",
     "pm2-start": "pm2 start server.js --name jonasvoglermusic --watch",
-    "setup": "npm install && pm2 restart jonasvoglermusic"
+    "setup": "npm install && pm2 restart jonasvoglermusic",
+    "mail": "pm2 restart pm2-health && pm2 trigger pm2-health mail",
+    "ps": "ps -e|grep node"
   },
   "dependencies": {
     "@nuxt/typescript-runtime": "^2.1.0",
     "@nuxtjs/axios": "^5.13.5",
+    "@nuxtjs/sitemap": "^2.4.0",
     "express": "^4.17.1",
     "idle-vue": "^2.0.5",
     "lodash": "^4.17.21",

@@ -24,7 +24,7 @@ export default {
       "filter[orderby]"
     );
     axios
-      .get(SETTINGS.API_BASE_PATH + type + queryString)
+      .get(process.env.API_BASE_PATH + type + queryString)
       .then(response => {
         cb(response.data);
       })
@@ -42,7 +42,7 @@ export default {
   getById(id, postType = "post", cb) {
     if (_.isNull(id) || !_.isNumber(id)) return false;
     axios
-      .get(`${SETTINGS.API_BASE_PATH + postType}/${id}`)
+      .get(`${process.env.API_BASE_PATH + postType}/${id}`)
       .then(response => {
         cb(response);
       })
