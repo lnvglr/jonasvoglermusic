@@ -1,3 +1,7 @@
+if (typeof PhusionPassenger != "undefined") {
+  PhusionPassenger.configure({ autoInstall: false });
+}
+
 const express = require("express");
 const { Nuxt, Builder } = require("nuxt");
 
@@ -6,8 +10,11 @@ const config = require("./nuxt.config.js");
 // Create new express app
 const app = express();
 
-// Listen to port 3000 or PORT env if provided
-app.listen(process.env.PORT || 8282);
+if (typeof PhusionPassenger != "undefined") {
+  app.listen("passenger");
+} else {
+  app.listen(process.env.PORT || 8282);
+}
 
 // Enable production mode
 config.dev = false;
