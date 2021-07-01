@@ -35,7 +35,7 @@ export default {
     &::after {
       content: '';
       display: block;
-      height: 2px;
+      height: var(--stroke);
       width: 30px;
       position: absolute;
       background-color: currentColor;

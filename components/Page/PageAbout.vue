@@ -105,7 +105,7 @@ export default {
     font-weight: bold;
     text-transform: uppercase;
     margin: 1em 0;
-    font-family: Gilroy, sans-serif;
+    font-family: var(--font-family);
     line-height: 1.2;
     color: $secondary;
 
@@ -167,8 +167,7 @@ export default {
     color: $dark-01;
     .mail {
       padding: 1rem;
-      transition: $extraslow-01 $expressive;
-      transition-delay: 300ms;
+      transition: $fast-02 $expressive;
       &:hover {
         color: $secondary;
       }
