@@ -9,14 +9,17 @@
     "generate": "nuxt generate",
     "npm": "npm",
     "npx": "npx",
+    "pm2": "pm2",
     "pm2-start": "pm2 start server.js --name jonasvoglermusic --watch",
     "setup": "npm install && pm2 restart jonasvoglermusic",
     "mail": "pm2 restart pm2-health && pm2 trigger pm2-health mail",
-    "ps": "ps -e|grep node"
+    "ps": "ps -e|grep node",
+    "lsof": "lsof -i -P -n | grep LISTEN"
   },
   "dependencies": {
     "@nuxt/typescript-runtime": "^2.1.0",
     "@nuxtjs/axios": "^5.13.5",
+    "@nuxtjs/google-gtag": "^1.0.4",
     "@nuxtjs/sitemap": "^2.4.0",
     "express": "^4.17.1",
     "idle-vue": "^2.0.5",
@@ -26,7 +29,11 @@
     "pm2": "^5.0.4",
     "scroll-behavior-polyfill": "^2.0.13",
     "vue-cookie-law": "^1.13.3",
-    "vue-meta": "^2.4.0"
+    "vue-gtag": "^1.16.1",
+    "vue-meta": "^2.4.0",
+    "vue-social-sharing": "^3.0.8",
+    "vue-vimeo-player": "^0.2.2",
+    "vue-youtube": "^1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",

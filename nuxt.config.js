@@ -1,7 +1,7 @@
 const getRoutes = require("./utils/getRoutes.js");
-const fs = require('fs')
-const packageJson = fs.readFileSync('./package.json')
-const version = JSON.parse(packageJson).version || 0
+const fs = require("fs");
+const packageJson = fs.readFileSync("./package.json");
+const version = JSON.parse(packageJson).version || 0;
 
 module.exports = {
   // Target: https://go.nuxtjs.dev/config-target
@@ -10,6 +10,7 @@ module.exports = {
   env: {
     GOOGLE_ANALYTICS_ID: "G-VD3PRV9QE9",
     API_BASE_PATH: "https://api.jonasvoglermusic.de/wp-json/wp/v2/",
+    HOST_NAME: "https://jonasvoglermusic.com",
     PACKAGE_VERSION: version
   },
 
@@ -71,33 +72,22 @@ module.exports = {
     { src: "~/plugins/vue-meta", mode: "client" },
     { src: "~/plugins/scroll-behavior-polyfill", mode: "client" },
     { src: "~/plugins/idle-vue", mode: "client" },
-    { src: "~/plugins/vue-cookie-law", mode: "client" }
+    { src: "~/plugins/vue-cookie-law", mode: "client" },
+    { src: "~/plugins/vue-gtag", mode: "client" }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
-  buildModules: ["@nuxtjs/google-analytics"],
-
-  // Google Analytics
-  googleAnalytics: {
-    id: process.env.GOOGLE_ANALYTICS_ID, // Use as fallback if no runtime config is provided
-    autoTracking: {
-      screenview: true
-    }
-  },
-  publicRuntimeConfig: {
-    googleAnalytics: {
-      id: process.env.GOOGLE_ANALYTICS_ID,
-      autoTracking: {
-        screenview: true
-      }
-    }
-  },
+  buildModules: [],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ["@nuxtjs/axios", "@nuxtjs/style-resources", "@nuxtjs/sitemap"],
+  modules: [
+    "@nuxtjs/axios",
+    "@nuxtjs/style-resources",
+    "@nuxtjs/sitemap"
+  ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
@@ -107,7 +97,7 @@ module.exports = {
 
   // Sitemap
   sitemap: {
-    hostname: "https://jonasvoglermusic.com",
+    hostname: process.env.HOST_NAME,
     gzip: true,
     routes() {
       return getRoutes();
