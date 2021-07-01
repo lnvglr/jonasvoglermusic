@@ -8,11 +8,11 @@
             <NuxtLink
               :to="{ name: 'Home' }"
 		          @click.native="
-                $store.dispatch('setOpen', null)
+                $store.dispatch('updateFilter', null),
+                $store.dispatch('project/setOpen', null)
               "
             >Projects</NuxtLink>
           </li>
-          <!-- $store.dispatch('clearFilter'), -->
           <li v-for="page in pages('header')" :key="page.id" class="page-link">
             <NuxtLink :to="{ name: 'Page', params: { pageSlug: page.slug } }">
               {{ page.title.rendered }}</NuxtLink
@@ -71,6 +71,18 @@ header {
 	letter-spacing: $letter-spacing;
   a {
     line-height: 1.2;
+  }
+}
+</style>
+
+<style lang="scss">
+.experimental {
+  .logo-wrap {
+    text-align: center;
+    width: 100%;
+  }
+  header nav {
+    justify-content: center;
   }
 }
 </style>

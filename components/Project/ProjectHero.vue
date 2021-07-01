@@ -9,29 +9,28 @@
       @loaded="heroLoaded"
     />
     <transition name="fade" mode="out-in">
-      <div ref="hero-container" v-if="open && hero.type" @click="updatePaused">
-        <iframe
-          v-if="hero.type === 'vimeo'"
-          ref="video"
+      <div ref="hero-container" v-if="open && hero.type">
+        <client-only v-if="hero.type === 'vimeo'">
+          <vimeo
+            :class="hero.type"
+            :video-id="hero.data"
+            ref="video"
+            @playing="playing"
+            @pause="paused"
+          ></vimeo>
+        </client-only>
+        <youtube
+          v-if="hero.type === 'youtube'"
           :class="hero.type"
-          :src="'https://player.vimeo.com/video/' + hero.data"
-          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%"
-          frameborder="0"
-          allow="autoplay; fullscreen"
-          allowfullscreen
-        ></iframe>
-        <iframe
-          v-else-if="hero.type === 'youtube'"
+          :video-id="hero.data"
           ref="video"
-          :class="hero.type"
-          :src="'https://www.youtube.com/embed/' + hero.data + '?enablejsapi=1'"
-          frameborder="0"
-          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-        ></iframe>
+          :nocookie="true"
+          @playing="playing"
+          @paused="paused"
+        ></youtube>
         <figure v-else-if="hero.type === 'video_local'" ref="video">
           <video
-            @playing="updatePaused"
+            @playing="updatePlaying"
             controls
             controlsList="nodownload"
             :class="hero.type"
@@ -48,7 +47,11 @@
 </template>
 
 <script>
+import { Youtube } from 'vue-youtube'
+import { vueVimeoPlayer } from 'vue-vimeo-player'
+
 import LazyImage from '@/components/partials/LazyImage.vue'
+
 
 export default {
   name: 'Hero',
@@ -58,6 +61,8 @@ export default {
   },
   components: {
     LazyImage,
+    youtube: Youtube,
+    vimeo: vueVimeoPlayer
   },
   data() {
     return {
@@ -67,8 +72,6 @@ export default {
         type: '',
         data: '',
       },
-      videoElement: null,
-      paused: null,
       player: null,
     }
   },
@@ -129,64 +132,24 @@ export default {
     },
 
     // music
-    interrupt() {
-      if (this.$refs.video) {
-        if (this.$refs.video.contentWindow) {
-          this.$refs.video.contentWindow.postMessage(
-            this.messageFn('pause', this.$refs.video.src),
-            '*'
-          )
-        } else if (!this.$refs.video.children) {
-          if (!this.$refs.video.children[0].paused) {
-            this.$refs.video.children[0].pause()
-          }
-        }
-      }
+    playing() {
+      this.$emit('playing', true)
     },
-    messageFn(action, src) {
-      if (src.search('vimeo') > 0) {
-        // case for Vimeo
-        return JSON.stringify({
-          method: action,
-        })
-      } else if (src.search('youtube') > 0) {
-        // case for youTube
-        return JSON.stringify({
-          event: 'command',
-          func: action + 'Video',
-        })
+    paused() {
+      this.$emit('playing', false)
+    },
+    updatePlaying(value) {
+      if (value === 1) {
+        this.playing()
       } else {
-        // case for other video services (e.g. facebook..)
-        return action
+        this.paused()
       }
-    },
-    updatePaused(event) {
-      if (this.$refs.video) {
-        if (this.$refs.video.contentWindow) {
-          // console.log(this.$refs.video.contentWindow);
-        }
-      }
-      this.videoElement = event.target
-      this.paused = event.target.paused
-      // this.$store.dispatch('setCurrentlyPlaying', { track: 'project' })
-    },
-    play() {
-      this.videoElement.play()
-    },
-    pause() {
-      this.videoElement.pause()
-    },
+    }
   },
   watch: {
     imageSizes(val) {
       this.generateSrcSet()
     },
-
-    // currentlyPlaying (track) {
-    //   if (track && track !== 'project') {
-    //     this.interrupt()
-    //   }
-    // }
   },
 }
 </script>

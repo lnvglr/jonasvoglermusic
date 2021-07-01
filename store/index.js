@@ -2,36 +2,38 @@ import api from "@/api";
 
 export const state = () => ({
   bloginfo: null,
-	openProject: null,
-	open: null,
-	filter: []
+  filter: [],
+  experimental: false
 });
 
 // getters
 export const getters = {
   getBloginfo: state => state.bloginfo,
-	openProject: state => state.openProject,
-	filter: state => state.filter
+  filter: state => state.filter,
+  getExperimental: state => state.experimental
 };
 // actions
 export const actions = {
   fetchBloginfo({ commit }) {
-    api.get('bloginfo', {}, (info) => {
-      commit('setBloginfo', info)
+    api.get("bloginfo", {}, info => {
+      commit("setBloginfo", info);
     });
   },
   setBloginfo({ commit }, info) {
-		commit('setBloginfo', info)
-  },
-  setOpen({ commit }, slug) {
-		commit('setOpen', slug)
+    commit("setBloginfo", info);
   },
   updateFilter({ commit }, slug) {
-		commit('updateFilter', slug)
-	},
-  clearFilter({ commit }, slug) {
-		commit('clearFilter', slug)
-	},
+    commit("updateFilter", slug);
+  },
+  toggleExperimental({ commit }) {
+    commit("toggleExperimental");
+  },
+  changeRoute({ commit }, slug) {
+    const fullPath = slug ? "/project/" + slug : "/";
+    history.pushState({}, null, fullPath);
+    $nuxt.$route.params.projectSlug = slug;
+    commit("project/setOpen", slug);
+  }
 };
 
 // mutations
@@ -39,23 +41,15 @@ export const mutations = {
   setBloginfo(state, info) {
     state.bloginfo = info;
   },
-  setOpen(state, slug) {
-    state.openProject = slug;
+  toggleExperimental(state) {
+    state.experimental = !state.experimental;
   },
-  clearFilter(state) {
-		state.filter = []
-	},
   updateFilter(state, slug) {
-		if (state.filter.includes(slug)) {
-			state.filter = state.filter.filter(item => item !== slug)
-		} else {
-			state.filter.push(slug)
-		}
+    if (!slug) return state.filter = []
+    if (state.filter.includes(slug)) {
+      state.filter = state.filter.filter(item => item !== slug);
+    } else {
+      state.filter = [slug];
+    }
   },
-  changeRoute(state, slug) {
-    const fullPath = slug !== "" ? "/project/" + slug : "/";
-    history.pushState({}, null, fullPath);
-    $nuxt.$route.params.projectSlug = slug;
-    state.project = slug;
-  }
 };

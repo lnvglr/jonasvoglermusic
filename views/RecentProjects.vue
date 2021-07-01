@@ -1,42 +1,71 @@
 <template>
-<div>
-  <FilterPills :items="filterElements" label="slug" value="name" class="filter-container" />
-  <transition-group tag="div" name="fade-list" class="projects">
-    <Project
-      v-for="(project, index) in filteredProjects"
-      ref="project"
-      :project="project"
-      :index="index"
-      :key="project.id"
-      :isOpen="slug === project.slug"
-      @open="slug = $event"
-      @close="close"
-    />
-  </transition-group>
-  <div v-html="laurel" style="display: none;" />
-</div>
+  <div style="position: relative">
+    <transition name="fade"><NavigateProjects v-if="openProject" :projects="filteredProjects" /></transition>
+    <FilterPills :items="filterElements" label="slug" value="name" class="filter-container" />
+    <transition-group tag="div" name="fade-list" class="projects">
+      <Project
+        v-for="(project, index) in filteredProjects"
+        ref="project"
+        :project="project"
+        :index="index"
+        :key="project.id"
+        :isOpen="slug === project.slug"
+        @open="slug = $event"
+        @close="close"
+        :reference="$refs ? $refs : {}"
+      />
+    </transition-group>
+    <div class="projects phantom">
+      <ProjectPhantom
+        v-for="(project, index) in filteredProjects"
+        :ref="`project-${project.slug}`"
+        :phantom="true"
+        :key="index"
+      />
+    </div>
+    <div v-html="laurel" style="display: none" />
+  </div>
 </template>
 
 <script>
 import Project from '@/components/Project/Project.vue'
-import FilterPills from '~/components/partials/FilterPills.vue';
-import { mapGetters } from "vuex";
+import ProjectPhantom from '@/components/Project/ProjectPhantom.vue'
+import NavigateProjects from '@/components/Project/NavigateProjects.vue'
+import FilterPills from '~/components/partials/FilterPills.vue'
+import { mapGetters } from 'vuex'
 
 const laurel = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 415.4 801.7" style="enable-background:new 0 0 415.4 801.7;" xml:space="preserve" id="laurel"><path d="M334.5,49c-18.3,12.3-38.5,27.5-54.8,44.4c-28.9,30.1-57.5,64-82.2,97.9c-16.6,22.9-38.2,57.7-50,83.3 c-15.7,34.1-25,57.9-33.6,95.3c-12.1,52.7-10.5,106.8,1.9,157.8c18.1,75,76.1,137.8,134.1,188.8c45.4,39.9,106.3,65.9,159.9,85.1 l5.5-14.6c-53.1-19-109.4-44.3-152.8-82.6C206.6,655.3,155,595.3,132.7,523.8c-13.6-43.5-16.7-91.3-9.6-137.5 c6.2-40.5,21.9-81.1,37.2-118c12.6-30.3,27.2-54,45.1-78.9c22.6-31.6,47.5-62.4,74-90.5c17.1-18.2,40-34.6,58.4-47L334.5,49z"/><path d="M311.2,757c0,0-37.6-11.9-67.5-8.4c-47.4,5.6-51.8,35-51.8,35s19,11.8,59.8,7.3 C299.6,785.7,311.2,757,311.2,757L311.2,757z"/><path d="M247.1,713c0,0-31.7-15-61.8-14.8c-52.1,0.4-55.2,28-55.2,28s18.8,13.6,60.5,13 C238.8,738.6,247.1,713,247.1,713L247.1,713z"/><path d="M199.7,666.8c0,0-30.2-26.4-59.3-33.7c-50.5-12.7-67.2,16.7-67.2,16.7s18.8,22.5,59.3,32.4 C179.2,693.6,199.7,666.8,199.7,666.8L199.7,666.8z"/><path d="M146.2,595.6c0,0-25.8-27.2-61.1-38c-46.1-14.2-67.7,13.6-68.4,14.3c0,0,18.9,23.8,58.3,34.2 C127.8,620,146.2,595.6,146.2,595.6z"/><path d="M120.7,538.9c0,0-24-36.6-59.8-53.8c-34.8-16.8-60.2-2.5-60.9-1.9c0,0,17.9,32.7,50.8,48.3 C95.5,552.7,120.7,538.9,120.7,538.9L120.7,538.9z"/><path d="M113,489.2c-12.8-12.1-13.8-44.8-32.1-71.4c-25.6-37.1-67.7-34.4-68.4-34.1c0,0,4.5,46.2,36.5,74.2 C83,487.5,113,489.2,113,489.2L113,489.2z"/><path d="M109.4,411.2c0,0,1.2-40.2-9.4-70.7c-14.8-42.6-55.1-50.9-55.8-50.8c0,0-6.5,45.5,16.8,81 C85.9,408.4,109.4,411.2,109.4,411.2L109.4,411.2z"/><path d="M126.5,335.9c0,0,8-33.7,4-65.8c-6.1-48.3-43.7-58.5-44.4-58.5c0,0-12.9,44.7,5.4,83 C111,335.4,126.5,335.9,126.5,335.9L126.5,335.9z"/><path d="M159.6,255.1c0,0,13.1-30.5,11.4-62.8c-2.3-44.8-32.7-63.7-33.4-63.7c0,0-29.3,26.4-12.5,83.1 C135.4,246.2,159.6,255.1,159.6,255.1L159.6,255.1z"/><path d="M201.7,188.6c0,0,19.5-30,24.8-61.8c5.1-29.9-7.1-62.5-9.8-65.5c0,0-31.6,13.9-30.5,67.3 C187.1,164.5,201.7,188.6,201.7,188.6L201.7,188.6z"/><path d="M253.5,124.5c0,0,23.2-24.7,29.2-58.5c5-28,0-58.4-5.3-66c0,0-30.2,18.8-32.4,66.3 C243.3,102.2,251.1,119.3,253.5,124.5L253.5,124.5z"/><path d="M291,85.1c0,0,44.2,1.6,66.2-11.2c24.6-14.3,48.7-45.3,50.6-54.3c0,0-38.7-17-74.8,14 C305.8,57.1,293.2,79.8,291,85.1L291,85.1z"/><path d="M242.3,138.4c0,0,21.1-24.8,57.5-31.1c28-4.9,49.5-0.4,63.4,7.7c0,0-21.3,27.3-62.2,31.1 C265.2,149.3,247.6,140.7,242.3,138.4L242.3,138.4z"/><path d="M198.6,195.5c0,0,20.1-23.7,56.5-30.1c28-4.9,41.4,0.1,55.3,8.2c0,0-17,26.1-57.9,29.8 C216.7,206.7,203.9,197.7,198.6,195.5L198.6,195.5z"/><path d="M156.2,270c0,0,18.8-29.3,52.8-43.6c34.8-14.7,52.7-7.7,67.7-2.1c-4.8,7.2-24.3,37-56,46 C186.2,280.1,161.8,271.3,156.2,270L156.2,270z"/><path d="M131.1,336.1c0,0,16.7-30.5,49.6-47.2c33.7-17.1,52.1-11.4,67.4-6.9c-4.3,7.5-21.6,38.7-52.6,49.9 C161.6,344.1,136.7,337,131.1,336.1L131.1,336.1z"/><path d="M117.8,414.6c14.4-18.5,22.3-38.4,44.4-58.1c27.3-24.4,50.8-16.6,66.7-15c-7.8,14.7-19.6,38-43.9,55.5 C156,418,123.5,414.5,117.8,414.6L117.8,414.6z"/><path d="M119.6,487c12.3-20,18.1-35.6,37.9-57.7c24.4-27.3,47.6-22.4,63.6-22.7c-6.1,15.5-16.5,38.7-38.7,58.8 C155.9,489.7,125.3,486.3,119.6,487z"/><path d="M135.4,544.8c18.4-28.5,16.1-34.9,34.2-58.5c19.4-25.4,43.9-24.7,59.8-26.2c-4.9,15.9-12.2,37.5-32.8,59.2 C174.5,542.5,151.6,539.5,135.4,544.8L135.4,544.8z"/><path d="M165.7,601.3c11.6-25.2,9.6-40.9,20.3-58.8c17.4-29.2,34.5-30.5,50.5-32c-12.7,36.4-9.8,36.6-23.7,58.7 C199.1,590.9,180.6,593.8,165.7,601.3L165.7,601.3z"/><path d="M202.2,648.9c6.6-27-0.1-35.2,7-54.8c11.6-32,28.1-36.5,43.5-41c-1.8,21.5,0.9,35.1-11.1,58.4 C233.1,628,215.5,638.7,202.2,648.9L202.2,648.9z"/><path d="M275.9,596c0,0,13.3,25.7,8.9,55.4c-6.3,42.1-28.8,48.5-28.8,48.5s-12.8-19.2-11.5-58 C245.9,600.3,275.9,596,275.9,596L275.9,596z"/><path d="M323.9,638.9c0,0,13.3,26,10.4,55.9c-3.7,38.4-24.7,48-24.7,48s-13.2-21.4-13.8-53.7 C294.9,639.7,323.9,638.9,323.9,638.9L323.9,638.9z"/></svg>`
 export default {
   name: 'Projects',
   components: {
     Project,
-    FilterPills
+    ProjectPhantom,
+    NavigateProjects,
+    FilterPills,
   },
   data() {
     return {
-      laurel
+      laurel,
+      initiated: false,
     }
   },
+  head() {
+    return {
+      __dangerouslyDisableSanitizers: ['script'],
+      script: [{ innerHTML: JSON.stringify(this.structuredData), type: 'application/ld+json' }],
+    }
+  },
+  mounted() {
+    setTimeout(() => {
+      this.initiated = true
+    }, 1000)
+  },
   methods: {
+    offsetCheck() {
+      console.log(this.$refs)
+    },
     toggleFilter(slug) {
-    	this.$store.dispatch('updateFilter', slug)
+      this.$store.dispatch('updateFilter', slug)
     },
     close() {
       this.slug = null
@@ -47,37 +76,37 @@ export default {
   },
   computed: {
     ...mapGetters({
-      openProject: "openProject",
-			filter: "filter",
-			bloginfo: "getBloginfo"
+      openProject: 'project/open',
+      filter: 'filter',
+      bloginfo: 'getBloginfo',
     }),
     filterElements() {
-      const genres = this.projects?.map(project => project?.field?.genre)
-      return genres.filter((e, i) => genres.findIndex(a => a.slug === e.slug) === i)
+      const genres = this.projects?.map((project) => project?.field?.genre)
+      return genres.filter((e, i) => genres.findIndex((a) => a.slug === e.slug) === i)
     },
     project() {
       return this.projects?.find((e) => e.slug === this.slug)
     },
     filteredProjects() {
+      if (!this.initiated) return []
       if (this.filter.length === 0) return this.projects
-      return this.projects.filter(project => {
-        return this.filter.includes(project.field?.genre.slug)
+      return this.projects.filter((project) => {
+        return this.filter.includes(project.field?.genre?.slug)
       })
-    }
+    },
   },
   watch: {
     openProject(slug) {
       this.slug = slug
-      this.$ga.page({
-        page: '/project/' + slug,
-        title: this.project?.title?.rendered,
-        location: window.location.href
-      })
+      // this.$ga.page({
+      //   page: '/project/' + slug,
+      //   title: this.project?.title?.rendered,
+      //   location: this.project?.link
+      // })
     },
   },
   updated() {
     this.$meta().refresh()
-		if (this.slug) this.$store.dispatch('setOpen', this.slug)
   },
   metaInfo() {
     const siteTitle = this.bloginfo.name
@@ -101,18 +130,31 @@ export default {
       ],
     }
   },
-  async asyncData({ $axios, params, req }) {
+  async asyncData({ $axios, params, req, store }) {
     // called every time before loading the component
     const apiBasePath = 'https://api.jonasvoglermusic.de/wp-json/wp/v2/'
     const { data: projects } = await $axios.get(
       apiBasePath + 'posts?filter[orderby]=date&order=asc&per_page=100'
     )
     const url = process.server ? req.url : null
-    const slug = url ? url.split('/project/')[1] : params.projectSlug
-    // const slug = params.projectSlug
+    const slug = url ? url.split('/project/')[1]?.split('?')[0] : params.projectSlug
+    const structuredData = {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      itemListElement: projects.map((project, i) => {
+        return {
+          '@type': 'ListItem',
+          position: i + 1,
+          url: project.link,
+        }
+      }),
+    }
+    store.dispatch('project/setProjects', projects)
+    store.dispatch('project/setOpen', slug)
     return {
       slug,
-      projects: projects,
+      projects,
+      structuredData,
     }
   },
 }
@@ -137,5 +179,13 @@ export default {
   @media screen and (max-width: map-get($breakpoints, large)) {
     justify-content: flex-start;
   }
+}
+.phantom {
+  position: absolute;
+  width: 100%;
+  top: 78px;
+  z-index: -1;
+  opacity: 0;
+  pointer-events: none;
 }
 </style>

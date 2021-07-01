@@ -22,6 +22,7 @@ export default {
   },
   methods: {
     toggleFilter(label) {
+      this.$store.dispatch('changeRoute', '')
       this.$store.dispatch('updateFilter', label)
     },
   },
@@ -45,17 +46,19 @@ export default {
   max-width: 100% !important;
   width: 100% !important;
 
-  // $edge: padding, $negative: false, $axis: both
+  // $box: padding, $negative: false, $axis: both
 
   li {
     white-space: nowrap;
     cursor: pointer;
-    margin: 0.5rem;
     padding: 0.75rem 1rem;
     background: $light-02;
     border-radius: $border-radius-small;
     transition: $fast-02 $productive;
     letter-spacing: $letter-spacing;
+    & + * {
+      margin-left: 0.5rem;
+    }
     &:hover {
       background: darken($light-02, 5);
       transition: $fast-02 $productive;
@@ -66,6 +69,27 @@ export default {
     }
     &.active:hover {
       background: darken($primary, 5);
+    }
+  }
+}
+</style>
+
+
+<style lang="scss">
+.experimental {
+  .filter {
+    li {
+      letter-spacing: 0;
+      &, &:hover, &.active, &.active:hover {
+        color: inherit;
+        background: none;
+      }
+      &:hover {
+        transform: scale(0.95);
+      }
+      &.active {
+        box-shadow: inset 0 0 0 1px currentColor;
+      }
     }
   }
 }

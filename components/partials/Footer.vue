@@ -8,10 +8,12 @@
       </div>
     </div>
     <div class="copyright">{{ date }} &copy; {{ bloginfo.name }}</div>
-    <small class="credits"
-      >This site was created by
-      <a href="http://www.leonvogler.de" target="_blank">Leon Vogler</a>.</small
-    >
+    <small class="credits">
+      This site was created by
+      <a href="http://www.leonvogler.de" rel="noopener" target="_blank">Leon Vogler</a>.
+    </small>
+    <small class="version" v-if="version">v{{ version }}</small>
+    <ExperimentalButton class="experimental-button" v-if="experimental" />
     <client-only>
       <cookie-law
         message="This site uses cookies. If you continue to use the website, we will assume that you have given your consent."
@@ -25,20 +27,36 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import ExperimentalButton from './ExperimentalButton.vue'
 export default {
+  components: { ExperimentalButton },
   name: 'Footer',
+  data() {
+    return {
+      version: 'v0.1.0',
+    }
+  },
   computed: {
     ...mapGetters({
       pages: 'pages/getPages',
       allPages: 'pages/getAllPages',
       bloginfo: 'getBloginfo',
     }),
+		experimental() {
+      return true
+			// if (process.server) return true
+			// var url = new URL(window.location.href);
+			// return url.searchParams.get("experimental") === 'true'
+		},
     buttonLinkText() {
-      return this.allPages?.find(page => page.slug === 'privacy-policy')?.title.rendered
+      return this.allPages?.find((page) => page.slug === 'privacy-policy')?.title.rendered
     },
     date() {
       return new Date(this.bloginfo?.date * 1000).getFullYear()
     },
+  },
+  async fetch() {
+    this.version = process.env.PACKAGE_VERSION || false
   },
 }
 </script>
@@ -70,12 +88,30 @@ export default {
       color: $secondary;
     }
   }
+  .version {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: $light-03;
+
+  }
   .page-link {
     margin: map-get($padding-sizes, medium) 0;
     white-space: nowrap;
-		letter-spacing: $letter-spacing;
+    letter-spacing: $letter-spacing;
     a {
       padding: map-get($padding-sizes, medium);
+    }
+  }
+  .experimental-button {
+    // position: fixed;
+    // left: 0;
+    // bottom: 0;
+    background: transparent !important;
+    color: $light-03;
+    &.active {
+      color: $primary;
     }
   }
 }

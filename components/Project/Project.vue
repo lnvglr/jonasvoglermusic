@@ -3,59 +3,42 @@
     ref="projectContainer"
     class="project"
     :class="{
-      fade: !fadedIn,
+      fade: !fadedIn && !phantom,
       active: isOpen,
-      idle: idle && isOpen && heroIsVideo,
+      idle: isAppIdle && isOpen && heroIsVideo && isPlaying,
     }"
   >
     <transition name="fade">
       <CloseButton class="element" v-if="isOpen" @click="close" />
     </transition>
-    <div
-      class="project-header"
-      ref="projectHeader"
-      :class="{ hasControls: heroIsVideo }"
-      @click="open(project.slug)"
-    >
-      <!-- :style="`--aspect-ratio: ${aspectRatio}%;`" -->
+    <div class="project-header" ref="projectHeader" :class="{ hasControls: heroIsVideo }">
+      <div v-if="phantom" :style="`padding-bottom: ${aspectRatio}%;`"></div>
       <div
+        v-else
         class="clipped cinema"
         :style="`padding-bottom: ${aspectRatio}%;`"
         ref="projectThumbnail"
+        @click="open(project.slug)"
       >
+        <!-- :style="`--aspect-ratio: ${aspectRatio}%;`" -->
         <div class="content">
           <component :is="isOpen ? 'h2' : 'span'" class="title-container">
             <span v-if="projectSubtitle" class="project-category" v-html="projectSubtitle"></span>
             <span class="project-title">{{ project.title.rendered }}</span>
           </component>
-          <div v-if="headerFestivals" class="festivals">
-            <Festival
-              v-for="(festival, i) in headerFestivals"
-              :key="i"
-              :festival="festival"
-              :class="{ 'hide-medium-down': festival.show_in_header }"
-            />
-          </div>
+          <FestivalContainer :festivals="headerFestivals" class="hide-medium-down"/>
         </div>
-        <ProjectHero class="hero" :open="isOpen" :project="project" />
+        <ProjectHero class="hero" :open="isOpen" :project="project" @playing="e => isPlaying = e" />
       </div>
     </div>
     <transition-expand :scrollReference="offset">
-      <div v-if="isOpen">
-        <div
-          v-if="project.content.rendered || project.field.details || project.field.festivals"
-          class="project-content"
-        >
-          <div v-html="project.content.rendered" class="project-description"></div>
-          <ProjectDetails v-if="project.field.details" :details="project.field.details" />
-          <div v-if="project.field.festivals" class="festivals">
-            <Festival
-              v-for="(festival, i) in project.field.festivals"
-              :key="i"
-              :festival="festival"
-            />
-            <!-- :class="{ 'hide-large': festival.show_in_header }" -->
-          </div>
+      <div v-if="isOpen" class="dynamic-container">
+        <div class="project-content">
+          <div v-html="description" class="project-description"></div>
+          <ProjectDetails :details="project.field.details" />
+          <FestivalContainer :festivals="project.field.festivals" class="alignfull" />
+          <div v-html="gallery" class="project-gallery"></div>
+          <SocialSharing :project="project" />
         </div>
       </div>
     </transition-expand>
@@ -68,30 +51,28 @@ import { mapGetters } from 'vuex'
 
 import TransitionExpand from '@/components/partials/TransitionExpand.vue'
 import CloseButton from '@/components/partials/CloseButton.vue'
+import SocialSharing from '@/components/partials/SocialSharing.vue'
 
 import ProjectHero from '@/components/Project/ProjectHero.vue'
 import ProjectDetails from '@/components/Project/ProjectDetails.vue'
-import Festival from '@/components/Project/Festival.vue'
+import FestivalContainer from '@/components/Project/FestivalContainer.vue'
 
 export default {
   name: 'Project',
   components: {
     CloseButton,
+    SocialSharing,
     ProjectDetails,
     ProjectHero,
-    Festival,
+    FestivalContainer,
     TransitionExpand,
   },
   props: {
-    project: {
-      type: Object,
-    },
-    isOpen: {
-      type: Boolean,
-    },
-    index: {
-      type: Number,
-    },
+    project: Object,
+    isOpen: Boolean,
+    phantom: Boolean,
+    reference: [Object, Array],
+    index: Number,
   },
   data() {
     return {
@@ -100,18 +81,25 @@ export default {
       isLoaded: false,
       fadedIn: false,
       offset: null,
-      vOffset: 'nothing',
+      description: null,
+      gallery: null,
+      isPlaying: false
     }
   },
   computed: {
     ...mapGetters({
       filter: 'filter',
+      experimental: 'getExperimental',
     }),
+    offsetTop() {
+      return this.$el ? this.$el.offsetTop : this.element
+    },
     projectSubtitle() {
       const details = [
-        this.project.field?.genre.name,
-        this.project.field?.details.find((e) => e.label.toLowerCase().includes('year'))?.value,
-        // this.project.field?.details.find(e => e.label.toLowerCase().includes('duration'))?.value
+        this.project.field?.genre?.name,
+        this.project.field?.details.length > 0
+          ? this.project.field?.details.find((e) => e.label.toLowerCase().includes('year'))?.value
+          : '',
       ]
       return details
         .filter((e) => e !== null)
@@ -119,15 +107,12 @@ export default {
         .join('<span class="sr-only">,</span><span class="em-space"> </span>')
         .concat('<span class="sr-only">:</span>')
     },
-    idle() {
-      return this.isAppIdle
-    },
     heroIsVideo() {
       return ['vimeo', 'youtube', 'video_local'].includes(this.project.field?.hero?.type)
     },
     headerFestivals() {
       if (!this.project.field?.festivals) return
-      return this.project.field?.festivals.filter((e) => e.show_in_header)
+      return this.project.field.festivals.filter((e) => e.show_in_header)
     },
     aspectRatio() {
       const ratioTmp =
@@ -144,8 +129,8 @@ export default {
         }
         case 'custom': {
           if (
-            !this.project.field?.hero?.custom_ratio.num &&
-            !this.project.field?.hero?.custom_ratio.num
+            !this.project.field?.hero?.custom_ratio.num ||
+            !this.project.field?.hero?.custom_ratio.den
           ) {
             break
           }
@@ -166,40 +151,49 @@ export default {
       // Init
       this.calculateOffset(this.isOpen)
       this.init()
+      this.setupGallery(this.isOpen)
     })
 
     window.addEventListener('resize', _.throttle(this.calculateOffset, 100))
     window.addEventListener('resize', _.throttle(this.initialFadeIn, 100))
     window.addEventListener('scroll', _.throttle(this.initialFadeIn, 30))
+    window.addEventListener('touchmove', _.throttle(this.initialFadeIn, 30))
+
   },
   unmounted() {
     window.removeEventListener('resize', _.throttle(this.calculateOffset, 100))
     window.removeEventListener('resize', _.throttle(this.initialFadeIn, 100))
     window.removeEventListener('scroll', _.throttle(this.initialFadeIn, 30))
-  },
-  watch: {
-    filter() {
-      this.calculateOffset()
-      this.initialFadeIn()
-    },
+    window.removeEventListener('touchmove', _.throttle(this.initialFadeIn, 30))
   },
   methods: {
+    setupGallery(open = true) {
+      if (!open || (this.gallery && this.description)) return
+      const removeElements = (elms) => elms.forEach((el) => el.remove())
+      const content = this.project.content.rendered
+      const div = document.createElement('div')
+      div.innerHTML = content
+      const gallery = div.querySelectorAll('.wp-block-gallery')
+      this.gallery = [...gallery][0]?.outerHTML
+      removeElements(gallery)
+      this.description = div.innerHTML.replace(/<p><\/p>/gi, '').replace(/(<br>\s*)+$/,'')
+    },
     close() {
-      console.log('s')
-      this.$store.commit('changeRoute', '')
+      this.$store.dispatch('changeRoute', null)
       this.$emit('close')
-      window.scrollBy({
-        top: -50,
-        behavior: 'smooth',
-      })
+      // window.scrollBy({
+      //   top: -50,
+      //   behavior: 'smooth',
+      // })
     },
     open(slug) {
-      this.$store.commit('changeRoute', slug)
+      this.setupGallery()
+      this.$store.dispatch('changeRoute', slug)
       this.$emit('open', slug)
     },
     init() {
       const self = this
-      const initialDelay = 100
+      const initialDelay = 200
       const waterfallInterval = 100
       setTimeout(function () {
         self.initialFadeIn()
@@ -213,24 +207,16 @@ export default {
       return rect.top <= window.innerHeight
     },
     calculateOffset(scrollTo = false) {
-      if (this.$refs.projectHeader && this.$refs.projectThumbnail && this.$refs.projectContainer) {
-        const projectHeader = this.$refs.projectHeader.getBoundingClientRect().height
-        const thumbnailHeight = this.$refs.projectThumbnail.getBoundingClientRect().height
-        const projectPadding = projectHeader - thumbnailHeight
-        const projectContainerHeight =
-          this.$refs.projectContainer.getBoundingClientRect().width * this.cinemaScope
-
-        this.offset = (projectContainerHeight + projectPadding) * this.scale * this.index + 200
-        this.vOffset = this.$refs.projectContainer.getBoundingClientRect().top
-
-        if (scrollTo && typeof scrollTo !== 'object') {
-          setTimeout(() => {
-            window.scrollTo({
-              top: this.offset,
-              behavior: 'smooth',
-            })
-          }, 500)
-        }
+      if (process.server || !this.reference) return 0
+      const referenceElement = this.reference[`project-${this.project.slug}`][0]
+      this.offset = referenceElement?.$el.getBoundingClientRect().top + window.scrollY || 0
+      if (scrollTo && typeof scrollTo !== 'object') {
+        setTimeout(() => {
+          window.scrollTo({
+            top: this.offset,
+            behavior: 'smooth',
+          })
+        }, 500)
       }
     },
     reduce(numerator, denominator) {
@@ -240,6 +226,15 @@ export default {
       gcd = gcd(numerator, denominator)
       return [numerator / gcd, denominator / gcd]
     },
+  },
+  watch: {
+    filter() {
+      this.calculateOffset()
+      this.initialFadeIn()
+    },
+    isOpen(value) {
+      this.setupGallery(value)
+    }
   },
 }
 </script>
@@ -251,51 +246,51 @@ export default {
   transition: $slow-02 $productive;
   &.fade {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.9);
     transition: $slow-02 $productive;
-    .clipped {
-      // padding-bottom: 33%;
-    }
   }
   &:not(.active) {
     &:hover {
-      // transform: scale(1.01);
       transition: $moderate-02 $expressive;
-      img,
-      iframe,
-      figure {
-        transition: $slow-01 $expressive;
-        transform: scale(1.02) translateZ(0);
-        will-change: transform;
-      }
     }
     .project-header > * {
       cursor: pointer;
+      &:hover {
+        img,
+        iframe,
+        figure {
+          transition: $slow-01 $expressive;
+          transform: scale(1.02) translateZ(0);
+          will-change: transform;
+        }
+      }
     }
   }
-  &:hover,
-  &.active {
-    .project-header {
-      .title-container {
-        .project-title {
-          opacity: 1;
-          transform: translateY(-0.125em);
-          transition: $moderate-02 $expressive;
-          transition-property: transform opacity;
-        }
-        .project-category {
-          opacity: 0.65;
-          transform: translateY(0);
-          transition: $moderate-02 $expressive;
-          transition-property: transform opacity;
-        }
+  .project-header > *:hover,
+  &.active .project-header > * {
+    .title-container {
+      .project-title {
+        opacity: 1;
+        transform: translateY(-0.125em);
+        transition: $moderate-02 $expressive;
+        transition-property: transform opacity;
+      }
+      .project-category {
+        opacity: 0.65;
+        transform: translateY(0);
+        transition: $moderate-02 $expressive;
+        transition-property: transform opacity;
       }
     }
   }
   &.active {
     @include dynamic-box(margin, $axis: vertical);
+    will-change: margin;
+    transform: translateZ(0);
     .project-header {
       @include dynamic-box(margin, true, horizontal);
+      will-change: margin;
+      transform: translateZ(0);
       transition: $moderate-02 $expressive;
       .content,
       .clipped::after {
@@ -343,7 +338,6 @@ export default {
         top: 0;
         width: 100%;
         height: 100%;
-        background: transparent;
         background: rgba(0, 0, 0, 0.25);
         background: linear-gradient(0deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 50%);
         pointer-events: none;
@@ -407,71 +401,69 @@ export default {
 .project-content {
   line-height: 1.7;
   transition: $slow-01 $productive;
-  transition-delay: $slow-01;
-  transform: scale(1);
   margin: 0 auto;
   max-width: 640px;
   padding-bottom: 50px;
   padding-top: 0 !important;
+  @include dynamic-box(padding, false, horizontal);
+  & > * + * {
+    margin-top: 2rem;
+  }
 
   .expand-enter &,
   .expand-leave-to & {
-    transform: scale(0.9);
-    transition: $slow-01 $productive;
+    opacity: 0;
+    transition-delay: 10000ms;
   }
+
   .project-description {
     font-family: $font-family-serif;
     font-size: 1rem;
-    opacity: 1;
-    box-sizing: content-box;
-    transition: $slow-01 $productive;
     @media screen and (min-width: map-get($breakpoints, medium)) {
       font-size: 1.25rem;
     }
     @media screen and (min-width: map-get($breakpoints, large)) {
       font-size: 1.5rem;
     }
-    .expand-enter-active &,
-    .expand-leave-to & {
-      opacity: 0;
-      transition: $slow-01 $productive;
-    }
     .wp-block-audio {
       margin: 1em 0;
       margin-inline-start: 0;
       margin-inline-end: 0;
     }
-    .alignfull,
-    .alignwide {
-      @include dynamic-box(margin, true, horizontal);
-      img {
-        height: auto;
-      }
+    & > *:first-child {
+      margin-top: 0;
     }
-    .alignfull {
-      @media screen and (min-width: $wide) {
-        margin: 0 calc(-#{$wide} / 2 + 50%);
-        @include dynamic-box(margin, $axis: vertical);
-        width: $wide;
-        max-width: initial;
-      }
-      @media screen and (max-width: $wide - 1px) {
-        margin: 0 calc(-50vw + 50%);
-        @include dynamic-box(margin, $axis: vertical);
-        width: $wide;
-        max-width: 100vw;
-      }
-    }
-    p {
-      &:first-child {
-        margin-top: 0;
-      }
+    & > *:last-child {
+      margin-bottom: 0;
     }
     a {
       color: $primary;
       &:hover {
         text-decoration: underline;
       }
+    }
+  }
+
+  .alignfull,
+  .alignwide {
+    box-sizing: border-box;
+    @include dynamic-box(margin, true, horizontal);
+    img {
+      height: auto;
+    }
+  }
+  .alignfull {
+    @media screen and (min-width: $wide) {
+      margin: 0 calc(-#{$wide} / 2 + 50%);
+      @include dynamic-box(margin, $axis: vertical);
+      width: $wide;
+      max-width: initial;
+    }
+    @media screen and (max-width: $wide - 1px) {
+      margin: 0 calc(-50vw + 50%);
+      @include dynamic-box(margin, $axis: vertical);
+      width: $wide;
+      max-width: 100vw;
     }
   }
   figure {
@@ -481,16 +473,53 @@ export default {
     width: 100%;
   }
 }
-.festivals {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
+.dynamic-container {
+  @include dynamic-box(margin, true, horizontal);
 }
-.project-content {
-  .festivals {
-    margin-top: 2rem;
-    padding: 20px;
+</style>
+<style lang="scss">
+.experimental {
+  .project {
+    .project-header {
+      & > * {
+        border-radius: 10px;
+      }
+    }
+    @media screen and (max-width: $wide) {
+     &.active .project-header {
+        & > * {
+          border-radius: 0;
+          transition-property: all;
+        }
+      }
+    }
+    .project-header:hover,
+    &.active .project-header {
+      .project-category {
+        opacity: 1;
+      }
+    }
+    .project-header {
+      .content {
+        justify-content: flex-start;
+        align-items: center;
+        flex-direction: column-reverse;
+        .title-container {
+          text-align: center;
+          align-self: center;
+          .project-title {
+            text-transform: initial;
+            opacity: 1;
+          }
+        }
+        .festivals {
+          align-items: center !important;
+          flex-direction: row;
+          justify-content: center !important;
+          margin-bottom: auto;
+        }
+      }
+    }
   }
 }
 </style>

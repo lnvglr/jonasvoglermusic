@@ -16,7 +16,7 @@
       <span class="subtitle" v-if="festival.subtitle">{{ festival.subtitle }}</span>
       <span class="year" v-if="festival.year">{{ festival.year }}</span>
     </div>
-    <div v-html="laurel" class="laurel-part" style="transform: scale(-1, 1);"></div>
+    <div v-html="laurel" class="laurel-part" style="transform: scale(-1, 1)"></div>
   </div>
 </template>
 
@@ -36,27 +36,6 @@ export default {
 }
 </script>
 
-<style lang="scss">
-svg {
-  height: 100%;
-}
-svg * {
-  fill: currentColor;
-}
-.content {
-  .festivals {
-    margin: -10px;
-    width: 100%;
-    align-items: flex-end;
-    justify-content: flex-start;
-    flex-direction: column;
-    flex-shrink: 1;
-    text-shadow: 0px 2px 3px rgb(0 0 0 / 40%), 0px 5px 15px rgb(0 0 0 / 70%),
-      0px 10px 20px rgb(0 0 0 / 100%);
-  }
-}
-</style>
-
 <style lang="scss" scoped>
 .festival-container {
   display: flex;
@@ -72,7 +51,6 @@ svg * {
     margin: 0 10px;
     font-size: 1rem;
     line-height: 1.2;
-    // font-weight: bold;
     .placement {
       font-weight: bold;
     }
@@ -84,6 +62,24 @@ svg * {
   .laurel-part {
     display: flex;
     width: 30px;
+    &::v-deep svg {
+      height: 100%;
+      & * {
+        fill: currentColor;
+      }
+    }
+  }
+}
+</style>
+
+<style lang="scss">
+.experimental {
+  .festival-container {
+    .festival {
+      .placement {
+        font-family: var(--font-family-bold);
+      }
+    }
   }
 }
 </style>

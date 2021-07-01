@@ -3,21 +3,24 @@ import api from "@/api";
 // initial state
 export const state = () => ({
   projects: [],
-	open: ''
+	open: null
 });
 
 // getters
 export const getters = {
-  recentProjects: state => limit => {
+  get: state => id => {
+    const field = typeof id === "number" ? "id" : "slug";
+    const project = state.projects.filter(project => project[field] === id);
+    return project[0] || false;
+  },
+  recent: state => limit => {
     if (!limit || !Number.isInteger(limit) || typeof limit == "undefined") {
-      return state.recent;
+      return state.projects;
     }
-    let recent = state.recent;
+    let recent = state.projects;
     return recent.slice(0, limit);
   },
-  allProjects: state => state.all,
-
-  recentProjectsLoaded: state => state.loaded,
+  all: state => state.projects,
   open: state => state.open
 };
 
@@ -38,6 +41,9 @@ export const actions = {
         commit('setProjects', projects);
       }
     );
+  },
+  setProjects({ commit }, projects) {
+    commit('setProjects', projects)
   },
   setOpen({ commit }, slug) {
 		commit('setOpen', slug)
