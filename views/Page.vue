@@ -48,15 +48,9 @@ export default {
     },
   },
   mounted() {
-    this.$ga.page({
-      page: this.$route.params.pageSlug,
-      title: this.page?.title?.rendered,
-      location: window.location.href
-    })
     this.$nextTick(function () {
       const self = this
       setTimeout(function () {
-        // self.initialFadeIn();
         self.fadedIn = true
       }, 1000)
     })
