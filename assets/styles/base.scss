@@ -1,3 +1,10 @@
+:root {
+  --font-family: Gilroy, sans-serif;
+  --font-family-bold: Gilroy, sans-serif;
+  --blur: blur(20px) saturate(1.5);
+  --stroke: 2px;
+  --button-size: 2.5rem;
+}
 html,
 body {
   font-family: $font-family;
@@ -13,6 +20,7 @@ video {
   }
 }
 .wrap {
+	position: relative;
   width: $wide;
   @include dynamic-box();
   max-width: 100%;
@@ -29,7 +37,7 @@ video {
   padding: 0;
   margin: -1px;
   overflow: hidden;
-  clip: rect(0,0,0,0);
+  clip: rect(0, 0, 0, 0);
   border: 0;
 }
 .em-space {
@@ -69,15 +77,15 @@ a {
   background-size: 50px;
   background-repeat: repeat;
   background-position: center;
-	padding-bottom: var(--aspect-ratio);
-	&.bottom {
+  padding-bottom: var(--aspect-ratio);
+  &.bottom {
     -ms-flex-line-pack: end;
     align-content: flex-end;
     background-position: 50% 100%;
     img,
     iframe,
     figure,
-		figure img {
+    figure img {
       object-position: 50% 50%;
     }
   }
@@ -102,12 +110,14 @@ a {
     transition: padding-bottom 500ms cubic-bezier(0.2, 0, 0.5, 1);
   }
   img,
-  figure, figure img {
+  figure,
+  figure img {
     object-fit: cover;
   }
   img,
   iframe,
-  figure, figure img {
+  figure,
+  figure img {
     position: absolute;
     top: 0;
     left: 0;
@@ -131,9 +141,9 @@ a {
   line-height: 1.2;
   &:hover {
     color: $primary;
+    color: var(--primary);
   }
 }
-
 
 .hide-medium-down {
   @media screen and (max-width: map-get($breakpoints, large)) {
