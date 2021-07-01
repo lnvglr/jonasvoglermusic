@@ -1,11 +1,6 @@
 <template>
-  <transition
-    name="expand"
-    @enter="enter"
-    @after-enter="afterEnter"
-    @leave="leave"
-  >
-    <slot/>
+  <transition name="expand" @enter="enter" @after-enter="afterEnter" @leave="leave">
+    <slot />
   </transition>
 </template>
 
@@ -14,7 +9,7 @@ export default {
   name: 'TransitionExpand',
   props: ['scrollReference'],
   methods: {
-    enter (element) {
+    enter(element) {
       const width = getComputedStyle(element).width
 
       element.style.width = width
@@ -30,7 +25,7 @@ export default {
       element.style.height = 0
 
       // Force repaint to make sure the
-			// animation is triggered correctly.
+      // animation is triggered correctly.
       getComputedStyle(element).height // eslint-disable-line no-unused-expressions
 
       // Trigger the animation.
@@ -41,15 +36,16 @@ export default {
       requestAnimationFrame(() => {
         element.style.height = height
       })
+
       window.scrollTo({
         top: this.scrollReference,
-        behavior: 'smooth'
+        behavior: 'smooth',
       })
     },
-    afterEnter (element) {
+    afterEnter(element) {
       element.style.height = 'auto'
     },
-    leave (element) {
+    leave(element) {
       const height = getComputedStyle(element).height
 
       element.style.height = height
@@ -61,16 +57,30 @@ export default {
       requestAnimationFrame(() => {
         element.style.height = 0
       })
-    }
-  }
+    },
+  },
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 * {
   will-change: height;
   transform: translateZ(0);
   backface-visibility: hidden;
   perspective: 1000px;
+}
+
+.expand-enter-active,
+.expand-leave-active {
+  transition: $slow-02 $expressive;
+  overflow: hidden;
+}
+
+.expand-enter,
+.expand-leave-to {
+  height: 0;
+  opacity: 0;
+  transform: scale(0.9);
+  overflow: hidden;
 }
 </style>

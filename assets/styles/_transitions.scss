@@ -17,19 +17,6 @@ $expressive: cubic-bezier(.5,0,.2,1);
 
 
 
-.expand-enter-active,
-.expand-leave-active {
-  transition: $slow-02 $expressive;
-  overflow: hidden;
-}
-
-.expand-enter,
-.expand-leave-to {
-  height: 0;
-  transform: scale(0.99);
-  overflow: hidden;
-}
-
 
 .slide-in-enter-active,
 .slide-in-leave-active {
@@ -66,7 +53,7 @@ $expressive: cubic-bezier(.5,0,.2,1);
 .fade-list-enter-from,
 .fade-list-leave-to {
   opacity: 0;
-  transform: scale(0.5);
+  transform: scale(0.9);
 }
 
 .fade-list-leave-active {
