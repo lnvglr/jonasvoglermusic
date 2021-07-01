@@ -15,32 +15,32 @@ $dynamic-relation: (
   }
   @return $new-list;
 }
-/// Computes an dynamic padding box.
+/// Computes a dynamic padding box.
 ///
-/// @param {string} $edge
+/// @param {string} $box
 ///   Padding or Margin.
 /// @param {boolean} $negative
 ///   If negative or not.
 /// @return {string} $axis
 ///   both, vertical or horizontal.
 
-@mixin dynamic-box( $edge: padding, $negative: false, $axis: both ) {
+@mixin dynamic-box( $box: padding, $negative: false, $axis: both ) {
   $multiplier: if($negative, -1, 1);
-  @each $breakpoint, $edge-size in $dynamic-relation {
+  @each $breakpoint, $box-size in $dynamic-relation {
     @include breakpoint($breakpoint) {
       @if $axis == both {
-        #{$edge}: multiply-list(map-get($padding-sizes, $edge-size), $multiplier);
+        #{$box}: multiply-list(map-get($padding-sizes, $box-size), $multiplier);
       }
       @else if $axis == vertical {
-        #{$edge}-top: multiply-list(extract-from-compact(map-get($padding-sizes, $edge-size), top), $multiplier);
-        #{$edge}-bottom: multiply-list(extract-from-compact(map-get($padding-sizes, $edge-size), bottom), $multiplier);
+        #{$box}-top: multiply-list(extract-from-compact(map-get($padding-sizes, $box-size), top), $multiplier);
+        #{$box}-bottom: multiply-list(extract-from-compact(map-get($padding-sizes, $box-size), bottom), $multiplier);
       }
       @else if $axis == horizontal {
-        #{$edge}-left: multiply-list(extract-from-compact(map-get($padding-sizes, $edge-size), left), $multiplier);
-        #{$edge}-right: multiply-list(extract-from-compact(map-get($padding-sizes, $edge-size), right), $multiplier);
+        #{$box}-left: multiply-list(extract-from-compact(map-get($padding-sizes, $box-size), left), $multiplier);
+        #{$box}-right: multiply-list(extract-from-compact(map-get($padding-sizes, $box-size), right), $multiplier);
         @if $negative {
-          max-width: calc(100% + (#{extract-from-compact(map-get($padding-sizes, $edge-size), left)} * 2));
-          width: calc(100% + (#{extract-from-compact(map-get($padding-sizes, $edge-size), left)} * 2));
+          max-width: calc(100% + (#{extract-from-compact(map-get($padding-sizes, $box-size), left)} * 2));
+          width: calc(100% + (#{extract-from-compact(map-get($padding-sizes, $box-size), left)} * 2));
         }
       }
     }
