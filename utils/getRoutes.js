@@ -1,8 +1,7 @@
 // utils/getRoutes.js
-const axios = require("axios");
+import axios from "axios"
 
-module.exports = async function getAppRoutes() {
-  const base = "https://api.jonasvoglermusic.de/wp-json/wp/v2/";
+export async function getRoutes(base) {
   const { data: projects } = await axios.get(
     base + "posts?filter[orderby]=date&order=asc&per_page=100"
   );

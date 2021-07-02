@@ -4,5 +4,4 @@ Vue.prototype.$projectRoute = {
   path: "/project/",
   fullPath: "/",
 };
-Vue.prototype.$apiBasePath = 'https://api.jonasvoglermusic.de/wp-json/wp/v2/'
 

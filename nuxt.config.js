@@ -1,7 +1,9 @@
-const getRoutes = require("./utils/getRoutes.js");
+import { getRoutes } from "./utils/getRoutes.js"
 const fs = require("fs");
 const packageJson = fs.readFileSync("./package.json");
 const version = JSON.parse(packageJson).version || 0;
+const apiBase = "https://api.jonasvoglermusic.com/wp-json/wp/v2/"
+const host = "https://jonasvoglermusic.com"
 
 module.exports = {
   // Target: https://go.nuxtjs.dev/config-target
@@ -9,14 +11,14 @@ module.exports = {
   rootDir: process.cwd(),
   env: {
     GOOGLE_ANALYTICS_ID: "G-VD3PRV9QE9",
-    API_BASE_PATH: "https://api.jonasvoglermusic.de/wp-json/wp/v2/",
-    HOST_NAME: "https://jonasvoglermusic.com",
+    API_BASE_PATH: apiBase,
+    HOST_NAME: host,
     PACKAGE_VERSION: version
   },
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: "Jonas Vogler Music",
+    title: "Jonas Vogler",
     htmlAttrs: {
       lang: "en"
     },
@@ -97,10 +99,10 @@ module.exports = {
 
   // Sitemap
   sitemap: {
-    hostname: process.env.HOST_NAME,
+    hostname: host,
     gzip: true,
     routes() {
-      return getRoutes();
+      return getRoutes(apiBase);
     },
     defaults: {
       changefreq: "weekly",
