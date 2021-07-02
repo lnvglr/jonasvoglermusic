@@ -26,7 +26,7 @@
             <span v-if="projectSubtitle" class="project-category" v-html="projectSubtitle"></span>
             <span class="project-title">{{ project.title.rendered }}</span>
           </component>
-          <FestivalContainer :festivals="headerFestivals" class="hide-medium-down"/>
+          <FestivalContainer :festivals="headerFestivals" class="hide-medium-down" :small="true" />
         </div>
         <ProjectHero class="hero" :open="isOpen" :project="project" @playing="e => isPlaying = e" />
       </div>
@@ -38,7 +38,7 @@
           <ProjectDetails :details="project.field.details" />
           <FestivalContainer :festivals="project.field.festivals" class="alignfull" />
           <div v-html="gallery" class="project-gallery"></div>
-          <SocialSharing :project="project" />
+          <!-- <SocialSharing :project="project" /> -->
         </div>
       </div>
     </transition-expand>
@@ -265,6 +265,21 @@ export default {
         }
       }
     }
+    .festival-container {
+      opacity: 0;
+      transition: $slow-01 $expressive;
+      .laurel-part {
+        transition: $slow-02 $expressive;
+      }
+      .laurel-part:first-child {
+        transform: translateY(0.5em) rotate(-15deg);
+        transform-origin: 50% 50%;
+      }
+      .laurel-part:last-child {
+        transform: translateY(0.5em) rotate(15deg) scale(-1, 1) !important;
+        transform-origin: 50% 50%;
+      }
+    }
   }
   .project-header > *:hover,
   &.active .project-header > * {
@@ -280,6 +295,19 @@ export default {
         transform: translateY(0);
         transition: $moderate-02 $expressive;
         transition-property: transform opacity;
+      }
+    }
+    .festival-container {
+      opacity: 1;
+      transform: translateY(-0.5rem);
+      transition: $slow-02 $expressive $fast-02;
+      .laurel-part:first-child {
+        transform: translateY(0) rotate(0);
+        transition: $extraslow-01 $expressive $fast-01;
+      }
+      .laurel-part:last-child {
+        transform: translateY(0) rotate(0deg) scale(-1, 1) !important;
+        transition: $extraslow-01 $expressive $fast-01;
       }
     }
   }
@@ -516,7 +544,7 @@ export default {
           align-items: center !important;
           flex-direction: row;
           justify-content: center !important;
-          margin-bottom: auto;
+          margin-bottom: 1rem;
         }
       }
     }

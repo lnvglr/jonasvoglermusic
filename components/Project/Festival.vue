@@ -1,5 +1,5 @@
 <template>
-  <div class="festival-container">
+  <div class="festival-container" :class="{small}">
     <div v-html="laurel" class="laurel-part"></div>
     <div class="festival" v-if="festival.placement">
       <span class="placement">{{ festival.placement }}</span>
@@ -25,6 +25,10 @@ export default {
   name: 'Details',
   props: {
     festival: Object,
+    small: {
+      type: Boolean,
+      default: false
+    }
   },
   computed: {
     laurel() {
@@ -61,12 +65,27 @@ export default {
   }
   .laurel-part {
     display: flex;
-    width: 30px;
+    width: 2rem;
     &::v-deep svg {
       height: 100%;
       & * {
         fill: currentColor;
       }
+    }
+  }
+  &.small {
+    .festival {
+      line-height: 1;
+      .title, .subtitle, .placement {
+        font-size: 0.75rem;
+      }
+      .category,
+      .year {
+        display: none
+      }
+    }
+    .laurel-part {
+      width: 1.25rem;
     }
   }
 }
