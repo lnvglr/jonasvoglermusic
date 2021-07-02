@@ -33,6 +33,9 @@ export default {
       openProject: 'project/open',
     }),
   },
+  mounted() {
+    if (this.projects) this.setIndex(this.projects, this.openProject)
+  },
   methods: {
     openProjectByIndex(index) {
       const slug = this.projects[index] ? this.projects[index].slug : null
@@ -40,16 +43,19 @@ export default {
     },
     title(index) {
       return this.projects[index]?.title.rendered
+    },
+    setIndex(projects, open) {
+      this.currentIndex = projects.indexOf(
+        projects.find((e) => e.slug === open)
+      )
     }
   },
-  mounted() {
-    this.currentIndex = this.projects.indexOf(
-      this.projects.find((e) => e.slug === this.openProject)
-    )
-  },
   watch: {
+    projects(projects) {
+      this.setIndex(projects, this.openProject)
+    },
     openProject(slug) {
-      this.currentIndex = this.projects.indexOf(this.projects.find((e) => e.slug === slug))
+      this.setIndex(this.projects, slug)
     },
   },
 }
@@ -80,9 +86,9 @@ nav {
     color: $dark-02;
     &::before,
     &::after {
+      content: '';
       --translate-stroke: 10;
       --rotate-stroke: 45deg;
-      content: '';
       will-change: opacity, transform;
       backface-visibility: hidden;
       perspective: 1000px;

@@ -1,6 +1,8 @@
 <template>
   <div style="position: relative">
-    <transition name="fade"><NavigateProjects v-if="openProject" :projects="filteredProjects" /></transition>
+    <transition name="fade"
+      ><NavigateProjects v-if="openProject" :projects="filteredProjects"
+    /></transition>
     <FilterPills :items="filterElements" label="slug" value="name" class="filter-container" />
     <transition-group tag="div" name="fade-list" class="projects">
       <Project
@@ -132,9 +134,16 @@ export default {
   },
   async asyncData({ $axios, params, req, store }) {
     // called every time before loading the component
-    const { data: projects } = await $axios.get(
-      process.env.API_BASE_PATH + 'posts?filter[orderby]=date&order=asc&per_page=100'
+    let { data: projects } = await $axios.get(
+      process.env.API_BASE_PATH + 'posts?order=asc&per_page=100'
     )
+    projects = projects
+      .sort((a, b) => (a.field.menu_order > b.field.menu_order ? 1 : -1))
+      .map((e) => {
+        e.link = e.link.replace('https://api.', 'https://')
+        return e
+      })
+
     const url = process.server ? req.url : null
     const slug = url ? url.split('/project/')[1]?.split('?')[0] : params.projectSlug
     const structuredData = {
