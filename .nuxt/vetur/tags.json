@@ -1,0 +1,74 @@
+{
+  "LayoutFooter": {
+    "description": "Auto imported from components/Layout/Footer.vue"
+  },
+  "LayoutHeader": {
+    "description": "Auto imported from components/Layout/Header.vue"
+  },
+  "LayoutLogo": {
+    "description": "Auto imported from components/Layout/Logo.vue"
+  },
+  "ProjectFestival": {
+    "description": "Auto imported from components/Project/Festival.vue"
+  },
+  "ProjectFestivalContainer": {
+    "description": "Auto imported from components/Project/FestivalContainer.vue"
+  },
+  "ProjectNavigateProjects": {
+    "description": "Auto imported from components/Project/NavigateProjects.vue"
+  },
+  "Project": {
+    "description": "Auto imported from components/Project/Project.vue"
+  },
+  "ProjectDetails": {
+    "description": "Auto imported from components/Project/ProjectDetails.vue"
+  },
+  "ProjectHeader": {
+    "description": "Auto imported from components/Project/ProjectHeader.vue"
+  },
+  "ProjectHero": {
+    "description": "Auto imported from components/Project/ProjectHero.vue"
+  },
+  "ProjectPhantom": {
+    "description": "Auto imported from components/Project/ProjectPhantom.vue"
+  },
+  "PageAbout": {
+    "description": "Auto imported from components/Page/PageAbout.vue"
+  },
+  "PageDefault": {
+    "description": "Auto imported from components/Page/PageDefault.vue"
+  },
+  "PageTable": {
+    "description": "Auto imported from components/Page/PageTable.vue"
+  },
+  "PartialsCloseButton": {
+    "description": "Auto imported from components/partials/CloseButton.vue"
+  },
+  "PartialsCookieNotice": {
+    "description": "Auto imported from components/partials/CookieNotice.vue"
+  },
+  "PartialsEmailAddress": {
+    "description": "Auto imported from components/partials/EmailAddress.vue"
+  },
+  "PartialsExperimentalButton": {
+    "description": "Auto imported from components/partials/ExperimentalButton.vue"
+  },
+  "PartialsFilterPills": {
+    "description": "Auto imported from components/partials/FilterPills.vue"
+  },
+  "PartialsLazyImage": {
+    "description": "Auto imported from components/partials/LazyImage.vue"
+  },
+  "PartialsShareButton": {
+    "description": "Auto imported from components/partials/ShareButton.vue"
+  },
+  "PartialsSocialMediaLinks": {
+    "description": "Auto imported from components/partials/SocialMediaLinks.vue"
+  },
+  "PartialsSocialSharing": {
+    "description": "Auto imported from components/partials/SocialSharing.vue"
+  },
+  "PartialsTransitionExpand": {
+    "description": "Auto imported from components/partials/TransitionExpand.vue"
+  }
+}

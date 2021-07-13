@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Home",
+    "path": "/",
+    "component": "/Users/Leon/Library/Mobile Documents/com~apple~CloudDocs/Arbeit/Jonas/jonasvogler/views/RecentProjects.vue",
+    "url": "/"
+  },
+  {
+    "name": "Project",
+    "path": "/project/:projectSlug",
+    "component": "/Users/Leon/Library/Mobile Documents/com~apple~CloudDocs/Arbeit/Jonas/jonasvogler/views/RecentProjects.vue"
+  },
+  {
+    "name": "Page",
+    "path": "/:pageSlug",
+    "component": "/Users/Leon/Library/Mobile Documents/com~apple~CloudDocs/Arbeit/Jonas/jonasvogler/views/Page.vue"
+  },
+  {
+    "name": "Not Found",
+    "path": "*",
+    "component": "/Users/Leon/Library/Mobile Documents/com~apple~CloudDocs/Arbeit/Jonas/jonasvogler/views/404.vue"
+  }
+]
