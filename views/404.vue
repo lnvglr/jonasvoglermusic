@@ -2,7 +2,7 @@
   <div class="wrap narrow">
     <h1 class="not-found" v-html="notFoundTransformed"></h1>
     <h2 v-html="congratsTransformed"></h2>
-    <p>The page you're looking for does not exists.</p>
+    <p>This is not the page you're looking for.</p>
   </div>
 </template>
 
