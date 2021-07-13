@@ -2,7 +2,7 @@
   <div class="wrap narrow">
     <h1 class="not-found" v-html="notFoundTransformed"></h1>
     <h2 v-html="congratsTransformed"></h2>
-    <p>The page you're looking for no longer exists. It may have never existed in the first place. Look up or down to navigate, where you want to go.</p>
+    <p>The page you're looking for does not exists.</p>
   </div>
 </template>
 
