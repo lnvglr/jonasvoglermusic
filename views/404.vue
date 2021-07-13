@@ -20,15 +20,15 @@ export default {
   },
   mounted () {
     this.$nextTick(function () {
-      this.introductionFadeIn()
+      this.notFoundFadeIn()
     })
   },
   methods: {
-    introductionFadeIn () {
+    notFoundFadeIn() {
       this.notFoundTransformed = this.transformLetters(this.notFound, true)
       this.congratsTransformed = this.transformWords(this.congrats)
     },
-    transformLetters (text, delay = false) {
+    transformLetters(text, delay = false) {
       const scopeId = this.$options._scopeId
       const duration = 300
       const words = text.split(' ')
@@ -46,7 +46,7 @@ export default {
       })
       return transformedText
     },
-    transformWords (text, delay = false) {
+    transformWords(text, delay = false) {
       const scopeId = this.$options._scopeId
       const words = text.split(' ')
       let transformedText = ''
@@ -61,7 +61,7 @@ export default {
   },
   watch: {
     notFound (val) {
-      this.introductionFadeIn()
+      this.notFoundFadeIn()
     }
   }
 }
