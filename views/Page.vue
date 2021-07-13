@@ -1,17 +1,13 @@
 <template>
-<div>
-  <transition name="fade" mode="out-in">
-    <component
-      ref="page"
-      class="page"
-      :class="{
-        fade: !this.fadedIn,
-      }"
-      :page="this.page"
-      :is="this.template"
-    />
-  </transition>
-</div>
+  <component
+    ref="page"
+    class="page"
+    :class="{
+      fade: !this.fadedIn,
+    }"
+    :page="this.page"
+    :is="this.template"
+  />
 </template>
 
 <script>
@@ -22,8 +18,11 @@ import PageTable from '@/components/Page/PageTable.vue'
 import PageAbout from '@/components/Page/PageAbout.vue'
 import NotFound from '@/views/404.vue'
 
+import CookieNotice from '@/components/partials/CookieNotice.vue'
+
 export default {
   name: 'Page',
+  transition: 'fade',
   components: {
     PageDefault,
     PageTable,
@@ -39,9 +38,13 @@ export default {
     ...mapGetters({
       getPage: 'pages/getPage',
       bloginfo: 'getBloginfo',
+      cookieConsent: 'getCookieConsent',
     }),
     page() {
-      return this.getPage(this.$route.params.pageSlug)
+      const pageObject = JSON.parse(JSON.stringify(this.getPage(this.$route.params.pageSlug)))
+      if (this.cookieConsent) return pageObject
+      pageObject.content.rendered = CookieNotice.methods.blockedIframes(pageObject.content.rendered)
+      return pageObject
     },
     template() {
       return this.page ? 'page-' + this.page.field.template : 'not-found'
@@ -72,51 +75,63 @@ export default {
   },
   metaInfo() {
     const div = document.createElement('div')
-      div.innerHTML = this.page ? this.page.content.rendered?.replace(/<[^>]*>?/gm, '') : ''
-      const title = this.page
-        ? this.page.title.rendered + ' – ' + this.bloginfo.name
-        : this.bloginfo.name
-      const description = this.page
+    div.innerHTML = this.page ? this.page.content.rendered?.replace(/<[^>]*>?/gm, '') : ''
+    const title = this.page
+      ? this.page.title.rendered + ' – ' + this.bloginfo.name
+      : this.bloginfo.name
+    const description = this.page
+      ? this.page.field.introduction
         ? this.page.field.introduction
-          ? this.page.field.introduction
-          : this.page.content.rendered?.replace(/<[^>]*>?/gm, '')
-        : this.bloginfo.description
-      return {
-        title: title,
-        meta: [
-          {
-            name: 'description',
-            content: description,
-          },
-          {
-            property: 'og:title',
-            content: title,
-          },
-          {
-            property: 'og:image',
-            content: this.page ? this.page.thumbnail?.medium?.[0] : this.bloginfo.favicon,
-          },
-          {
-            property: 'og:url',
-            content: this.page ? this.page.link : this.bloginfo.url,
-          },
-        ],
-      }
+        : this.page.content.rendered?.replace(/<[^>]*>?/gm, '')
+      : this.bloginfo.description
+    return {
+      title: title,
+      meta: [
+        {
+          name: 'description',
+          content: description,
+        },
+        {
+          property: 'og:title',
+          content: title,
+        },
+        {
+          property: 'og:image',
+          content: this.page ? this.page.thumbnail?.medium?.[0] : this.bloginfo.favicon,
+        },
+        {
+          property: 'og:url',
+          content: this.page ? this.page.link : this.bloginfo.url,
+        },
+      ],
+    }
   },
 }
 </script>
 
 <style lang="scss">
+// .slide-bottom-enter-active,
+// .slide-bottom-leave-active {
+//   transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
+// }
+// .slide-bottom-enter,
+// .slide-bottom-leave-to {
+//   opacity: 0;
+//   transform: translate3d(0, 15px, 0);
+// }
 .page {
   margin-bottom: 25px;
   @media screen and (min-width: map-get($breakpoints, large)) {
     margin-bottom: 50px;
   }
   .page-content {
-    * {
-      transition: $extraslow-01 $expressive;
-      position: relative;
-      top: 0;
+
+    hr {
+      width: 100px;
+      margin: 0 auto;
+      @include dynamic-box(margin, $axis: vertical);
+      border: none;
+      border-bottom: var(--stroke) solid $light-02;
     }
     .hidden {
       top: 1em;
@@ -170,6 +185,9 @@ export default {
       -webkit-hyphens: auto;
       hyphens: auto;
     }
+    iframe {
+      max-width: 100%;
+    }
     @media screen and (min-width: map-get($breakpoints, medium)) {
       h1 {
         font-size: 2.5rem;
@@ -183,7 +201,7 @@ export default {
       ul,
       ol,
       p {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
       }
     }
   }

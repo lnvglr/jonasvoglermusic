@@ -19,8 +19,8 @@ export default {
 </script>
 
 <style lang="scss">
-// .project .project-header {
-//   width: 100%;
-//   @include dynamic-box($axis: vertical);
-// }
+.project-header {
+  width: 100%;
+  @include dynamic-box($axis: vertical);
+}
 </style>

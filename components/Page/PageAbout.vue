@@ -1,7 +1,7 @@
 <template>
   <div :class="page.slug + ' page-about'">
     <div class="page-body right-section">
-      <p class="page-introduction" v-if="page.field.introduction" v-html="introduction"></p>
+      <p class="page-introduction" v-if="page.field.introduction && !experimental" v-html="introduction"></p>
       <div v-if="page.content" class="page-content" v-html="page.content.rendered"></div>
     </div>
     <div class="left-section">
@@ -24,6 +24,8 @@ import SocialMedia from '@/components/partials/SocialMediaLinks.vue'
 import Email from '@/components/partials/EmailAddress.vue'
 import TransitionExpand from '@/components/partials/TransitionExpand.vue'
 
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'PageAbout',
   components: {
@@ -40,6 +42,12 @@ export default {
       introduction: this.page.field.introduction,
       content: this.page.content.rendered
     }
+  },
+  computed: {
+    ...mapGetters({
+      pages: 'pages/getPages',
+      experimental: 'getExperimental'
+    }),
   },
   mounted () {
     this.$nextTick(function () {

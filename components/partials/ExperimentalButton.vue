@@ -32,12 +32,6 @@ export default {
 }
 </script>
 
-
-<style lang="scss">
-.experimental {
-  --primary: rgb(237,106,101);
-}
-</style>
 <style lang="scss" scoped>
 .button {
   background: #ffffff80;

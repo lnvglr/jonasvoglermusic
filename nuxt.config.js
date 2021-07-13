@@ -1,16 +1,15 @@
-import { getRoutes } from "./utils/getRoutes.js"
+const { getRoutes } = require("./utils/getRoutes.js");
 const fs = require("fs");
 const packageJson = fs.readFileSync("./package.json");
 const version = JSON.parse(packageJson).version || 0;
-const apiBase = "https://api.jonasvoglermusic.com/wp-json/wp/v2/"
-const host = "https://jonasvoglermusic.com"
+const apiBase = "https://api.jonasvoglermusic.com/wp-json/wp/v2/";
+const host = "https://jonasvoglermusic.com";
 
 module.exports = {
   // Target: https://go.nuxtjs.dev/config-target
   target: "server",
   rootDir: process.cwd(),
   env: {
-    GOOGLE_ANALYTICS_ID: "G-VD3PRV9QE9",
     API_BASE_PATH: apiBase,
     HOST_NAME: host,
     PACKAGE_VERSION: version
@@ -85,11 +84,7 @@ module.exports = {
   buildModules: [],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [
-    "@nuxtjs/axios",
-    "@nuxtjs/style-resources",
-    "@nuxtjs/sitemap"
-  ],
+  modules: ["@nuxtjs/axios", "@nuxtjs/style-resources", "@nuxtjs/sitemap"],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {

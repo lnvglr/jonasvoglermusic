@@ -24,6 +24,7 @@ export default {
   computed: {
     ...mapGetters({
       experimental: 'getExperimental',
+      projectOpen: 'project/open',
     }),
   },
   mounted() {
@@ -51,7 +52,8 @@ export default {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  transition: opacity $extraslow-02;
+  transition: opacity, background-color, color $extraslow-02;
+	background-color: transparent;
   &:not(.show) {
     opacity: 0;
   }
@@ -59,10 +61,15 @@ export default {
     flex: 1;
     padding-top: 0;
   }
+	// &.dark {
+	// 	background-color: #000;
+	// 	color: $white;
+	//   transition: opacity, background-color, color $extraslow-02;
+	// }
 }
 .experimental {
-  --font-family: Gramatika-Regular, Gilroy, sans-serif;
-  --font-family-bold: Gramatika-Bold, Gilroy, sans-serif;
+  --font-family: Raleway, Work Sans, Gramatika-Regular, Gilroy, sans-serif;
+  --font-family-bold: Raleway, Work Sans, Gramatika-Bold, Gilroy, sans-serif;
   font-family: var(--font-family);
   &:after {
     // content: '';

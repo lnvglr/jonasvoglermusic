@@ -216,6 +216,7 @@ export default {
       padding: 1rem;
       color: $light-03;
       fill: currentColor;
+      box-sizing: content-box;
       &:hover {
         color: $secondary;
       }

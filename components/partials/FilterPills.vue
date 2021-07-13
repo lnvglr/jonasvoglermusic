@@ -5,9 +5,7 @@
       :key="i"
       :class="{ active: filter.includes(item[label]) }"
       @click="toggleFilter(item[label])"
-    >
-      {{ item[value] }}
-    </li>
+    >{{ item[value] }}</li>
   </ul>
 </template>
 
@@ -43,8 +41,8 @@ export default {
   padding: 0;
   @include dynamic-box($axis: horizontal);
   @include dynamic-box(margin, true, horizontal);
-  max-width: 100% !important;
-  width: 100% !important;
+  // max-width: 100% !important;
+  // width: 100% !important;
 
   // $box: padding, $negative: false, $axis: both
 
@@ -56,6 +54,9 @@ export default {
     border-radius: $border-radius-small;
     transition: $fast-02 $productive;
     letter-spacing: $letter-spacing;
+    &:first-child {
+      margin-left: -1rem;
+    }
     & + * {
       margin-left: 0.5rem;
     }

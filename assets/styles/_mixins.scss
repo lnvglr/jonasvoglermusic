@@ -1,12 +1,10 @@
-
 @import "./_foundation-boilerplate.scss";
 
 $dynamic-relation: (
   small: large,
   medium: xlarge,
-  large: xxlarge,
+  large: xxlarge
 );
-
 
 @function multiply-list($list, $multiplier) {
   $new-list: ();
@@ -21,26 +19,58 @@ $dynamic-relation: (
 ///   Padding or Margin.
 /// @param {boolean} $negative
 ///   If negative or not.
+/// @param {string} $axis
+///   vertical, horizontal or both
+/// @param {boolean} $width
+///   If negative, correct width.
 /// @return {string} $axis
 ///   both, vertical or horizontal.
 
-@mixin dynamic-box( $box: padding, $negative: false, $axis: both ) {
+@mixin dynamic-box($box: padding, $negative: false, $axis: both, $width: true) {
   $multiplier: if($negative, -1, 1);
   @each $breakpoint, $box-size in $dynamic-relation {
     @include breakpoint($breakpoint) {
       @if $axis == both {
         #{$box}: multiply-list(map-get($padding-sizes, $box-size), $multiplier);
-      }
-      @else if $axis == vertical {
-        #{$box}-top: multiply-list(extract-from-compact(map-get($padding-sizes, $box-size), top), $multiplier);
-        #{$box}-bottom: multiply-list(extract-from-compact(map-get($padding-sizes, $box-size), bottom), $multiplier);
-      }
-      @else if $axis == horizontal {
-        #{$box}-left: multiply-list(extract-from-compact(map-get($padding-sizes, $box-size), left), $multiplier);
-        #{$box}-right: multiply-list(extract-from-compact(map-get($padding-sizes, $box-size), right), $multiplier);
-        @if $negative {
-          max-width: calc(100% + (#{extract-from-compact(map-get($padding-sizes, $box-size), left)} * 2));
-          width: calc(100% + (#{extract-from-compact(map-get($padding-sizes, $box-size), left)} * 2));
+      } @else if $axis == vertical {
+        #{$box}-top: multiply-list(
+          extract-from-compact(map-get($padding-sizes, $box-size), top),
+          $multiplier
+        );
+        #{$box}-bottom: multiply-list(
+          extract-from-compact(map-get($padding-sizes, $box-size), bottom),
+          $multiplier
+        );
+      } @else if $axis == horizontal {
+        #{$box}-left: multiply-list(
+          extract-from-compact(map-get($padding-sizes, $box-size), left),
+          $multiplier
+        );
+        #{$box}-right: multiply-list(
+          extract-from-compact(map-get($padding-sizes, $box-size), right),
+          $multiplier
+        );
+        @if $negative and $width {
+          max-width: calc(
+            100% +
+              (
+                #{extract-from-compact(
+                    map-get($padding-sizes, $box-size),
+                    left
+                  )} *
+                  2
+              )
+          );
+          width: calc(
+            100% +
+              (
+                #{extract-from-compact(
+                    map-get($padding-sizes, $box-size),
+                    left
+                  )} *
+                  2
+              )
+          );
         }
       }
     }

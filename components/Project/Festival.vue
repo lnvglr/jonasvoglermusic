@@ -1,5 +1,5 @@
 <template>
-  <div class="festival-container" :class="{small}">
+  <div class="festival-container" :class="{ small, active }" :style="`--delay: ${delay}ms`">
     <div v-html="laurel" class="laurel-part"></div>
     <div class="festival" v-if="festival.placement">
       <span class="placement">{{ festival.placement }}</span>
@@ -16,7 +16,7 @@
       <span class="subtitle" v-if="festival.subtitle">{{ festival.subtitle }}</span>
       <span class="year" v-if="festival.year">{{ festival.year }}</span>
     </div>
-    <div v-html="laurel" class="laurel-part" style="transform: scale(-1, 1)"></div>
+    <div v-html="laurel" class="laurel-part mirror"></div>
   </div>
 </template>
 
@@ -27,7 +27,15 @@ export default {
     festival: Object,
     small: {
       type: Boolean,
-      default: false
+      default: false,
+    },
+    active: {
+      type: Boolean,
+      default: true,
+    },
+    delay: {
+      type: Number,
+      default: 100
     }
   },
   computed: {
@@ -46,6 +54,9 @@ export default {
   align-items: center;
   margin: 10px;
   letter-spacing: $letter-spacing;
+  opacity: 1;
+  transition: $slow-02 $expressive;
+  transition-delay: var(--delay);
   .festival {
     display: flex;
     flex-direction: column;
@@ -64,8 +75,18 @@ export default {
     }
   }
   .laurel-part {
+    --laurel-translate: 0;
+    --laurel-rotate: 0deg;
+    --laurel-scale: 1, 1;
     display: flex;
-    width: 2rem;
+    width: 1.75rem;
+    transition: $extraslow-01 $expressive;
+    transition-delay: var(--delay);
+    transform: translateY(var(--laurel-translate)) rotate(var(--laurel-rotate))
+      scale(var(--laurel-scale));
+    &.mirror {
+      --laurel-scale: -1, 1;
+    }
     &::v-deep svg {
       height: 100%;
       & * {
@@ -76,16 +97,32 @@ export default {
   &.small {
     .festival {
       line-height: 1;
-      .title, .subtitle, .placement {
+      .title,
+      .subtitle,
+      .placement {
         font-size: 0.75rem;
       }
       .category,
       .year {
-        display: none
+        display: none;
       }
     }
     .laurel-part {
       width: 1.25rem;
+    }
+  }
+  &:not(.active) {
+    opacity: 0;
+    transition: $slow-01 $expressive;
+    transform: translateY(0.5rem);
+    .laurel-part {
+      --laurel-translate: 0.5em;
+    }
+    .laurel-part:first-child {
+      --laurel-rotate: -15deg;
+    }
+    .laurel-part:last-child {
+      --laurel-rotate: 15deg;
     }
   }
 }

@@ -10,7 +10,7 @@
     />
     <transition name="fade" mode="out-in">
       <div ref="hero-container" v-if="open && hero.type">
-        <client-only v-if="hero.type === 'vimeo'">
+        <client-only v-if="hero.type === 'vimeo' && cookieConsent">
           <vimeo
             :class="hero.type"
             :video-id="hero.data"
@@ -20,9 +20,11 @@
           ></vimeo>
         </client-only>
         <youtube
-          v-if="hero.type === 'youtube'"
+          v-if="hero.type === 'youtube' && cookieConsent"
+          host="https://www.youtube-nocookie.com"
           :class="hero.type"
           :video-id="hero.data"
+          :player-vars="{rel: 0}"
           ref="video"
           :nocookie="true"
           @playing="playing"
@@ -41,6 +43,7 @@
         <figure v-else-if="hero.type === 'image_link'">
           <img :class="hero.type" :src="hero.data" :alt="project.title.rendered" />
         </figure>
+				<div v-else-if="isExternalVideo && !cookieConsent" class="cookie-consent" v-html="cookieMessage"></div>
       </div>
     </transition>
   </div>
@@ -49,15 +52,17 @@
 <script>
 import { Youtube } from 'vue-youtube'
 import { vueVimeoPlayer } from 'vue-vimeo-player'
+import { mapGetters } from 'vuex'
 
 import LazyImage from '@/components/partials/LazyImage.vue'
+import CookieNotice from '@/components/partials/CookieNotice.vue'
 
 
 export default {
   name: 'Hero',
   props: {
     open: Boolean,
-    project: Object,
+    project: Object
   },
   components: {
     LazyImage,
@@ -76,9 +81,29 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      cookieConsent: 'getCookieConsent',
+    }),
     imageSizes() {
       return this.generateSrcSet()
     },
+    isExternalVideo() {
+      return ['vimeo', 'youtube'].includes(this.hero.type)
+    },
+    cookieMessage() {
+      let url
+      switch (this.hero.type) {
+        case 'youtube':
+          url = `https://www.youtube.com/watch?v=${this.hero.data}`
+          break
+        case 'vimeo':
+          url = `https://vimeo.com/${this.hero.data}`
+          break
+        default:
+          url = this.hero.data
+      }
+      return CookieNotice.methods.blockedCookies(url)
+    }
   },
   mounted() {
     this.$nextTick(function () {

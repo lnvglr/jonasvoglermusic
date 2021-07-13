@@ -1,11 +1,20 @@
 <template>
-  <div v-if="festivals" class="festivals">
-    <Festival v-for="(festival, i) in festivals" :key="i" :festival="festival" :small="small" />
+  <div v-if="festivals" class="festivals" :class="{ active }">
+    <Festival
+      v-for="(festival, i) in festivals"
+      :key="i"
+      :delay="delay(i)"
+      :festival="festival"
+      :small="small"
+      :active="active"
+    />
   </div>
 </template>
 
 <script>
 import Festival from '@/components/Project/Festival.vue'
+import variables from '@/assets/styles/_variableExport.scss'
+
 export default {
   name: 'Details',
   components: {
@@ -15,35 +24,59 @@ export default {
     festivals: [Array, Boolean],
     small: {
       type: Boolean,
-      default: false
+      default: false,
+    },
+    active: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  data() {
+    return {
+      variables
     }
   },
+  methods: {
+    delay(i) {
+      if (!this.festivals) return 100
+      if (!this.variables?.['moderate-01']) return (this.festivals.length - i) * 50
+      const duration = Number(this.variables['moderate-01'])
+      return (duration / this.festivals.length) * (this.festivals.length - i)
+    }
+  }
 }
 </script>
 
-<style lang="scss">
-.festivals {
-  .content & {
-    --shadow: 0px 2px 3px rgb(0 0 0 / 40%), 0px 10px 20px rgb(0 0 0 / 100%);
-    align-items: flex-end !important;
-    justify-content: flex-start !important;
-    margin: -10px;
-    width: 100%;
-    flex-direction: column;
-    flex-shrink: 1;
-    text-shadow: var(--shadow);
-  }
-  .project-content & {
-    margin-top: 2rem;
-    padding: 20px;
-  }
-}
-</style>
 <style lang="scss" scoped>
 .festivals {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+</style>
+
+<style lang="scss">
+#app:not(.experimental) .header-copy {
+  .festivals {
+    display: block;
+    margin: -10px;
+    width: 100%;
+    text-align: right;
+    flex-shrink: 1;
+    .festival-container {
+      display: inline-flex;
+    }
+  }
+}
+.header-copy {
+  .festivals {
+    @media screen and (max-width: 910px) {
+      & > *:nth-child(n + 5) {
+        display: none;
+      }
+    }
+  }
 }
 </style>

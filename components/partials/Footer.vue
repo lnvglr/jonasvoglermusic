@@ -15,21 +15,18 @@
     <small class="version" v-if="version">v{{ version }}</small>
     <ExperimentalButton class="experimental-button" v-if="experimental" />
     <client-only>
-      <cookie-law
-        message="This site uses cookies. If you continue to use the website, we will assume that you have given your consent."
-        :buttonLink="{ name: 'Page', params: { pageSlug: 'privacy-policy' } }"
-        :buttonLinkText="buttonLinkText"
-        theme="custom"
-      ></cookie-law>
+      <CookieNotice />
     </client-only>
   </footer>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+
 import ExperimentalButton from './ExperimentalButton.vue'
+import CookieNotice from './CookieNotice.vue'
 export default {
-  components: { ExperimentalButton },
+  components: { ExperimentalButton, CookieNotice },
   name: 'Footer',
   data() {
     return {
@@ -44,13 +41,7 @@ export default {
     }),
 		experimental() {
       return true
-			// if (process.server) return true
-			// var url = new URL(window.location.href);
-			// return url.searchParams.get("experimental") === 'true'
 		},
-    buttonLinkText() {
-      return this.allPages?.find((page) => page.slug === 'privacy-policy')?.title.rendered
-    },
     date() {
       return new Date(this.bloginfo?.date * 1000).getFullYear()
     },
@@ -112,64 +103,6 @@ export default {
     color: $light-03;
     &.active {
       color: $primary;
-    }
-  }
-}
-</style>
-
-<style lang="scss">
-$primary: $secondary;
-$primary-dark: darken($secondary, 10);
-.Cookie--custom {
-  background-color: white;
-  color: $dark-01;
-  gap: 1em;
-  @include dynamic-box();
-  & > * {
-    margin: 0;
-  }
-  .Cookie__content {
-    display: flex;
-    align-items: center;
-    line-height: 1.2;
-    &:before {
-      content: '🍪';
-      display: block;
-      font-size: 2em;
-      margin-right: 1em;
-    }
-  }
-  .Cookie__buttons {
-    flex-direction: row;
-    flex-wrap: wrap;
-    flex: 1 0 auto;
-    justify-content: flex-end;
-  }
-  .Cookie__button {
-    font-family: $font-family;
-    line-height: 1;
-    white-space: nowrap;
-    font-size: 1em;
-    font-weight: normal;
-    border-radius: $border-radius-small;
-    padding: map-get($padding-sizes, medium);
-    margin: map-get($padding-sizes, small);
-  }
-  a.Cookie__button {
-    background-color: white;
-    color: $primary;
-    border: 1px solid currentColor;
-    &:hover {
-      color: $primary-dark;
-    }
-  }
-  button.Cookie__button {
-    background-color: $primary;
-    color: white;
-    border: 1px solid $primary;
-    &:hover {
-      background-color: $primary-dark;
-      border-color: $primary-dark;
     }
   }
 }

@@ -4,7 +4,9 @@
       <nav v-if="bloginfo">
         <Logo class="logo-wrap" :name="bloginfo.name" :description="bloginfo.description" />
         <ul class="pages">
-          <li class="page-link">
+          <li
+            class="page-link"
+          >
             <NuxtLink
               :to="{ name: 'Home' }"
 		          @click.native="
@@ -53,15 +55,15 @@ header {
     justify-content: space-between;
     align-items: flex-end;
     flex-wrap: wrap;
-    gap: 1em;
+    margin-top: 1rem;
 		.pages {
 			white-space: nowrap;
 			display: flex;
 			list-style: none;
-			margin: -0.5rem;
+			margin: -1rem;
 			padding: 0;
 			li {
-				margin: 0.5rem;
+				margin: 1rem;
 			}
 		}
   }
@@ -72,17 +74,23 @@ header {
   a {
     line-height: 1.2;
   }
+  &.active {
+    color: var(--primary)
+  }
 }
 </style>
 
 <style lang="scss">
 .experimental {
+	header {
   .logo-wrap {
-    text-align: center;
+		display: flex;
     width: 100%;
+    white-space: initial;
+		flex-direction: column;
+    order: 2;
+    margin-top: 2rem;
   }
-  header nav {
-    justify-content: center;
-  }
+}
 }
 </style>

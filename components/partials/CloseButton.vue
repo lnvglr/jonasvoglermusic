@@ -1,5 +1,5 @@
 <template>
-	<div class="close" @click="$emit('click')"></div>
+  <div class="close" @click="$emit('click')"></div>
 </template>
 
 <script>
@@ -9,66 +9,87 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .close {
-    cursor: pointer;
-    color: $white;
-    padding: 5px;
-    margin: 0;
+.close {
+  --shadow-opacity: 0.1;
+  cursor: pointer;
+  color: $white;
+  position: absolute;
+  left: 0;
+  z-index: 300;
+  width: 30px;
+  height: 30px;
+  @include dynamic-box(padding);
+  @include dynamic-box(margin, $axis: vertical);
+  @include dynamic-box(margin, true, horizontal, false);
+  box-sizing: content-box;
+  transition: $moderate-02 $expressive;
+  background: radial-gradient(
+    circle,
+    rgba(0, 0, 0, var(--shadow-opacity)) 0%,
+    rgba(0, 0, 0, calc(var(--shadow-opacity) / 4)) 40%,
+    rgba(0, 0, 0, 0) 60%
+  );
+  transition: $slow-02 $expressive;
+  &,
+  &::before,
+  &::after {
+    will-change: margin, opacity, transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+  &::before,
+  &::after {
+    --translate-stroke: 0, 14px;
+    --rotate-stroke: 45deg;
+    content: '';
+    height: var(--stroke);
+    width: 30px;
     position: absolute;
-    left: 0;
-    width: 30px !important;
-    height: 30px !important;
-    z-index: 300;
-    @include dynamic-box(padding);
-    @include dynamic-box(margin, $axis: vertical);
-    @include dynamic-box(margin, true, horizontal);
-    transition: $moderate-02 $expressive;
-    &,
+    background-color: currentColor;
+    transition: $slow-02 $expressive;
+    transform: translate(var(--translate-stroke)) rotate(var(--rotate-stroke));
+  }
+  &::before {
+    --rotate-stroke: -45deg;
+  }
+  &:hover {
     &::before,
     &::after {
-      will-change: margin, opacity, transform, width;
-      transform: translateZ(0);
-      backface-visibility: hidden;
-      perspective: 1000px;
-    }
-    &::before,
-    &::after {
-      content: '';
-      display: block;
-      height: var(--stroke);
-      width: 30px;
-      position: absolute;
-      background-color: currentColor;
-    }
-    &::before {
-      transform: translate(0, 14px) rotate(-45deg);
-    }
-    &::after {
-      transform: translate(0, 14px) rotate(45deg);
-    }
-    &:hover {
-      color: $light-03;
       transition: $moderate-02 $expressive;
     }
-
-    &.fade-enter-active,
-    &.fade-leave-active {
-      &,
-      &::before,
-      &::after {
-        transition: $moderate-02 $productive;
-        transition-property: transform opacity margin;
-      }
+    &::before {
+      --rotate-stroke: 45deg;
     }
-    &.fade-enter,
-    &.fade-leave-to {
-      margin-left: 0;
-      &::before {
-        transform: translate(0, 7px) rotate(0);
-      }
-      &::after {
-        transform: translate(0, 20px) rotate(0);
-      }
+    &::after {
+      --rotate-stroke: 135deg;
     }
   }
+
+  &.fade-enter-active,
+  &.fade-leave-active {
+    & {
+      transition: $moderate-02 $productive;
+      transition-property: transform opacity margin;
+    }
+    &::before,
+    &::after {
+      transition: transform $slow-02 $productive;
+    }
+  }
+  &.fade-enter,
+  &.fade-leave-to {
+    margin-left: 0;
+    &::before,
+    &::after {
+      --rotate-stroke: -90deg;
+    }
+    &::before {
+      --translate-stroke: 7px, 0;
+    }
+    &::after {
+      --translate-stroke: 21px, 0;
+    }
+  }
+}
 </style>

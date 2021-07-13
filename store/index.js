@@ -3,14 +3,16 @@ import api from "@/api";
 export const state = () => ({
   bloginfo: null,
   filter: [],
-  experimental: false
+  experimental: false,
+  cookieConsent: false
 });
 
 // getters
 export const getters = {
   getBloginfo: state => state.bloginfo,
   filter: state => state.filter,
-  getExperimental: state => state.experimental
+  getExperimental: state => state.experimental,
+  getCookieConsent: state => state.cookieConsent
 };
 // actions
 export const actions = {
@@ -21,6 +23,9 @@ export const actions = {
   },
   setBloginfo({ commit }, info) {
     commit("setBloginfo", info);
+  },
+  setCookieConsent({ commit }, value) {
+    commit("setCookieConsent", value);
   },
   updateFilter({ commit }, slug) {
     commit("updateFilter", slug);
@@ -40,6 +45,9 @@ export const actions = {
 export const mutations = {
   setBloginfo(state, info) {
     state.bloginfo = info;
+  },
+  setCookieConsent(state, value) {
+    state.cookieConsent = value;
   },
   toggleExperimental(state) {
     state.experimental = !state.experimental;

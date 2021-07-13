@@ -1,12 +1,14 @@
 <template>
   <nav>
     <div
+      ref="prev"
       @click="openProjectByIndex(currentIndex - 1)"
       :title="title([currentIndex - 1])"
     >
       <span class="sr-only">{{title([currentIndex - 1])}}</span>
     </div>
     <div
+      ref="next"
       @click="openProjectByIndex(currentIndex + 1)"
       :title="title([currentIndex + 1])"
     >
@@ -35,6 +37,7 @@ export default {
   },
   mounted() {
     if (this.projects) this.setIndex(this.projects, this.openProject)
+    // document.addEventListener('keydown', this.keydown);
   },
   methods: {
     openProjectByIndex(index) {
@@ -48,6 +51,16 @@ export default {
       this.currentIndex = projects.indexOf(
         projects.find((e) => e.slug === open)
       )
+    },
+    keydown(e) {
+      switch(e.code) {
+        case 'ArrowLeft':
+          this.$refs.prev?.click()
+          break
+        case 'ArrowRight':
+          this.$refs.next?.click()
+          break
+      }
     }
   },
   watch: {
@@ -87,7 +100,7 @@ nav {
     &::before,
     &::after {
       content: '';
-      --translate-stroke: 10;
+      --translate-stroke: -0.5;
       --rotate-stroke: 45deg;
       will-change: opacity, transform;
       backface-visibility: hidden;
@@ -97,11 +110,14 @@ nav {
       width: calc(var(--button-size) / 3);
       position: absolute;
       background-color: currentColor;
-      transform: translate(-1px, calc(var(--button-size) / var(--translate-stroke)))
+      transform: translate(0, calc(var(--translate-stroke) * var(--stroke)))
         rotate(var(--rotate-stroke));
+      transform-origin: 0% 100%;
+      transition: transform $fast-02 $expressive;
     }
     &::after {
-      --translate-stroke: -10;
+      transform-origin: 0% 0%;
+      --translate-stroke: 0.5;
       --rotate-stroke: -45deg;
     }
     &:hover {
@@ -109,6 +125,15 @@ nav {
       background: #00000040;
       color: $white;
       transition: $fast-02;
+
+      &::before {
+        --rotate-stroke: 40deg;
+        --translate-stroke: -0.4;
+      }
+      &::after {
+        --rotate-stroke: -40deg;
+        --translate-stroke: 0.4;
+      }
     }
     &:active {
       --scale: 0.9;

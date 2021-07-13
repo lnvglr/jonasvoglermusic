@@ -1,5 +1,4 @@
 import axios from "axios";
-import SETTINGS from "@/settings";
 import * as _ from "lodash";
 
 export default {

@@ -1,11 +1,13 @@
-@import "@/styles/_variables.scss";
+@import "./_variables.scss";
+@import "./_transitions.scss";
 
 :export {
-  primary: $primary;
-  info: $info;
-  success: $success;
-  warning: $warning;
-  alert: $alert;
-  light: $light;
-  dark: $dark;
+  fast-01: strip-unit($fast-01);
+  fast-02: strip-unit($fast-02);
+  moderate-01: strip-unit($moderate-01);
+  moderate-02: strip-unit($moderate-02);
+  slow-01: strip-unit($slow-01);
+  slow-02: strip-unit($slow-02);
+  extraslow-01: strip-unit($extraslow-01);
+  extraslow-02: strip-unit($extraslow-02);
 }

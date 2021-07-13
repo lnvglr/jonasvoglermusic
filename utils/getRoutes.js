@@ -1,7 +1,7 @@
 // utils/getRoutes.js
-import axios from "axios"
+const axios = require("axios")
 
-export async function getRoutes(base) {
+module.exports = async function getRoutes(base) {
   const { data: projects } = await axios.get(
     base + "posts?per_page=100"
   );
