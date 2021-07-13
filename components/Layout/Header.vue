@@ -26,7 +26,7 @@
   </header>
 </template>
 <script>
-import Logo from './Logo.vue'
+import Logo from '@/components/Layout/Logo.vue'
 import { mapGetters } from 'vuex'
 
 export default {

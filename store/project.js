@@ -1,5 +1,3 @@
-import api from "@/api";
-
 // initial state
 export const state = () => ({
   projects: [],
@@ -26,22 +24,6 @@ export const getters = {
 
 // actions
 export const actions = {
-  getProjects({ commit }, { limit }) {
-    api.get(
-      "posts",
-      {
-        per_page: limit,
-        orderby: "menu_order",
-        order: "asc"
-      },
-      projects => {
-        // projects.map((project, i) => {
-        // 	projects[i] = createProjectSlug(project);
-        // });
-        commit('setProjects', projects);
-      }
-    );
-  },
   setProjects({ commit }, projects) {
     commit('setProjects', projects)
   },

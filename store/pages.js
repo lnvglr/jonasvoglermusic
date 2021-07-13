@@ -1,5 +1,3 @@
-import api from "@/api";
-
 // initial state
 export const state = () => ({
   all: [],

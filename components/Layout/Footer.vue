@@ -23,8 +23,8 @@
 <script>
 import { mapGetters } from 'vuex'
 
-import ExperimentalButton from './ExperimentalButton.vue'
-import CookieNotice from './CookieNotice.vue'
+import ExperimentalButton from '../partials/ExperimentalButton.vue'
+import CookieNotice from '../partials/CookieNotice.vue'
 export default {
   components: { ExperimentalButton, CookieNotice },
   name: 'Footer',

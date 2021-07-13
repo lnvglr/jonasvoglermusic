@@ -69,7 +69,6 @@ module.exports = {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    "~/plugins/global-variables",
     { src: "~/plugins/vue-meta", mode: "client" },
     { src: "~/plugins/scroll-behavior-polyfill", mode: "client" },
     { src: "~/plugins/idle-vue", mode: "client" },

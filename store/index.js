@@ -1,5 +1,3 @@
-import api from "@/api";
-
 export const state = () => ({
   bloginfo: null,
   filter: [],
@@ -16,11 +14,6 @@ export const getters = {
 };
 // actions
 export const actions = {
-  fetchBloginfo({ commit }) {
-    api.get("bloginfo", {}, info => {
-      commit("setBloginfo", info);
-    });
-  },
   setBloginfo({ commit }, info) {
     commit("setBloginfo", info);
   },

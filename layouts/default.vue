@@ -8,8 +8,8 @@
   </div>
 </template>
 <script>
-import Header from '@/components/partials/Header.vue'
-import Footer from '@/components/partials/Footer.vue'
+import Header from '@/components/Layout/Header.vue'
+import Footer from '@/components/Layout/Footer.vue'
 import axios from 'axios'
 import { mapGetters } from 'vuex'
 
