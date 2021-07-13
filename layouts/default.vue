@@ -1,10 +1,10 @@
 <template>
   <div id="app" :class="{ show: fontsLoaded, experimental }">
-    <app-header />
+    <Header />
     <main class="wrap">
       <Nuxt />
     </main>
-    <app-footer />
+    <Footer />
   </div>
 </template>
 <script>
@@ -15,8 +15,8 @@ import { mapGetters } from 'vuex'
 
 export default {
   components: {
-    appHeader: Header,
-    appFooter: Footer,
+    Header,
+    Footer,
   },
   data: () => ({
     fontsLoaded: false,
