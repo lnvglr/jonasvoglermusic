@@ -2,7 +2,7 @@
   <div>
     <cookie-law
       ref="cookies"
-      message="This site uses cookies. If you continue to use the website, we will assume that you have given your consent."
+      :message="message"
       :buttonLink="{ name: 'Page', params: { pageSlug: privacySlug } }"
       :buttonLinkText="buttonLinkText"
       :buttonDecline="true"
@@ -13,13 +13,15 @@
       @decline="decline"
       theme="custom"
     ></cookie-law>
-    <button
-      v-if="isPrivacyPage && cookieConsent !== null"
-      @click="revoke"
-      class="Cookie__button Cookie__button--revoke primary"
-    >
-      Revoke Cookie Preferences
-    </button>
+    <transition name="fade">
+      <button
+        v-if="isPrivacyPage && cookieConsent !== null"
+        @click="revoke"
+        class="Cookie__button Cookie__button--revoke alert"
+      >
+        Revoke Cookie Preferences
+      </button>
+    </transition>
   </div>
 </template>
 
@@ -46,6 +48,9 @@ export default {
     isPrivacyPage() {
       return this.$nuxt.$route.params.pageSlug === this.privacySlug
     },
+    message() {
+      return `This site uses cookies. If you continue to use the website, we will assume that you have given your consent. You can change your decision later in our ${this.buttonLinkText}.`
+    }
   },
   methods: {
     accept() {
@@ -61,17 +66,19 @@ export default {
     },
     blockedIframes(string) {
       if (this.cookieConsent) return string
-      const iframeRegex = /(?:<iframe.*?src=["'])(.*?)(?:["'])(?:.*>.*?<\/iframe>)/g;
+      const iframeRegex = /(?:<iframe.*?src=["'])(.*?)(?:["'])(?:.*>.*?<\/iframe>)/g
       return string.replace(iframeRegex, (_, src) => this.blockedCookies(src))
     },
     blockedCookies(url = null) {
       const link =
         url && this.isValidHttpUrl(url)
-          ? `<a class="Cookie__button secondary" target="_blank" href="${url}">Open ${new URL(url).hostname}</a>`
+          ? `<a class="Cookie__button secondary" target="_blank" href="${url}">Open ${
+              new URL(url).hostname
+            }</a>`
           : ''
       return `<div class="allow-cookie-notice">
         <span>External content blocked.</span>
-        <span>${link}<button class="Cookie__button primary allow-cookies">Allow cookies</button></span>
+        <span>${link}<button class="Cookie__button success allow-cookies">Allow cookies</button></span>
       </div>`
     },
     isValidHttpUrl(string) {
@@ -103,6 +110,9 @@ export default {
 <style lang="scss">
 $primary: $secondary;
 $primary-dark: darken($secondary, 10);
+$success-dark: darken($success, 10);
+$alert-dark: darken($alert, 10);
+$button-padding: map-get($button-sizes, medium);
 .Cookie--custom {
   background-color: white;
   color: $dark-01;
@@ -123,6 +133,7 @@ $primary-dark: darken($secondary, 10);
     display: flex;
     align-items: center;
     line-height: 1.2;
+    margin-bottom: 1rem;
     &:before {
       content: '🍪';
       display: block;
@@ -142,7 +153,7 @@ $primary-dark: darken($secondary, 10);
       margin-top: 1rem;
       text-align: center;
       &:nth-child(1) {
-        margin-left: -#{nth(map-get($padding-sizes, medium), 2)};
+        margin-left: -#{nth($button-padding, 2)};
       }
       & + * {
         margin-left: 1rem;
@@ -167,35 +178,48 @@ $primary-dark: darken($secondary, 10);
   font-size: 1em;
   font-weight: normal;
   border-radius: $border-radius-small;
-  padding: map-get($padding-sizes, medium);
+  padding: $button-padding;
   margin: map-get($padding-sizes, small);
+
   .Cookie__buttons &:nth-child(1) {
-    background-color: white;
-    color: $primary;
-    border: 1px solid transparent;
     margin-right: auto;
+  }
+  &.secondary,
+  .Cookie__buttons &:nth-child(1),
+  .Cookie__buttons &:nth-child(2) {
+    background-color: white;
+    color: $dark-01;
+    border: 1px solid transparent;
     &:hover {
-      color: $primary-dark;
+      color: $black;
     }
   }
   &.secondary,
   .Cookie__buttons &:nth-child(2) {
-    background-color: transparent;
-    color: currentColor;
     border: 1px solid currentColor;
     &:hover {
-      background-color: transparent;
+      background-color: initial;
     }
   }
-  &.primary,
+  &.success,
   .Cookie__buttons &:nth-child(3) {
-    background-color: $primary;
+    background-color: $success;
     color: white;
-    border: 1px solid $primary;
+    border: 1px solid $success;
     &:hover {
       color: white;
-      background-color: $primary-dark;
-      border-color: $primary-dark;
+      background-color: $success-dark;
+      border-color: $success-dark;
+    }
+  }
+  &.alert {
+    background-color: $alert;
+    color: white;
+    border: 1px solid $alert;
+    &:hover {
+      color: white;
+      background-color: $alert-dark;
+      border-color: $alert-dark;
     }
   }
 }
@@ -204,6 +228,9 @@ $primary-dark: darken($secondary, 10);
   bottom: 0;
   left: 0;
   @include dynamic-box(margin);
+  &.fade-enter-active {
+    transition-delay: $slow-01;
+  }
 }
 
 .allow-cookie-notice {
@@ -221,7 +248,7 @@ $primary-dark: darken($secondary, 10);
   a {
     display: inline-block;
     &:hover {
-      text-decoration: none !important
+      text-decoration: none !important;
     }
   }
   span:first-child {
