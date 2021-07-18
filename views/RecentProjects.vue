@@ -19,9 +19,9 @@
     </transition-group>
     <div class="projects phantom" aria-hidden="true">
       <ProjectPhantom
-        v-for="(project, index) in filteredProjects"
+        v-for="project in filteredProjects"
         :ref="`project-${project.slug}`"
-        :key="index"
+        :key="project.id"
       />
     </div>
     <Laurel />
@@ -59,7 +59,7 @@ export default {
   mounted() {
     setTimeout(() => {
       this.initiated = true
-    }, 1000)
+    }, 200)
   },
   methods: {
     offsetCheck() {
@@ -99,11 +99,6 @@ export default {
   watch: {
     openProject(slug) {
       this.slug = slug
-      // this.$ga.page({
-      //   page: '/project/' + slug,
-      //   title: this.project?.title?.rendered,
-      //   location: this.project?.link
-      // })
     },
   },
   updated() {
@@ -186,14 +181,6 @@ export default {
   @media screen and (max-width: map-get($breakpoints, large)) {
     justify-content: flex-start;
   }
-}
-.phantom {
-  position: absolute;
-  width: 100%;
-  top: 78px;
-  z-index: -1;
-  opacity: 0;
-  pointer-events: none;
 }
 </style>
 

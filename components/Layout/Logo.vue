@@ -1,24 +1,36 @@
 <template>
   <div v-if="experimental">
-    <NuxtLink
-      :to="{ name: 'Home' }"
-      class="title"
-      @click.native="
-        $store.dispatch('updateFilter', null), $store.dispatch('project/setOpen', null)
-      "
-    ><h1 class="logo">{{ name }}</h1><span class="description" v-html="copy"></span><span class="description addition" v-html="addition"></span></NuxtLink>
+    <NuxtLink :to="{ name: 'Home' }" class="title-container" ref="title" @click.native="home"
+      ><span class="string"
+        ><h1 class="logo">{{ name }}</h1>
+        <transition name="fade" mode="out-in" @enter="adjustHeight">
+          <span class="description" v-if="!legal">is a composer for film and television</span>
+          <span v-else key="blank"></span>
+        </transition>
+        <transition name="fade" mode="out-in" @enter="adjustHeight">
+          <span class="description" v-if="music" v-html="music" key="music"></span>
+          <span
+            class="description"
+            v-else-if="aboutContact"
+            v-html="aboutContact"
+            key="aboutContact"
+          ></span>
+          <span v-else-if="!legal" class="description" key="dot" style="margin-left: -0.375ch"
+            >.</span
+          >
+          <span v-else key="blank"></span>
+        </transition>
+      </span>
+    </NuxtLink>
   </div>
-  <NuxtLink
-    v-else
-    :to="{ name: 'Home' }"
-    @click.native="$store.dispatch('updateFilter', null), $store.dispatch('project/setOpen', null)"
-  >
+  <NuxtLink v-else :to="{ name: 'Home' }" @click.native="home">
     <h1 class="logo">{{ name }}</h1>
     <span v-if="description" class="subtitle">{{ description }}</span>
   </NuxtLink>
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import _ from 'lodash'
 
 export default {
   props: {
@@ -29,39 +41,34 @@ export default {
     ...mapGetters({
       experimental: 'getExperimental',
     }),
-    copy() {
-    let location
-      switch(this.$nuxt.$route.params.pageSlug) {
-        case 'privacy-policy':
-        case 'legal-notice':
-          location = ''
-          break
-        default:
-          location = ' is a composer for film and television'
-          break
-      }
-      return location
+    legal() {
+      return ['privacy-policy', 'legal-notice'].includes(this.$nuxt.$route.params.pageSlug)
     },
-    addition() {
-      let location
-      switch(this.$nuxt.$route.params.pageSlug) {
-        case 'about-contact':
-          location = ' based in Berlin.'
-          break
-        case 'music':
-          location = ' who happens to also compose music without picture.'
-          break
-        case 'privacy-policy':
-        case 'legal-notice':
-          location = ''
-          break
-        default:
-          location = '.'
-          break
+    music() {
+      return 'music' === this.$nuxt.$route.params.pageSlug
+        ? 'who happens to also compose music without picture.'
+        : false
+    },
+    aboutContact() {
+      return 'about-contact' === this.$nuxt.$route.params.pageSlug ? 'based in Berlin.' : false
+    },
+  },
+  methods: {
+    home() {
+      this.$store.dispatch('updateFilter', null)
+      this.$store.dispatch('project/setOpen', null)
+    },
+    adjustHeight() {
+      if (this.$refs.title && this.$refs.string) {
+        this.$refs.title.$el.style.height = this.$refs.string.$el.clientHeight + 'px'
       }
-      // setTimeout(() => { return location}, 300)
-      return location
-    }
+    },
+  },
+  mounted() {
+    window.addEventListener('resize', _.throttle(this.adjustHeight, 100))
+  },
+  unmounted() {
+    window.removeEventListener('resize', _.throttle(this.adjustHeight, 100))
   },
 }
 </script>
@@ -84,29 +91,35 @@ export default {
 </style>
 <style lang="scss">
 .experimental {
-  .subtitle {
-    letter-spacing: 0;
-  }
-  .title {
-    & > * {
+  header {
+    .subtitle {
+      letter-spacing: 0;
+    }
+    .title-container {
       font-size: 4rem;
+      color: $light-03;
       font-weight: bold;
-      display: inline;
-      text-transform: initial;
+      transition: height $slow-02;
+      @media screen and (max-width: map-get($breakpoints, large)) {
+        font-size: 3rem;
+      }
       @media screen and (max-width: map-get($breakpoints, medium)) {
         font-size: 2rem;
       }
+      .string {
+        min-height: 1em;
+        display: block;
+        line-height: 1.1;
+        .logo {
+          color: $black;
+        }
+        & > * {
+          font-size: inherit;
+          display: inline;
+          text-transform: initial;
+        }
+      }
     }
   }
-  .description {
-    color: $dark-01;
-  }
-  .addition {
-    animation: type 4s steps(60, end); 
-  }
-
 }
-@keyframes type {
-  from { width: 0; }
-} 
 </style>

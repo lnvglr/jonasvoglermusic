@@ -1,15 +1,23 @@
 <template>
   <div :class="page.slug + ' page-about'">
     <div class="page-body right-section">
-      <p class="page-introduction" v-if="page.field.introduction && !experimental" v-html="introduction"></p>
+      <p
+        class="page-introduction"
+        v-if="page.field.introduction && !experimental"
+        v-html="introduction"
+      ></p>
       <div v-if="page.content" class="page-content" v-html="page.content.rendered"></div>
     </div>
     <div class="left-section">
       <div class="about">
         <div v-if="thumbnail" ref="portrait" class="clipped portrait">
-          <img :src="page.thumbnail['1536x1536'][0]" :alt="page.thumbnail.caption" :title="page.thumbnail.caption" />
+          <img
+            :src="page.thumbnail['1536x1536'][0]"
+            :alt="page.thumbnail.caption"
+            :title="page.thumbnail.caption"
+          />
         </div>
-        <small v-if="page.thumbnail.caption" class="caption">{{page.thumbnail.caption}}</small>
+        <small v-if="page.thumbnail.caption" class="caption">{{ page.thumbnail.caption }}</small>
         <div class="contact">
           <Email v-if="page.field.email" :address="page.field.email" />
           <SocialMedia :page="page" />
@@ -31,25 +39,27 @@ export default {
   components: {
     SocialMedia,
     Email,
-    TransitionExpand
+    TransitionExpand,
   },
   props: {
-    page: Object
+    page: Object,
   },
-  data () {
+  data() {
     return {
-      thumbnail: this.page.thumbnail['cinema-large'] ? this.page.thumbnail['cinema-large'][0] : false,
+      thumbnail: this.page.thumbnail['cinema-large']
+        ? this.page.thumbnail['cinema-large'][0]
+        : false,
       introduction: this.page.field.introduction,
-      content: this.page.content.rendered
+      content: this.page.content.rendered,
     }
   },
   computed: {
     ...mapGetters({
       pages: 'pages/getPages',
-      experimental: 'getExperimental'
+      experimental: 'getExperimental',
     }),
   },
-  mounted () {
+  mounted() {
     this.$nextTick(function () {
       const body = document.querySelector('body')
       body.classList.add('template-' + this.page.field.template)
@@ -77,15 +87,17 @@ export default {
         const letters = word.split('')
         transformedText += `<span ${scopeId} class="word">`
         letters.forEach(function (letter) {
-          const style = delay ? `style="transition-delay: ${(duration / text.length) * char}ms"` : ''
+          const style = delay
+            ? `style="transition-delay: ${(duration / text.length) * char}ms"`
+            : ''
           transformedText += `<span ${scopeId} class="letter-container"><span ${scopeId} class="letter" ${style}>${letter}</span></span>`
           char++
         })
         transformedText += '</span> '
       })
       return transformedText
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -187,6 +199,7 @@ export default {
   }
   .portrait {
     transition: $extraslow-01 $expressive;
+    border-radius: $border-radius-large;
   }
   &.fade {
     .portrait {

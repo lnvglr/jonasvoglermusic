@@ -124,6 +124,12 @@ export default {
   @media screen and (min-width: map-get($breakpoints, large)) {
     margin-bottom: 50px;
   }
+	h1 {
+		font-size: 1.5rem;
+    @media screen and (min-width: map-get($breakpoints, medium)) {
+        font-size: 2.5rem;
+		}
+	}
   .page-content {
 
     hr {
@@ -144,14 +150,14 @@ export default {
       }
     }
     h1 {
-      font-size: 2rem;
+      font-size: 1.5rem;
     }
     h2 {
       line-height: 1.3;
-      font-size: 1.5rem;
+      font-size: 1.25rem;
     }
     h3 {
-      font-size: 1.25rem;
+      font-size: 1.125rem;
     }
     h3,
     ul,
@@ -164,7 +170,7 @@ export default {
     p {
       font-family: $font-family-serif;
       line-height: 1.7;
-      font-size: 1.5rem;
+      font-size: 1.125rem;
       color: $dark-02;
       &:last-child {
         margin-bottom: 0;

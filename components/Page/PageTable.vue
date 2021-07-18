@@ -1,8 +1,7 @@
 <template>
   <div :class="page.name">
     <h1 v-if="page.title">{{ page.title.rendered }}</h1>
-    <div class="page-content page-table" v-if="page.content" v-html="page.content.rendered">
-    </div>
+    <div class="page-content page-table" v-if="content" v-html="content"></div>
   </div>
 </template>
 
@@ -10,8 +9,15 @@
 export default {
   name: 'PageTable',
   props: {
-    page: Object
-  }
+    page: Object,
+  },
+  computed: {
+    content() {
+      if (this.page.content)
+        return this.page.content.rendered
+          .replace(/(?<=<h2>)(.*?)(?=<\/h2>)/g, '<span>$1</span>')
+    },
+  },
 }
 </script>
 
@@ -25,8 +31,15 @@ export default {
     grid-column: 1;
     margin-bottom: 0;
     margin-top: 0.25rem;
+    & > * {
+      position: sticky;
+      top: 1em;
+    }
   }
-  h3, ul, ol, p {
+  h3,
+  ul,
+  ol,
+  p {
     grid-column: 1;
   }
   @media screen and (min-width: map-get($breakpoints, xlarge)) {
@@ -36,7 +49,10 @@ export default {
     h2 {
       grid-column: 1 / 2;
     }
-    h3, ul, ol, p {
+    h3,
+    ul,
+    ol,
+    p {
       grid-column: 2 / 3;
     }
   }

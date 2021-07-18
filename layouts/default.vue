@@ -33,14 +33,16 @@ export default {
     document.fonts.ready.then(() => {
       setTimeout(() => {
         this.fontsLoaded = true
-      }, 500)
+      }, 100)
     })
   },
   async fetch() {
+    if (process.env.NODE_ENV !== 'production') this.$store.dispatch('toggleExperimental')
     const { data: info } = await axios.get(process.env.API_BASE_PATH + 'bloginfo')
     const { data: pages } = await axios.get(process.env.API_BASE_PATH + 'pages')
     this.$store.dispatch('setBloginfo', info)
     this.$store.dispatch('pages/set', pages)
+
   },
 }
 </script>

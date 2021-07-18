@@ -5,7 +5,9 @@
       :key="i"
       :class="{ active: filter.includes(item[label]) }"
       @click="toggleFilter(item[label])"
-    >{{ item[value] }}</li>
+    >
+      {{ item[value] }}
+    </li>
   </ul>
 </template>
 
@@ -16,7 +18,7 @@ export default {
   props: {
     items: Array,
     label: String,
-    value: String
+    value: String,
   },
   methods: {
     toggleFilter(label) {
@@ -80,16 +82,27 @@ export default {
 .experimental {
   .filter {
     li {
+      --shadow: -1px;
       letter-spacing: 0;
-      &, &:hover, &.active, &.active:hover {
-        color: inherit;
-        background: none;
+      border-radius: 0;
+      padding: 0.75rem 0;
+      margin: 0 1rem;
+      background: none !important;
+      &:first-child {
+        margin-left: 0;
       }
-      &:hover {
-        transform: scale(0.95);
+      &,
+      &.active {
+        color: inherit;
+      }
+      &:hover,
+      &.active:hover {
+        color: $primary;
+        background: none;
+        --shadow: -2px;
       }
       &.active {
-        box-shadow: inset 0 0 0 1px currentColor;
+        box-shadow: inset 0 var(--shadow) 0 currentColor;
       }
     }
   }

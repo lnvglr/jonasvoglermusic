@@ -33,7 +33,7 @@ export default {
   },
   data() {
     return {
-      variables
+      variables,
     }
   },
   methods: {
@@ -42,14 +42,15 @@ export default {
       if (!this.variables?.['moderate-01']) return (this.festivals.length - i) * 50
       const duration = Number(this.variables['moderate-01'])
       return (duration / this.festivals.length) * (this.festivals.length - i)
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style lang="scss" scoped>
 .festivals {
   display: flex;
+  flex-direction: row-reverse;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
