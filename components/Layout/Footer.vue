@@ -39,9 +39,9 @@ export default {
       allPages: 'pages/getAllPages',
       bloginfo: 'getBloginfo',
     }),
-		experimental() {
+    experimental() {
       return true
-		},
+    },
     date() {
       return new Date(this.bloginfo?.date * 1000).getFullYear()
     },
@@ -85,12 +85,10 @@ export default {
     justify-content: center;
     text-align: center;
     color: $light-03;
-
   }
   .page-link {
     margin: map-get($padding-sizes, medium) 0;
     white-space: nowrap;
-    letter-spacing: $letter-spacing;
     a {
       padding: map-get($padding-sizes, medium);
     }

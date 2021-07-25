@@ -4,16 +4,14 @@
       <nav v-if="bloginfo">
         <Logo class="logo-wrap" :name="bloginfo.name" :description="bloginfo.description" />
         <ul class="pages">
-          <li
-            class="page-link"
-          >
+          <li class="page-link">
             <NuxtLink
               :to="{ name: 'Home' }"
-		          @click.native="
-                $store.dispatch('updateFilter', null),
-                $store.dispatch('project/setOpen', null)
+              @click.native="
+                $store.dispatch('updateFilter', null), $store.dispatch('project/setOpen', null)
               "
-            >Projects</NuxtLink>
+              >Projects</NuxtLink
+            >
           </li>
           <li v-for="page in pages('header')" :key="page.id" class="page-link">
             <NuxtLink :to="{ name: 'Page', params: { pageSlug: page.slug } }">
@@ -37,9 +35,9 @@ export default {
   computed: {
     ...mapGetters({
       pages: 'pages/getPages',
-      bloginfo: 'getBloginfo'
+      bloginfo: 'getBloginfo',
     }),
-  }
+  },
 }
 </script>
 
@@ -56,41 +54,41 @@ header {
     align-items: flex-end;
     flex-wrap: wrap;
     margin-top: 1rem;
-		.pages {
-			white-space: nowrap;
-			display: flex;
-			list-style: none;
-			margin: -1rem;
-			padding: 0;
-			li {
-				margin: 1rem;
-			}
-		}
+    .pages {
+      white-space: nowrap;
+      display: flex;
+      overflow-x: auto;
+      list-style: none;
+      margin: -1rem;
+      padding: 0;
+      li {
+        margin: 1rem;
+      }
+    }
   }
 }
 .page-link {
   text-align: right;
-	letter-spacing: $letter-spacing;
   a {
     line-height: 1.2;
   }
   &.active {
-    color: var(--primary)
+    color: var(--primary);
   }
 }
 </style>
 
 <style lang="scss">
 .experimental {
-	header {
-  .logo-wrap {
-		display: flex;
-    width: 100%;
-    white-space: initial;
-		flex-direction: column;
-    order: 2;
-    margin-top: 2rem;
+  header {
+    .logo-wrap {
+      display: flex;
+      width: 100%;
+      white-space: initial;
+      flex-direction: column;
+      order: 2;
+      margin-top: 2rem;
+    }
   }
-}
 }
 </style>
