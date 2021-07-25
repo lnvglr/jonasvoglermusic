@@ -28,21 +28,22 @@ export default {
     }),
   },
   mounted() {
-    if (process.server) this.fontsLoaded = true
+    if (process.server) this.fontsLoaded = trueFrale
 
     document.fonts.ready.then(() => {
       setTimeout(() => {
         this.fontsLoaded = true
       }, 100)
     })
+    setTimeout(() => {
+      this.fontsLoaded = true
+    }, 1000)
   },
   async fetch() {
-    if (process.env.NODE_ENV !== 'production') this.$store.dispatch('toggleExperimental')
     const { data: info } = await axios.get(process.env.API_BASE_PATH + 'bloginfo')
     const { data: pages } = await axios.get(process.env.API_BASE_PATH + 'pages')
     this.$store.dispatch('setBloginfo', info)
     this.$store.dispatch('pages/set', pages)
-
   },
 }
 </script>
@@ -55,7 +56,7 @@ export default {
   flex-direction: column;
   min-height: 100vh;
   transition: opacity, background-color, color $extraslow-02;
-	background-color: transparent;
+  background-color: transparent;
   &:not(.show) {
     opacity: 0;
   }
@@ -63,15 +64,15 @@ export default {
     flex: 1;
     padding-top: 0;
   }
-	// &.dark {
-	// 	background-color: #000;
-	// 	color: $white;
-	//   transition: opacity, background-color, color $extraslow-02;
-	// }
+  // &.dark {
+  // 	background-color: #000;
+  // 	color: $white;
+  //   transition: opacity, background-color, color $extraslow-02;
+  // }
 }
 .experimental {
-  --font-family: Raleway, Work Sans, Gramatika-Regular, Gilroy, sans-serif;
-  --font-family-bold: Raleway, Work Sans, Gramatika-Bold, Gilroy, sans-serif;
+  --font-family: Raleway, Gramatika-Regular, Gilroy, sans-serif;
+  --font-family-bold: Raleway, Gramatika-Bold, Gilroy, sans-serif;
   font-family: var(--font-family);
   &:after {
     // content: '';
