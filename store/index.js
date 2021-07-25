@@ -1,7 +1,7 @@
 export const state = () => ({
   bloginfo: null,
   filter: [],
-  experimental: false,
+  experimental: true,
   cookieConsent: false
 });
 
@@ -27,7 +27,7 @@ export const actions = {
     commit("toggleExperimental");
   },
   changeRoute({ commit }, slug) {
-    const fullPath = slug ? "/project/" + slug : "/";
+    const fullPath = slug ? $nuxt.context.env.projectPath + slug : "/";
     history.pushState({}, null, fullPath);
     $nuxt.$route.params.projectSlug = slug;
     commit("project/setOpen", slug);
@@ -36,6 +36,9 @@ export const actions = {
 
 // mutations
 export const mutations = {
+  setProjectPath(state, path) {
+    state.projectPath = path;
+  },
   setBloginfo(state, info) {
     state.bloginfo = info;
   },
@@ -46,11 +49,11 @@ export const mutations = {
     state.experimental = !state.experimental;
   },
   updateFilter(state, slug) {
-    if (!slug) return state.filter = []
+    if (!slug) return (state.filter = []);
     if (state.filter.includes(slug)) {
       state.filter = state.filter.filter(item => item !== slug);
     } else {
       state.filter = [slug];
     }
-  },
+  }
 };

@@ -1,9 +1,10 @@
-const { getRoutes } = require("./utils/getRoutes.js");
+const getSitemap = require("./utils/getSitemap.js");
 const fs = require("fs");
 const packageJson = fs.readFileSync("./package.json");
 const version = JSON.parse(packageJson).version || 0;
 const apiBase = "https://api.jonasvoglermusic.com/wp-json/wp/v2/";
 const host = "https://jonasvoglermusic.com";
+const projectPath = "/project/";
 
 module.exports = {
   // Target: https://go.nuxtjs.dev/config-target
@@ -12,7 +13,8 @@ module.exports = {
   env: {
     API_BASE_PATH: apiBase,
     HOST_NAME: host,
-    PACKAGE_VERSION: version
+    PACKAGE_VERSION: version,
+    projectPath
   },
 
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -43,7 +45,7 @@ module.exports = {
         },
         {
           name: "Project",
-          path: "/project/:projectSlug",
+          path: `${projectPath}:projectSlug`,
           component: resolve(__dirname, "views/RecentProjects.vue")
         },
         {
@@ -91,12 +93,18 @@ module.exports = {
     extractCSS: true
   },
 
+  // Server
+  server: {
+    port: 80, // default: 3000
+    host: "192.168.0.172" // default: localhost
+  }, // other configs
+
   // Sitemap
   sitemap: {
     hostname: host,
     gzip: true,
     routes() {
-      return getRoutes(apiBase);
+      return getSitemap(apiBase, projectPath);
     },
     defaults: {
       changefreq: "weekly",

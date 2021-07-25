@@ -139,7 +139,7 @@ export default {
       })
 
     const url = process.server ? req.url : null
-    const slug = url ? url.split('/project/')[1]?.split('?')[0] : params.projectSlug
+    const slug = url ? url.split(process.env.projectPath)[1]?.split('?')[0] : params.projectSlug
     const structuredData = {
       '@context': 'https://schema.org',
       '@type': 'ItemList',
