@@ -5,9 +5,8 @@
       :key="i"
       :class="{ active: filter.includes(item[label]) }"
       @click="toggleFilter(item[label])"
-    >
-      {{ item[value] }}
-    </li>
+      v-html="item[value]"
+    ></li>
   </ul>
 </template>
 
@@ -47,7 +46,6 @@ export default {
   // width: 100% !important;
 
   // $box: padding, $negative: false, $axis: both
-
   li {
     white-space: nowrap;
     cursor: pointer;
@@ -81,15 +79,32 @@ export default {
 <style lang="scss">
 .experimental {
   .filter {
+    &::before {
+      content: '';
+      background: linear-gradient(90deg, rgba(242, 242, 242, 0), $light-01 90%);
+      width: 1.5rem;
+      height: 3em;
+      position: absolute;
+      right: -1rem;
+    }
+    &::after {
+      content: '';
+      display: block;
+      height: 1em;
+      min-width: 1rem;
+    }
     li {
       --shadow: -1px;
       letter-spacing: 0;
       border-radius: 0;
       padding: 0.75rem 0;
-      margin: 0 1rem;
+      margin: 0 0.5rem;
       background: none !important;
       &:first-child {
         margin-left: 0;
+      }
+      &:last-child {
+        margin-right: 0rem;
       }
       &,
       &.active {
