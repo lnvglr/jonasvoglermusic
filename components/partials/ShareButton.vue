@@ -13,16 +13,14 @@ export default {
   computed: {
     show() {
       return navigator.share
-    }
+    },
   },
   methods: {
     share() {
-      navigator
-        .share({
-          title: this.project.title.rendered,
-          text: this.project.title.rendered,
-          url: this.project.link,
-        })
+      navigator.share({
+        title: this.project.title.rendered,
+        url: this.project.link,
+      })
     },
   },
 }
@@ -57,7 +55,9 @@ export default {
     transition-property: transform opacity margin;
 
     .share-button {
-      &, &::after, &::before {
+      &,
+      &::after,
+      &::before {
         transition: $slow-02 $expressive $moderate-02;
       }
       &::after {
@@ -72,7 +72,8 @@ export default {
       --arrow-offset: -0.25;
       --arrow-length: 0.5;
       --arrow-head: 0.25;
-      &::before, &::after {
+      &::before,
+      &::after {
         opacity: 0;
       }
     }
@@ -80,10 +81,13 @@ export default {
 
   &:hover .share-button {
     --arrow-offset: 1.5;
-      --arrow-head: 1.25;
+    --arrow-head: 1.25;
   }
-  .share-button, &:hover .share-button{
-    &, &::after, &::before {
+  .share-button,
+  &:hover .share-button {
+    &,
+    &::after,
+    &::before {
       transition: $moderate-02 $expressive;
     }
   }
@@ -99,9 +103,7 @@ export default {
   display: block;
   top: 0.5em;
   border-radius: 0 0 0.25em 0.25em;
-  box-shadow:
-    inset var(--stroke) 0 0 currentcolor,
-    inset 0 calc(-1 * var(--stroke)) 0 currentcolor,
+  box-shadow: inset var(--stroke) 0 0 currentcolor, inset 0 calc(-1 * var(--stroke)) 0 currentcolor,
     inset calc(-1 * var(--stroke)) 0 0 currentcolor,
     inset calc(0.625 * var(--stroke)) calc(-0.625 * var(--stroke)) 0 currentcolor,
     inset calc(-0.625 * var(--stroke)) calc(-0.625 * var(--stroke)) 0 currentcolor;
