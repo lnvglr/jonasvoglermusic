@@ -83,6 +83,13 @@ export default {
     }),
     filterElements() {
       const genres = this.projects?.map((project) => project?.field?.genre)
+      const all = {
+        term_id: -1,
+        name: 'All',
+        slug: 'all',
+      }
+      genres.unshift(all)
+      console.log(genres)
       return genres.filter((e, i) => genres.findIndex((a) => a.slug === e.slug) === i)
     },
     project() {

@@ -22,7 +22,7 @@ export default {
   methods: {
     toggleFilter(label) {
       this.$store.dispatch('changeRoute', '')
-      this.$store.dispatch('updateFilter', label)
+      this.$store.dispatch('updateFilter', label === 'all' ? null : label)
     },
   },
   computed: {
@@ -98,7 +98,7 @@ export default {
       letter-spacing: 0;
       border-radius: 0;
       padding: 0.75rem 0;
-      margin: 0 0.5rem;
+      margin: 0 1rem;
       background: none !important;
       &:first-child {
         margin-left: 0;
@@ -114,7 +114,6 @@ export default {
       &.active:hover {
         color: $primary;
         background: none;
-        --shadow: -2px;
       }
       &.active {
         box-shadow: inset 0 var(--shadow) 0 currentColor;

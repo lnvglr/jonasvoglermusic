@@ -53,6 +53,7 @@ export const mutations = {
     if (state.filter.includes(slug)) {
       state.filter = state.filter.filter(item => item !== slug);
     } else {
+      // state.filter.push(slug);
       state.filter = [slug];
     }
   }
