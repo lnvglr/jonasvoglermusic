@@ -23,7 +23,6 @@
     "lozad": "^1.16.0",
     "nuxt": "^2.14.12",
     "scroll-behavior-polyfill": "^2.0.13",
-    "typewriter-effect": "^2.18.0",
     "vue-cookie-law": "^1.13.3",
     "vue-gtag": "^1.16.1",
     "vue-meta": "^2.4.0",
