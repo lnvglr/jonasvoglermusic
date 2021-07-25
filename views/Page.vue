@@ -55,7 +55,7 @@ export default {
       const self = this
       setTimeout(function () {
         self.fadedIn = true
-      }, 1000)
+      }, 200)
     })
   },
   methods: {
@@ -124,14 +124,13 @@ export default {
   @media screen and (min-width: map-get($breakpoints, large)) {
     margin-bottom: 50px;
   }
-	h1 {
-		font-size: 1.5rem;
+  h1 {
+    font-size: 1.5rem;
     @media screen and (min-width: map-get($breakpoints, medium)) {
-        font-size: 2.5rem;
-		}
-	}
+      font-size: 2.5rem;
+    }
+  }
   .page-content {
-
     hr {
       width: 100px;
       margin: 0 auto;

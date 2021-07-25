@@ -9,7 +9,7 @@
 export default {
   name: 'PageDefault',
   props: {
-    page: Object
-  }
+    page: Object,
+  },
 }
 </script>

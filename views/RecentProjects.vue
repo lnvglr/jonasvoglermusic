@@ -106,7 +106,9 @@ export default {
   },
   metaInfo() {
     const siteTitle = this.bloginfo.name
-    const title = this.slug ? `${this.project?.title.rendered} – ${siteTitle}` : siteTitle
+    const title = this.project?.title.rendered
+      ? `${this.project.title.rendered} – ${siteTitle}`
+      : siteTitle
     const description = this.project?.excerpt.rendered?.replace(/<[^>]*>?/gm, '') || ''
     return {
       title,

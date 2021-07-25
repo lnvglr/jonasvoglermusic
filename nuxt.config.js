@@ -93,12 +93,6 @@ module.exports = {
     extractCSS: true
   },
 
-  // Server
-  server: {
-    port: 80, // default: 3000
-    host: "192.168.0.172" // default: localhost
-  }, // other configs
-
   // Sitemap
   sitemap: {
     hostname: host,
