@@ -108,6 +108,7 @@ export default {
   flex-direction: row-reverse;
   justify-content: center;
   @include dynamic-box(margin, true);
+  margin-top: 1rem;
   h1 {
     margin-top: 0;
   }
@@ -154,6 +155,7 @@ export default {
   .page-content {
     transition: $slow-02 $expressive;
     transition-delay: 1000ms;
+    min-width: clamp(200px, 50vh, 300px);
   }
   &.fade .page-content {
     opacity: 0;
@@ -162,7 +164,8 @@ export default {
     z-index: 10;
     position: sticky;
     top: 2rem;
-    max-width: 50vh;
+    min-width: clamp(200px, 30vh, 300px);
+    max-width: min(40vh, 40vw);
     .portrait {
       margin-bottom: 2rem;
     }
@@ -183,7 +186,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 2rem;
+    margin: 0 -1rem 2rem;
     color: $dark-01;
     .mail {
       padding: 1rem;

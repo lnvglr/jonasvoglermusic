@@ -14,8 +14,10 @@ export default {
   computed: {
     content() {
       if (this.page.content)
-        return this.page.content.rendered
-          .replace(/(?<=<h2>)(.*?)(?=<\/h2>)/g, '<span>$1</span>')
+        return this.page.content.rendered.replace(
+          /(?:<h2>)(.*?)(?=<\/h2>)/g,
+          '<h2><span>$1</span></h2>'
+        )
     },
   },
 }
