@@ -62,9 +62,6 @@ export default {
     }, 200)
   },
   methods: {
-    offsetCheck() {
-      console.log(this.$refs)
-    },
     toggleFilter(slug) {
       this.$store.dispatch('updateFilter', slug)
     },
@@ -89,7 +86,6 @@ export default {
         slug: 'all',
       }
       genres.unshift(all)
-      console.log(genres)
       return genres.filter((e, i) => genres.findIndex((a) => a.slug === e.slug) === i)
     },
     project() {
