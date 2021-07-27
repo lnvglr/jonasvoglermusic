@@ -125,6 +125,28 @@ export default {
       --laurel-rotate: 15deg;
     }
   }
+  @media screen and (max-width: map-get($breakpoints, medium)) {
+    .festival {
+      font-size: 0.75rem;
+      .category,
+      .year {
+        font-size: 0.625rem;
+      }
+    }
+
+    &.small {
+      .festival {
+        .title,
+        .subtitle,
+        .placement {
+          font-size: 0.675rem;
+        }
+      }
+    }
+    .laurel-part {
+      width: 1.125rem;
+    }
+  }
 }
 </style>
 

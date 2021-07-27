@@ -192,15 +192,30 @@ a {
     }
   }
   .wp-block-columns {
+    margin: -0.5rem;
     .wp-block-column {
+      margin: 0.5rem;
       p {
         &:first-child {
           margin-top: 0;
         }
       }
-      &:not(:first-child) {
-        margin-left: 1rem;
-      }
     }
+  }
+}
+.flex {
+  display: flex !important;
+}
+.flex-wrap {
+  flex-wrap: wrap !important;
+}
+.flex-grow {
+  flex-grow: 1 !important;
+}
+.flex-columns {
+  & > * {
+    flex-grow: 1;
+    text-align: center;
+    padding: 0 map-get($padding-sizes, medium)
   }
 }

@@ -232,6 +232,18 @@ $button-padding: map-get($button-sizes, medium);
     transition-delay: $slow-01;
   }
 }
+@media screen and (pointer: coarse), (pointer: none) {
+  .Cookie__button {
+    border-radius: $border-radius-large;
+    padding: map-get($button-sizes, large);
+  }
+  .Cookie__button--revoke {
+    $margin: map-get($padding-sizes, xxlarge);
+    width: 320px;
+    max-width: calc(100% - #{$margin} * 2);
+    margin: $margin;
+  }
+}
 
 .allow-cookie-notice {
   display: flex;

@@ -78,13 +78,18 @@ export default {
 nav {
   position: fixed;
   display: flex;
+  flex-direction: column;
   bottom: 0;
   right: 0;
   z-index: 999;
   @include dynamic-box(margin);
+  @media screen and (pointer: coarse), (pointer: none) {
+    margin: map-get($padding-sizes, xxlarge);
+  }
+
   div {
     --scale: 1;
-    --rotate-button: 0deg;
+    --rotate-button: 90deg;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -97,6 +102,7 @@ nav {
     backdrop-filter: var(--blur);
     transform: scale(var(--scale)) rotate(var(--rotate-button));
     color: $dark-02;
+    margin: 0.25em;
     &::before,
     &::after {
       content: '';
@@ -139,10 +145,7 @@ nav {
       --scale: 0.9;
     }
     &:last-child {
-      --rotate-button: 180deg;
-    }
-    & + * {
-      margin-left: 0.5em;
+      --rotate-button: 270deg;
     }
   }
 }

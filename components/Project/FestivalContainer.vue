@@ -78,6 +78,11 @@ export default {
         display: none;
       }
     }
+    @media screen and (max-width: 780px) {
+      & > *:nth-child(n + 3) {
+        display: none;
+      }
+    }
   }
 }
 </style>
