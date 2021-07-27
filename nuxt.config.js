@@ -75,7 +75,8 @@ module.exports = {
     { src: "~/plugins/scroll-behavior-polyfill", mode: "client" },
     { src: "~/plugins/idle-vue", mode: "client" },
     { src: "~/plugins/vue-cookie-law", mode: "client" },
-    { src: "~/plugins/vue-gtag", mode: "client" }
+    { src: "~/plugins/vue-gtag", mode: "client" },
+    { src: "~/plugins/vue-loadscript", mode: "client" }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
