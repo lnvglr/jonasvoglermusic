@@ -42,6 +42,7 @@ export default {
   methods: {
     openProjectByIndex(index) {
       const slug = this.projects[index] ? this.projects[index].slug : null
+      if (!slug && index === -1) window.scrollTo({ top: 0, behavior: 'smooth'})
       this.$store.dispatch('changeRoute', slug)
     },
     title(index) {
@@ -84,7 +85,7 @@ nav {
   z-index: 999;
   @include dynamic-box(margin);
   @media screen and (pointer: coarse), (pointer: none) {
-    margin: map-get($padding-sizes, xxlarge);
+    margin: map-get($padding-sizes, xlarge);
   }
 
   div {
@@ -98,10 +99,10 @@ nav {
     min-width: var(--button-size);
     height: var(--button-size);
     border-radius: var(--button-size);
-    background: #ffffff80;
+    background: #ffffff60;
     backdrop-filter: var(--blur);
     transform: scale(var(--scale)) rotate(var(--rotate-button));
-    color: $dark-02;
+    color: $black;
     margin: 0.25em;
     &::before,
     &::after {

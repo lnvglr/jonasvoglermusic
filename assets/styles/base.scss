@@ -3,11 +3,14 @@
 :root {
   --font-family: Gilroy, sans-serif;
   --font-family-bold: Gilroy, sans-serif;
-  --blur: blur(20px) saturate(1.5);
+  --blur: blur(20px) saturate(2);
   --stroke: 2px;
   --button-size: 2.5rem;
   --shadow: 0px 2px 3px rgb(0 0 0 / 20%), 0px 10px 20px rgb(0 0 0 / 50%);
   --primary: $primary;
+  @media screen and (pointer: coarse), (pointer: none) {
+    --button-size: 3.5rem;
+  }
 }
 * {
   box-sizing: border-box;
