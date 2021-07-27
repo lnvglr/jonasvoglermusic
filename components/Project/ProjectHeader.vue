@@ -2,6 +2,7 @@
   <div class="project-header" :class="{ hasControls: heroIsVideo, active: isOpen }">
     <div
       class="clipped cinema"
+      :class="{ hover }"
       :style="`padding-bottom: ${aspectRatio}%;`"
       @click="open(project.slug)"
       @mouseover="hover = true"
@@ -12,7 +13,6 @@
           <span v-if="projectSubtitle" class="project-category" v-html="projectSubtitle"></span>
           <span class="project-title" v-html="projectTitle"></span>
         </component>
-          <!-- :festivals="project.field.festivals" -->
         <FestivalContainer
           :festivals="headerFestivals"
           class="hide-medium-down"
@@ -24,7 +24,7 @@
         class="hero"
         :open="isOpen"
         :project="project"
-        @playing="e => $emit('playing', e)"
+        @playing="(e) => $emit('playing', e)"
       />
     </div>
   </div>
@@ -32,6 +32,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import _ from 'lodash'
 
 import ProjectHero from '@/components/Project/ProjectHero.vue'
 import FestivalContainer from '@/components/Project/FestivalContainer.vue'
@@ -123,12 +124,32 @@ export default {
       gcd = gcd(numerator, denominator)
       return [numerator / gcd, denominator / gcd]
     },
+    isScrolledIntoView() {
+      if (!this.$el) return
+      if (
+        // dont artificially hover if is not a touch device
+        !('ontouchstart' in window) &&
+        !(navigator.maxTouchPoints > 0) &&
+        !(navigator.msMaxTouchPoints > 0)
+      )
+        return
+      const rect = this.$el.getBoundingClientRect()
+      this.hover = rect.bottom < window.innerHeight - 100 && rect.top > 100
+    },
+  },
+  mounted() {
+    this.$nextTick(function () {
+      this.isScrolledIntoView()
+    })
+    window.addEventListener('scroll', _.throttle(this.isScrolledIntoView, 30))
+  },
+  unmounted() {
+    window.removeEventListener('scroll', _.throttle(this.isScrolledIntoView, 30))
   },
 }
 </script>
 
 <style lang="scss" scoped>
-
 .project-header {
   max-width: 100%;
   width: 100%;
@@ -211,21 +232,33 @@ export default {
           font-size: 0.75rem;
         }
       }
+      @media screen and (max-width: map-get($breakpoints, medium)) {
+        .project-title {
+          font-size: 1.25rem;
+        }
+        .project-category {
+          font-size: 0.75rem;
+        }
+      }
     }
   }
   &:not(.active) > * {
     cursor: pointer;
-    &:hover::v-deep  {
-      img,
-      iframe,
-      figure {
-        transition: $slow-01 $expressive;
-        transform: scale(1.02) translateZ(0);
-        will-change: transform;
+    &:hover,
+    &.hover {
+      &::v-deep {
+        img,
+        iframe,
+        figure {
+          transition: $slow-01 $expressive;
+          transform: scale(1.02) translateZ(0);
+          will-change: transform;
+        }
       }
     }
   }
   & > *:hover,
+  & > *.hover,
   &.active > * {
     .title-container {
       .project-title {
@@ -285,7 +318,6 @@ export default {
 .experimental {
   .project {
     .project-header {
-
       .header-copy {
         justify-content: flex-start;
         align-items: center;
@@ -296,7 +328,7 @@ export default {
           .project-title {
             text-transform: initial;
             opacity: 1;
-						font-weight: normal;
+            font-weight: normal;
           }
         }
       }
@@ -319,6 +351,7 @@ export default {
       }
     }
     .project-header > *:hover,
+    .project-header > *.hover,
     &.active .project-header {
       .project-category {
         opacity: 1;
