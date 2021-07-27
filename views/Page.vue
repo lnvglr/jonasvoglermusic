@@ -41,7 +41,9 @@ export default {
       cookieConsent: 'getCookieConsent',
     }),
     page() {
-      const pageObject = JSON.parse(JSON.stringify(this.getPage(this.$route.params.pageSlug)))
+      const page = this.getPage(this.$route.params.pageSlug)
+      if (!page) return
+      const pageObject = JSON.parse(JSON.stringify(page))
       if (this.cookieConsent) return pageObject
       pageObject.content.rendered = CookieNotice.methods.blockedIframes(pageObject.content.rendered)
       return pageObject
