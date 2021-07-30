@@ -33,17 +33,19 @@ export default {
       // to make sure the browser has finished
       // painting after setting the `height`
       // to `0` in the line above.
-      requestAnimationFrame(() => {
-        element.style.height = height
-      })
 
       window.scrollTo({
         top: this.scrollReference,
         behavior: 'smooth',
       })
+      requestAnimationFrame(() => {
+        element.style.height = height
+      })
     },
     afterEnter(element) {
-      element.style.height = 'auto'
+      requestAnimationFrame(() => {
+        element.style.height = 'auto'
+      })
     },
     leave(element) {
       const height = getComputedStyle(element).height
@@ -74,6 +76,9 @@ export default {
 .expand-leave-active {
   transition: $slow-02 $expressive;
   overflow: hidden;
+}
+.expand-enter-active {
+  transition-delay: $moderate-01;
 }
 
 .expand-enter,
