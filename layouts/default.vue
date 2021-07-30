@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :class="{ show: fontsLoaded, experimental }">
+  <div id="app" :class="{ show: fontsLoaded, experimental, [currentPage]: currentPage }">
     <Header />
     <main class="wrap">
       <Nuxt />
@@ -26,6 +26,9 @@ export default {
       experimental: 'getExperimental',
       projectOpen: 'project/open',
     }),
+    currentPage() {
+      return this.$nuxt.$route.params.pageSlug
+    }
   },
   mounted() {
     if (process.server) this.fontsLoaded = trueFrale
