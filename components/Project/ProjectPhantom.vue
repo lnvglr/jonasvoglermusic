@@ -1,7 +1,7 @@
 <template>
   <div class="project">
     <div class="project-header">
-      <div :style="`padding-bottom: ${aspectRatio}%;`"></div>
+      <div :style="`padding-bottom: ${aspectRatio}%;`" ref="offset"></div>
     </div>
   </div>
 </template>

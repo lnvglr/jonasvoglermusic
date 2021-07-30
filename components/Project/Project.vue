@@ -163,7 +163,7 @@ export default {
     calculateOffset(scrollTo = false) {
       if (process.server || !this.reference) return 0
       const referenceElement = this.reference[`project-${this.project.slug}`][0]
-      this.offset = referenceElement?.$el.getBoundingClientRect().top + window.scrollY || 0
+      this.offset = referenceElement?.$refs.offset.getBoundingClientRect().top + window.scrollY || 0
       if (scrollTo && typeof scrollTo !== 'object') {
         setTimeout(() => {
           window.scrollTo({
