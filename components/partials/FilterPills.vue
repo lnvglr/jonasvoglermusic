@@ -3,7 +3,7 @@
     <li
       v-for="(item, i) in items"
       :key="i"
-      :class="{ active: filter.includes(item[label]) }"
+      :class="{ active: filter.includes(item[label]) || (filter.length === 0 && item[label] === 'all') }"
       @click="toggleFilter(item[label])"
       v-html="item[value]"
     ></li>
