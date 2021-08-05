@@ -11,6 +11,11 @@ export default {
   data() {
     return {
       icons: {
+        bandcamp: {
+          name: 'Bandcamp',
+          color: '#1da0c3',
+          svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26.6 15.63"><path id="rhomboid" d="M0 15.63L8.47 0H26.6l-8.47 15.63z"></path></svg>',
+        },
         imdb: {
           name: 'IMDB',
           color: '#F5C518',
@@ -224,7 +229,7 @@ export default {
       line-height: 1;
       height: 2rem;
       width: 2rem;
-      padding: 0.5rem 0.75rem;
+      padding: 0.75rem 1rem;
       color: $light-03;
       fill: currentColor;
       box-sizing: content-box;
