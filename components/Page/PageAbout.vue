@@ -20,7 +20,7 @@
         <small v-if="page.thumbnail.caption" class="caption">{{ page.thumbnail.caption }}</small>
         <div class="contact">
           <Email v-if="page.field.email" :address="page.field.email" />
-          <SocialMedia :page="page" />
+          <SocialMedia :links="page.field.social_media" />
         </div>
       </div>
     </div>

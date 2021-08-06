@@ -1,12 +1,12 @@
 <template>
-  <div class="icon-wrap fade" v-html="this.iconMarkup"></div>
+  <div class="icon-wrap fade" v-html="this.iconMarkup.join('')" />
 </template>
 
 <script>
 export default {
   name: 'SocialMediaLinks',
   props: {
-    page: Object,
+    links: Array,
   },
   data() {
     return {
@@ -84,7 +84,7 @@ export default {
           svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512,97.248c-19.04,8.352-39.328,13.888-60.48,16.576c21.76-12.992,38.368-33.408,46.176-58.016 c-20.288,12.096-42.688,20.64-66.56,25.408C411.872,60.704,384.416,48,354.464,48c-58.112,0-104.896,47.168-104.896,104.992 c0,8.32,0.704,16.32,2.432,23.936c-87.264-4.256-164.48-46.08-216.352-109.792c-9.056,15.712-14.368,33.696-14.368,53.056 c0,36.352,18.72,68.576,46.624,87.232c-16.864-0.32-33.408-5.216-47.424-12.928c0,0.32,0,0.736,0,1.152 c0,51.008,36.384,93.376,84.096,103.136c-8.544,2.336-17.856,3.456-27.52,3.456c-6.72,0-13.504-0.384-19.872-1.792 c13.6,41.568,52.192,72.128,98.08,73.12c-35.712,27.936-81.056,44.768-130.144,44.768c-8.608,0-16.864-0.384-25.12-1.44 C46.496,446.88,101.6,464,161.024,464c193.152,0,298.752-160,298.752-298.688c0-4.64-0.16-9.12-0.384-13.568 C480.224,136.96,497.728,118.496,512,97.248z"/></svg>',
         },
       },
-      iconMarkup: '',
+      iconMarkup: [],
     }
   },
   created() {
@@ -100,21 +100,11 @@ export default {
   },
   methods: {
     init() {
-      const self = this
       const initialDelay = 2000
-      setTimeout(function () {
-        self.$el.classList.remove('fade')
-      }, initialDelay)
+      setTimeout(() => this.$el.classList.remove('fade'), initialDelay)
     },
     generateIcon() {
-      const links = this.page.field.social_media
-      const self = this
-      const icons = []
-      links.forEach(function (link, key) {
-        self.iconMarkup =
-          self.iconMarkup +
-          self.iconHTML(link.url, self.matchIcon(self.domain_from_url(link.url)), key)
-      })
+      this.iconMarkup = this.links.map((link, key) => this.iconHTML(link.url, this.matchIcon(this.domain_from_url(link.url)), key))
     },
     domain_from_url(url) {
       if (url === undefined) return
@@ -157,6 +147,7 @@ export default {
       const html_class = classes.join(' ')
 
       let style = ''
+      let variables = ''
       let iconMarkup = ''
       if (icon[1].svg) {
         let temp = document.createElement('div')
@@ -173,27 +164,17 @@ export default {
         const newWidth = (viewBox[0] / Math.sqrt(divider)).toFixed(2)
         const width = newWidth + 'px'
         const delay = index * 100
-        style += `
-            ${css_class} {
-              transition-delay: ${delay}ms
-            }
-            ${css_class} svg {
-              width: ${width}
-            }
-            ${css_class}:hover svg {
-              color: ${color};
-              fill: currentColor;
-            }
-          `
-        iconMarkup = icon[1].svg
+        const div = document.createElement('div');
+        div.innerHTML = icon[1].svg;
+        div.querySelectorAll("svg")[0].style.width = width
+        iconMarkup = div.innerHTML
+        variables += `--delay: ${delay}ms; --color: ${color};`
       } else if (icon[1].initial) {
-        style += `${css_class}:hover span { color: ${color}; } `
         iconMarkup = `<span>${icon[1].initial}</span>`
       }
 
       return `
-        <style>${style}</style>
-        <div class="${html_class}">
+        <div class="${html_class}" style="${variables}">
           <a href="${link}" target="_blank" title="${name}">
             ${iconMarkup}
           </a>
@@ -211,6 +192,8 @@ export default {
   flex-wrap: wrap;
   margin: 0 auto;
   box-sizing: border-box;
+  --delay: 0ms;
+  --color: $secondary;
 
   &.fade .social-media-icon {
     opacity: 0;
@@ -218,6 +201,7 @@ export default {
   }
   .social-media-icon {
     transition: $slow-02 $expressive;
+    transition-delay: var(--delay);
     a {
       display: flex;
     }
@@ -234,7 +218,7 @@ export default {
       fill: currentColor;
       box-sizing: content-box;
       &:hover {
-        color: $secondary;
+        color: var(--color);
       }
     }
   }
