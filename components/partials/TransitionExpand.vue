@@ -1,15 +1,27 @@
 <template>
-  <transition name="expand" @enter="enter" @after-enter="afterEnter" @leave="leave">
+  <transition name="expand" @enter="enter" @after-enter="afterEnter" @leave="leave" @after-leave="afterLeave">
     <slot />
   </transition>
 </template>
 
 <script>
+import variables from '@/assets/styles/_variableExport.scss'
+
 export default {
   name: 'TransitionExpand',
   props: ['scrollReference'],
+  data: () => ({ variables }),
   methods: {
     enter(element) {
+      // Trigger the animation.
+      // We use `requestAnimationFrame` because we need
+      // to make sure the browser has finished
+      // painting after setting the `height`
+      // to `0` in the line above.
+      window.scrollTo({
+        top: this.scrollReference,
+        behavior: 'smooth',
+      })
       const width = getComputedStyle(element).width
 
       element.style.width = width
@@ -28,16 +40,6 @@ export default {
       // animation is triggered correctly.
       getComputedStyle(element).height // eslint-disable-line no-unused-expressions
 
-      // Trigger the animation.
-      // We use `requestAnimationFrame` because we need
-      // to make sure the browser has finished
-      // painting after setting the `height`
-      // to `0` in the line above.
-
-      window.scrollTo({
-        top: this.scrollReference,
-        behavior: 'smooth',
-      })
       requestAnimationFrame(() => {
         element.style.height = height
       })
@@ -46,20 +48,28 @@ export default {
       requestAnimationFrame(() => {
         element.style.height = 'auto'
       })
+      this.afterTransition()
     },
     leave(element) {
       const height = getComputedStyle(element).height
+      setTimeout(() => {
+        element.style.height = height
 
-      element.style.height = height
+        // Force repaint to make sure the
+        // animation is triggered correctly.
+        getComputedStyle(element).height // eslint-disable-line no-unused-expressions
 
-      // Force repaint to make sure the
-      // animation is triggered correctly.
-      getComputedStyle(element).height // eslint-disable-line no-unused-expressions
-
-      requestAnimationFrame(() => {
-        element.style.height = 0
-      })
+        requestAnimationFrame(() => {
+          element.style.height = 0
+        })
+      }, parseInt(this.variables['moderate-01']))
     },
+    afterLeave(element) {
+      this.afterTransition()
+    },
+    afterTransition() {
+      window.dispatchEvent(new CustomEvent("afterTransition"));
+    }
   },
 }
 </script>
@@ -74,7 +84,7 @@ export default {
 
 .expand-enter-active,
 .expand-leave-active {
-  transition: $slow-02 $expressive;
+  transition: $extraslow-01 $expressive;
   overflow: hidden;
 }
 .expand-enter-active {

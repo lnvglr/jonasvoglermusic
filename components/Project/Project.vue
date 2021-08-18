@@ -3,7 +3,7 @@
     ref="projectContainer"
     class="project"
     :class="{
-      fade: !fadedIn,
+      fade: !fadedIn && !isOpen,
       active: isOpen,
       idle: isAppIdle && isOpen && heroIsVideo && isPlaying,
     }"
@@ -87,7 +87,7 @@ export default {
           : '',
       ]
       return details
-        .filter((e) => e !== null)
+        .filter((e) => e)
         .map((e) => `<span>${e}</span>`)
         .join('<span class="sr-only">,</span><span class="em-space"> </span>')
         .concat('<span class="sr-only">:</span>')
@@ -117,12 +117,14 @@ export default {
     window.addEventListener('resize', _.throttle(this.initialFadeIn, 100))
     window.addEventListener('scroll', _.throttle(this.initialFadeIn, 30))
     window.addEventListener('touchmove', _.throttle(this.initialFadeIn, 30))
+    window.addEventListener('afterTransition', this.initialFadeIn)
   },
   unmounted() {
     window.removeEventListener('resize', _.throttle(this.calculateOffset, 100))
     window.removeEventListener('resize', _.throttle(this.initialFadeIn, 100))
     window.removeEventListener('scroll', _.throttle(this.initialFadeIn, 30))
     window.removeEventListener('touchmove', _.throttle(this.initialFadeIn, 30))
+    window.addEventListener('afterTransition', this.initialFadeIn)
   },
   methods: {
     setupGallery(open = true) {
