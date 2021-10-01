@@ -41,8 +41,8 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: var(--button-size);
-  height: var(--button-size);
+  width: var(--button-size-large);
+  height: var(--button-size-large);
   transition: $moderate-02 $expressive;
   margin: 0 auto;
   color: $dark-02;
@@ -61,8 +61,8 @@ export default {
     transition: $moderate-02 $expressive;
   }
   &::v-deep svg {
-    width: calc( var(--button-size) / 3 );
-    height: calc( var(--button-size) / 3 );
+    width: calc( var(--button-size-large) / 3 );
+    height: calc( var(--button-size-large) / 3 );
   }
 }
 </style>

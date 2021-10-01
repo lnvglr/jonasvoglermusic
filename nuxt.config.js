@@ -25,7 +25,10 @@ module.exports = {
     },
     meta: [
       { charset: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      {
+        name: "viewport",
+        content: "width=device-width, initial-scale=1, viewport-fit=cover"
+      },
       {
         hid: "description",
         name: "description",
@@ -86,12 +89,23 @@ module.exports = {
   buildModules: [],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ["@nuxtjs/axios", "@nuxtjs/style-resources", "@nuxtjs/sitemap"],
+  modules: [
+    "@nuxtjs/axios",
+    "@nuxtjs/style-resources",
+    "@nuxtjs/sitemap",
+    "nuxt-svg-loader",
+  ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     publicPath: "/public",
     extractCSS: true
+  },
+  server: {
+    // host: '0.0.0.0'
+  },
+  devServer: {
+    clientLogLevel: "silent"
   },
 
   // Sitemap

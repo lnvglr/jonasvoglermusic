@@ -32,7 +32,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import _ from 'lodash'
+import throttle from 'lodash.throttle'
 
 import ProjectHero from '@/components/Project/ProjectHero.vue'
 import FestivalContainer from '@/components/Project/FestivalContainer.vue'
@@ -141,10 +141,10 @@ export default {
     this.$nextTick(function () {
       this.isScrolledIntoView()
     })
-    window.addEventListener('scroll', _.throttle(this.isScrolledIntoView, 30))
+    window.addEventListener('scroll', throttle(this.isScrolledIntoView, 50))
   },
   unmounted() {
-    window.removeEventListener('scroll', _.throttle(this.isScrolledIntoView, 30))
+    window.removeEventListener('scroll', throttle(this.isScrolledIntoView, 50))
   },
 }
 </script>
@@ -219,7 +219,6 @@ export default {
         font-size: 0.875rem;
         margin: 0;
         font-weight: normal;
-        letter-spacing: $letter-spacing;
         transform: translateY(1em);
         transition: $slow-01 $expressive;
         transition-property: transform opacity;
@@ -342,7 +341,7 @@ export default {
         transform: translate3d(0, 0, 0);
       }
     }
-    @media screen and (max-width: $wide) {
+    @media screen and (max-width: map-get($breakpoints, xlarge)) {
       &.active .project-header {
         & > * {
           border-radius: 0;

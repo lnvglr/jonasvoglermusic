@@ -26,16 +26,18 @@ export default {
   margin-left: -2px;
   margin-right: -2px;
   padding: 0.5rem;
+  justify-content: center;
   .detail {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    text-align: center;
     margin: 0.5rem 1rem;
     flex: 0 1 auto;
     .detail-label {
       margin: 0;
       color: $dark-01;
       font-size: 0.75rem;
-      letter-spacing: $letter-spacing;
     }
     .detail-value {
       margin: 0;
@@ -53,18 +55,6 @@ export default {
       .detail-value {
         font-size: 1.125rem;
       }
-    }
-  }
-}
-</style>
-
-<style lang="scss">
-.experimental {
-  .details {
-    justify-content: center;
-    .detail {
-      align-items: center;
-      text-align: center;
     }
   }
 }

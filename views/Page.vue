@@ -3,10 +3,11 @@
     ref="page"
     class="page"
     :class="{
-      fade: !this.fadedIn,
+      fade: !fadedIn,
     }"
-    :page="this.page"
-    :is="this.template"
+    :ready="fadedIn"
+    :page="page"
+    :is="template"
   />
 </template>
 
@@ -22,7 +23,13 @@ import CookieNotice from '@/components/partials/CookieNotice.vue'
 
 export default {
   name: 'Page',
-  transition: 'fade',
+  // transition: 'fade',
+  transition(to, from, e) {
+    if (from && from.params?.pageSlug === 'music') {
+      return 'fade'
+    }
+    return 'slide-in'
+  },
   components: {
     PageDefault,
     PageTable,
@@ -53,15 +60,10 @@ export default {
     },
   },
   mounted() {
-    this.$nextTick(function () {
-      const self = this
-      setTimeout(function () {
-        self.fadedIn = true
-      }, 200)
-    })
+    this.$nextTick(() => setTimeout(() => this.fadedIn = !0, 200))
   },
   methods: {
-    initialFadeIn(event) {
+    initialFadeIn() {
       const hiddenElements = document.getElementsByClassName('hidden')
       const self = this
       if (!hiddenElements) return
@@ -76,6 +78,7 @@ export default {
     },
   },
   metaInfo() {
+    if (!this.bloginfo) return
     const div = document.createElement('div')
     div.innerHTML = this.page ? this.page.content.rendered?.replace(/<[^>]*>?/gm, '') : ''
     const title = this.page
@@ -112,15 +115,6 @@ export default {
 </script>
 
 <style lang="scss">
-// .slide-bottom-enter-active,
-// .slide-bottom-leave-active {
-//   transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
-// }
-// .slide-bottom-enter,
-// .slide-bottom-leave-to {
-//   opacity: 0;
-//   transform: translate3d(0, 15px, 0);
-// }
 .page {
   margin-bottom: 25px;
   @media screen and (min-width: map-get($breakpoints, large)) {

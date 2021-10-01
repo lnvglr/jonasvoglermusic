@@ -52,17 +52,15 @@ export default {
     },
     leave(element) {
       const height = getComputedStyle(element).height
-      setTimeout(() => {
-        element.style.height = height
+      element.style.height = height
 
-        // Force repaint to make sure the
-        // animation is triggered correctly.
-        getComputedStyle(element).height // eslint-disable-line no-unused-expressions
+      // Force repaint to make sure the
+      // animation is triggered correctly.
+      getComputedStyle(element).height // eslint-disable-line no-unused-expressions
 
-        requestAnimationFrame(() => {
-          element.style.height = 0
-        })
-      }, parseInt(this.variables['moderate-01']))
+      requestAnimationFrame(() => {
+        element.style.height = 0
+      })
     },
     afterLeave(element) {
       this.afterTransition()
@@ -84,11 +82,11 @@ export default {
 
 .expand-enter-active,
 .expand-leave-active {
-  transition: $extraslow-01 $expressive;
   overflow: hidden;
+  transition: $extraslow-01 $expressive;
 }
 .expand-enter-active {
-  transition-delay: $moderate-01;
+  transition-delay: $moderate-02;
 }
 
 .expand-enter,

@@ -55,16 +55,18 @@ export default {
 <style lang="scss">
 @import '~/assets/styles/base';
 #app {
+  --body-background: #{$light-01};
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  transition: opacity, background-color, color $extraslow-02;
-  background-color: transparent;
+  transition: $extraslow-02;
+  background-color: var(--body-background);
   &:not(.show) {
     opacity: 0;
   }
   main {
     flex: 1;
+    // z-index: 10;
     padding-top: 0;
   }
   // &.dark {
@@ -75,16 +77,5 @@ export default {
 }
 .experimental {
   --font-family: Raleway, Gramatika-Regular, Gilroy, sans-serif;
-  --font-family-bold: Raleway, Gramatika-Bold, Gilroy, sans-serif;
-  font-family: var(--font-family);
-  &:after {
-    // content: '';
-    pointer-events: none;
-    width: 100vw;
-    height: 100vh;
-    position: fixed;
-    box-shadow: inset 0 0 0 5px rgb(237, 106, 101), 0 0 0 5px rgb(237, 106, 101);
-    border-radius: 0 0 12px 12px;
-  }
 }
 </style>

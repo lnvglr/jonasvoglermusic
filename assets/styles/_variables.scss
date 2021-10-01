@@ -1,12 +1,8 @@
 $border-radius-small: 0.25rem;
 $border-radius-large: 0.75rem;
-$letter-spacing: 0.015625em; // 0,25px
 
-$wide: 960px;
-$narrow: 720px;
-
-$font-family: "Gilroy", sans-serif;
-$font-family-serif: "Addington", serif;
+$font-family-sans: Raleway, Gilroy, sans-serif;
+$font-family-serif: Addington, serif;
 
 // colors
 
@@ -26,10 +22,10 @@ $black: hsl(0, 0%, 20%);
 
 $padding-sizes: (
   small: 0.3125rem,
-  medium: 0.5rem,
-  large: 1rem,
-  xlarge: 1.5rem,
-  xxlarge: 2.5rem
+  medium: 0.75rem,
+  large: 1.5rem,
+  xlarge: 1.875rem,
+  xxlarge: 3.125rem
 );
 $button-sizes: (
   small: 0.3125rem,
@@ -40,7 +36,7 @@ $button-sizes: (
 );
 
 $breakpoints: (
-  small: 0,
+  small: 240px,
   medium: 480px,
   large: 720px,
   xlarge: 960px,
@@ -52,4 +48,9 @@ $breakpoints-hidpi: (
   hidpi-2: 2,
   retina: 2,
   hidpi-3: 3
+);
+$dynamic-relation: (
+  small: large,
+  medium: xlarge,
+  large: xxlarge
 );

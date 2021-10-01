@@ -1,11 +1,5 @@
 @import "./_foundation-boilerplate.scss";
 
-$dynamic-relation: (
-  small: large,
-  medium: xlarge,
-  large: xxlarge
-);
-
 @function multiply-list($list, $multiplier) {
   $new-list: ();
   @each $item in $list {

@@ -3,11 +3,11 @@
     <NuxtLink :to="{ name: 'Home' }" class="title-container" ref="title" @click.native="home"
       ><span class="string"
         ><h1 class="logo">{{ name }}</h1>
-        <transition name="fade" mode="out-in" @enter="adjustHeight">
-          <span class="description" v-if="!legal">is a composer for film and television</span>
+        <transition name="slide-in" mode="out-in" @enter="adjustHeight">
+          <span class="description" v-if="!legal && !music">is a composer for film and television</span>
           <span v-else key="blank"></span>
         </transition>
-        <transition name="fade" mode="out-in" @enter="adjustHeight">
+        <transition name="slide-in" mode="out-in" @enter="adjustHeight">
           <span class="description" v-if="music" v-html="music" key="music"></span>
           <span
             class="description"
@@ -30,7 +30,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import _ from 'lodash'
+import throttle from 'lodash.throttle'
 
 export default {
   props: {
@@ -46,7 +46,7 @@ export default {
     },
     music() {
       return 'music' === this.$nuxt.$route.params.pageSlug
-        ? 'who happens to also compose music without picture.'
+        ? 'happens to also compose music without picture.'
         : false
     },
     aboutContact() {
@@ -65,10 +65,10 @@ export default {
     },
   },
   mounted() {
-    window.addEventListener('resize', _.throttle(this.adjustHeight, 100))
+    window.addEventListener('resize', throttle(this.adjustHeight, 100))
   },
   unmounted() {
-    window.removeEventListener('resize', _.throttle(this.adjustHeight, 100))
+    window.removeEventListener('resize', throttle(this.adjustHeight, 100))
   },
 }
 </script>
@@ -86,24 +86,20 @@ export default {
   font-weight: normal;
   margin: nth(map-get($padding-sizes, medium), 1) 0;
   line-height: 1.2;
-  letter-spacing: $letter-spacing;
 }
 </style>
 <style lang="scss">
 .experimental {
   header {
-    .subtitle {
-      letter-spacing: 0;
-    }
     .title-container {
       font-size: 4rem;
       color: $light-03;
       font-weight: bold;
       transition: height $slow-02;
-      @media screen and (max-width: map-get($breakpoints, large)) {
+      @media screen and (max-width: map-get($breakpoints, large)), (max-height: 480px)  {
         font-size: 3rem;
       }
-      @media screen and (max-width: map-get($breakpoints, medium)) {
+      @media screen and (max-width: map-get($breakpoints, medium)), (max-height: 320px) {
         font-size: 2rem;
       }
       .string {

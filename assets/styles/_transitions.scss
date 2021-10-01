@@ -17,34 +17,34 @@ $expressive: cubic-bezier(.5,0,.2,1);
 
 
 
-
 .slide-in-enter-active,
 .slide-in-leave-active {
-  transition: $slow-02 $expressive;
-}
-
-.slide-in-enter,
-.slide-in-leave-to {
-  transform: translateY(100%);
-  opacity: 0.5;
-}
-
-.fade-enter-active,
-.fade-leave-active {
   transition: $slow-01 $productive;
   transform-origin: top;
+  transform: translateY(0) scale(1);
 }
 
-.fade-enter {
+.slide-in-enter {
   transform-origin: top;
   transform: translateY(0) scale(0.99);
 }
-.fade-leave-to {
+.slide-in-leave-to {
   opacity: 0;
   transform-origin: top;
   transform: translateY(15px) scale(1);
 }
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity $slow-01 $productive;
+}
+.fade-leave-to {
+  opacity: 0;
+}
 
+.page-enter-active,
+.page-leave-active {
+  transition: $slow-01 $productive;
+}
 
 .fade-list-item {
   transition: $slow-01 $expressive;

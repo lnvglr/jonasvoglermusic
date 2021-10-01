@@ -1,6 +1,6 @@
 <template>
   <div style="position: relative">
-    <transition name="fade"
+    <transition name="slide-in"
       ><NavigateProjects v-if="openProject" :projects="filteredProjects"
     /></transition>
     <FilterPills :items="filterElements" label="slug" value="name" class="filter-container" />
@@ -179,21 +179,6 @@ export default {
     left: 50%;
     transform: translateX(-50%);
     background: $light-02;
-  }
-}
-.filter-container {
-  justify-content: center;
-  @media screen and (max-width: map-get($breakpoints, large)) {
-    justify-content: flex-start;
-  }
-}
-</style>
-
-
-<style lang="scss">
-.experimental {
-  .filter-container {
-    justify-content: flex-start;
   }
 }
 </style>

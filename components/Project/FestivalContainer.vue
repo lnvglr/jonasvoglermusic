@@ -56,21 +56,10 @@ export default {
   flex-wrap: wrap;
   margin-bottom: 2rem;
 }
+
 </style>
 
 <style lang="scss">
-#app:not(.experimental) .header-copy {
-  .festivals {
-    display: block;
-    margin: -10px;
-    width: 100%;
-    text-align: right;
-    flex-shrink: 1;
-    .festival-container {
-      display: inline-flex;
-    }
-  }
-}
 .header-copy {
   .festivals {
     @media screen and (max-width: 910px) {

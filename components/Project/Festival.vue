@@ -53,7 +53,6 @@ export default {
   display: flex;
   align-items: center;
   margin: 10px;
-  letter-spacing: $letter-spacing;
   opacity: 1;
   transition: $slow-02 $expressive;
   transition-delay: var(--delay);
@@ -145,18 +144,6 @@ export default {
     }
     .laurel-part {
       width: 1.125rem;
-    }
-  }
-}
-</style>
-
-<style lang="scss">
-.experimental {
-  .festival-container {
-    .festival {
-      .placement {
-        font-family: var(--font-family-bold);
-      }
     }
   }
 }

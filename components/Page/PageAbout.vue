@@ -20,7 +20,7 @@
         <small v-if="page.thumbnail.caption" class="caption">{{ page.thumbnail.caption }}</small>
         <div class="contact">
           <Email v-if="page.field.email" :address="page.field.email" />
-          <SocialMedia :links="page.field.social_media" />
+          <SocialMedia :links="page.field.social_media.map(e => e.url)" :initialDelay="2000" />
         </div>
       </div>
     </div>
@@ -55,7 +55,6 @@ export default {
   },
   computed: {
     ...mapGetters({
-      pages: 'pages/getPages',
       experimental: 'getExperimental',
     }),
   },
@@ -167,6 +166,7 @@ export default {
     min-width: clamp(200px, 30vh, 300px);
     max-width: min(40vh, 40vw);
     .portrait {
+      margin-top: 0.5rem;
       margin-bottom: 2rem;
     }
   }
@@ -194,6 +194,9 @@ export default {
       &:hover {
         color: $secondary;
       }
+    }
+    &::v-deep .icon-wrap {
+      color: $light-03;
     }
   }
 

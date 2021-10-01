@@ -1,109 +1,212 @@
 <template>
-    <div class="player-container">
-      <div class="backdrop clipped" v-if="currentTrack">
-        <img :src="cover" width="100%" height="auto" />
+  <div class="player-container">
+    <div class="backdrop clipped" :class="{ fade: !fadedIn }">
+      <img :src="cover" width="100%" height="auto" />
+    </div>
+    <div class="cover" v-if="cookieConsent">
+      <div class="cover-container" :class="{ loading: showSpinner }">
+        <img :src="cover" width="500" height="500" v-if="currentTrack" />
+        <transition name="fade"
+          ><div class="spinner-container" v-if="showSpinner"><div class="spinner large"></div></div
+        ></transition>
       </div>
-      <div class="cover" @click="togglePlay()">
-        <div class="cover-container"><div class="control" :class="isPlaying ? 'pause' : 'play'"></div>
-        <img :src="cover" width="250" height="250" /></div>
-        <div class="lower">
-          <span class="track-title" v-if="currentTrack" :title="currentTrack.title">{{ currentTrack.title }}</span>
-          <span class="time"><span>{{ time(currentTime) }}</span>
-          <span>{{ time(duration) }}</span></span>
-          <span class="progress" :style="`--width: ${progress}%`"></span>
+
+      <div class="lower" v-if="currentTrack && currentTrack.user">
+        <span class="artist" :title="currentTrack.user.full_name">{{
+          currentTrack.user.full_name
+        }}</span>
+        <span class="track-title" :title="currentTrack.title">{{ currentTrack.title }}</span>
+        <SocialMedia
+          :links="[currentTrack.permalink_url]"
+          class="soundcloud-icon"
+          :size="16"
+          :initialDelay="2000"
+          transitionName="fade"
+        />
+
+        <span class="time">
+          <span v-html="time(currentTime)" />
+          <span v-html="`–${time(remainingTime)}`" />
+        </span>
+        <span class="progress" :style="`--width: ${progress}%`"></span>
+        <div class="controls">
+          <div @click="skipTrack(-1)">
+            <ControlIcon name="Backward" :scale="1" />
+          </div>
+          <div @click="togglePlay(isPlaying)">
+            <ControlIcon :name="isPlaying ? 'Pause' : 'Play'" :scale="1.5" />
+          </div>
+          <div @click="skipTrack(1)">
+            <ControlIcon name="Forward" :scale="1" />
+          </div>
         </div>
       </div>
-      <span @click="next()" style="padding: 2rem; cursor: pointer;">Next</span>
-      <!-- <img :src="gifs[Math.floor(Math.random() * gifs.length)]" /> -->
     </div>
-    <!-- <span>
-      <a v-if="currentTrack" href="javascript:void(0)" @click="togglePlay()"
-        ><span v-html="isPlaying ? 'Listening' : 'Listen'"></span> to {{ currentTrack.title }}. </a
-      ><a href="javascript:void(0)" @click="next()">Next.</a>
-    </span> -->
+    <div v-else v-html="cookies" />
   </div>
 </template>
 
 <script>
+
+import { mapGetters } from 'vuex'
+
+import variables from '@/assets/styles/_variableExport.scss'
+import SocialMedia from '@/components/partials/SocialMediaLinks.vue'
+
+import ControlIcon from '@/components/Music/ControlIcon.vue'
+import CookieNotice from '@/components/partials/CookieNotice.vue'
+
+import TransitionExpand from '@/components/partials/TransitionExpand.vue'
+
 export default {
   name: 'Player',
+  components: {
+    ControlIcon,
+    TransitionExpand,
+    SocialMedia,
+  },
+  props: {
+    soundcloud: Object,
+  },
   data() {
     return {
-      cover: '',
-      client_id: '853fdb79a14a9ed748ec9fe482e859dd',
-      user_id: '11195685',
+      variables,
+      playlist: null,
       isPlaying: false,
       audioStream: null,
       tracks: [],
+      order: [],
       currentTrack: null,
+      cover: '',
       currentTime: 0,
       duration: 0,
+      fadedIn: false,
+      isLoading: false,
+      showSpinner: false,
     }
   },
   mounted() {
-    this.$loadScript('https://connect.soundcloud.com/sdk.js')
-      .then(() => {
-        SC.initialize({ client_id: this.client_id })
-        const url = `/users/${this.user_id}/tracks`
-        // const url = `/playlists/1156164181/tracks`
-        SC.get(url, (tracks) => {
-          this.tracks = tracks
-          this.currentTrack = this.randOfArray(this.tracks)
-          this.setupTrack()
-        })
-      })
-      .catch(() => {})
+    this.initSoundcloud()
+    this.$nextTick(() => (this.fadedIn = true))
+  },
+  destroyed() {
+    this.abortStream()
   },
   computed: {
+    ...mapGetters({
+      cookieConsent: 'getCookieConsent',
+    }),
     progress() {
       if (!this.audioStream) return 0
       return parseInt((100 / parseInt(this.audioStream.duration)) * this.currentTime)
     },
+    remainingTime() {
+      if (!this.duration) return 0
+      if (!this.currentTime) return this.duration
+      return this.duration - this.currentTime
+    },
+    cookies() {
+      return CookieNotice.methods.blockedCookies(this.soundcloud.playlist_link)
+    },
   },
   methods: {
-    randOfArray(array) {
-      return array[Math.floor(Math.random() * array.length)]
+    async initSoundcloud() {
+      if (!this.cookieConsent) return
+      this.$loadScript('https://connect.soundcloud.com/sdk.js')
+        .then(() => {
+          SC.initialize({ client_id: this.soundcloud.client_id })
+          SC.get(`/playlists/${this.soundcloud.playlist_id}`, (playlist) => {
+            if (!playlist.tracks) return
+            this.tracks = playlist.tracks
+            this.order = this.shuffle(this.tracks.map((e, i) => i))
+            this.currentTrack = this.tracks[this.order[0]]
+          })
+        })
+        .catch((e) => error.log(e))
     },
-    next() {
-      this.audioStream.pause()
-      this.isPlaying = false
-      const currentIndex = this.tracks.indexOf(this.currentTrack)
-      this.currentTrack =
-        this.tracks[currentIndex !== this.tracks.length - 1 ? currentIndex + 1 : 0]
+    shuffle(a) {
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[a[i], a[j]] = [a[j], a[i]]
+      }
+      return a
+    },
+    skipTrack(i = 1, isPlaying = !this.isPlaying) {
+      if (!this.currentTrack) return
+      const currentIndex = this.order.indexOf(this.tracks.indexOf(this.currentTrack))
+      const next = this.order[currentIndex + i]
+      const nextIndex = next !== undefined ? next : this.order[0]
+      this.currentTrack = this.tracks[nextIndex]
       this.currentTime = 0
+      this.abortStream()
+      this.togglePlay(isPlaying, !isPlaying)
     },
-    togglePlay() {
-      this.isPlaying ? this.audioStream.pause() : this.audioStream.play()
-      this.isPlaying = !this.isPlaying
+    togglePlay(isPlaying = null, setup = true) {
+      if (this.audioStream) return isPlaying ? this.audioStream.pause() : this.audioStream.play()
+      if (setup) this.setupStream(isPlaying)
     },
     setupTrack() {
       if (!this.currentTrack) return
-      this.cover = this.currentTrack.artwork_url.replace('-large', '-crop')
-      this.audioStream = new Audio(`${this.currentTrack.uri}/stream?client_id=${this.client_id}`)
-      this.audioStream.addEventListener(
-        'timeupdate',
-        () => (this.currentTime = this.audioStream.currentTime)
-      )
-      this.audioStream.addEventListener(
-        'loadeddata',
-        () => (this.duration = this.audioStream.duration)
-      )
+      this.cover = this.currentTrack.artwork_url.replace('-large', '-t500x500')
+      this.duration = this.currentTrack.duration / 1000
+    },
+    setupStream(pause = true) {
+      if (!this.currentTrack) return
+      try {
+        this.audioStream = new Audio(
+          `${this.currentTrack.uri}/stream?client_id=${this.soundcloud.client_id}`
+        )
+      } catch (e) {
+        return error.log(e)
+      }
+      this.audioStream.addEventListener('error', () => this.abortStream())
+      this.audioStream.addEventListener('loadstart', () => {
+        this.isLoading = true
+        setTimeout(() => (this.showSpinner = this.isLoading), 1000)
+      })
+      this.audioStream.addEventListener('canplaythrough', () => (this.isLoading = false))
+      this.audioStream.addEventListener('loadeddata', () => (this.isLoading = false))
+
+      this.audioStream.addEventListener('timeupdate', () => {
+        this.currentTime = this.audioStream?.currentTime
+      })
+      this.audioStream.addEventListener('ended', () => this.skipTrack(1, false))
+      this.audioStream.addEventListener('pause', () => (this.isPlaying = false))
+      this.audioStream.addEventListener('play', () => (this.isPlaying = true))
+
+      if (!pause) this.audioStream.play()
+    },
+    abortStream() {
+      this.audioStream?.pause()
+      this.audioStream?.removeAttribute('src')
+      try {
+        this.audioStream?.load()
+      } catch (e) {}
+      this.audioStream = null
+      this.isLoading = false
     },
     time(time) {
+      if (isNaN(time)) return '0:00'
       const sec_num = parseInt(time, 10)
       const hours = Math.floor(sec_num / 3600)
       const minutes = Math.floor(sec_num / 60) % 60
       const seconds = sec_num % 60
 
       return [hours, minutes, seconds]
-        .map((v) => (v < 10 ? '0' + v : v))
-        .filter((v, i) => v !== '00' || i > 0)
+        .filter((v, i) => v != 0 || i > 0)
+        .map((v, i) => (v < 10 && i > 0 ? '0' + v : v))
         .join(':')
     },
   },
   watch: {
     currentTrack() {
       this.setupTrack()
+    },
+    cookieConsent() {
+      this.initSoundcloud()
+    },
+    isLoading(val) {
+      if (!val) this.showSpinner = false
     },
   },
 }
@@ -115,179 +218,190 @@ export default {
   position: relative;
   margin-top: 2rem;
   display: flex;
+  align-items: center;
+  justify-content: center;
 
   .cover {
-    cursor: pointer;
-    border-radius: $border-radius-large;
     position: relative;
     display: flex;
+    transition: $slow-02 $expressive;
     flex-direction: column;
-    color: $black;
-    overflow: hidden;
-    transition: $moderate-02 $expressive;
-    width: 250px;
     .cover-container {
+      border-radius: $border-radius-large;
       position: relative;
       overflow: hidden;
+      transition: $slow-01 $expressive;
       img {
         transition: $moderate-02 $expressive;
         display: block;
-      }
-    }
-    &:hover {
-      .cover-container {
-        img {
-          transform: scale(1.02);
+        width: 100%;
+        height: auto;
+        &[src=''] {
+          position: relative;
+          &:after {
+            content: '';
+            position: absolute;
+            background: $light-02;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+          }
         }
       }
-    }
-    &:active {
-      transform: scale(0.95);
+      &.loading {
+        transform: scale(0.95);
+      }
     }
     .lower {
-      background: white;
       display: flex;
       flex-direction: column;
-      padding: map-get($padding-sizes, xlarge);
+      margin-top: map-get($padding-sizes, large);
+      flex-grow: 1;
+      justify-content: space-between;
+      color: $white;
+      .artist,
       .track-title {
-        font-size: 1rem;
-        margin-bottom: 1rem;
         max-width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+      .artist,
       .time {
         font-size: 0.75rem;
+      }
+      .artist {
+        margin-bottom: 0.25rem;
+      }
+      .track-title {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+      }
+      .time {
         display: flex;
-        color: $dark-01;
         justify-content: space-between;
       }
-    }
-  }
-  .control {
-    --rotate: 180deg;
-    --height: 30px;
-    --width: calc(var(--height) / 5 * 6);
-    --border-left: calc(var(--height) / 5);
-    position: absolute;
-    width: var(--width);
-    height: var(--width);
-    transition: $slow-01;
-    left: 50%;
-    top: 50%;
-    transform: rotate(var(--rotate)) translate(-50%, -50%);
-    transform-origin: 0 0;
-    z-index: 100;
-    &::before,
-    &::after {
-      --left: 0;
-      --right: 0;
-      --border-top: 0;
-      content: '';
-      width: 0;
-      height: var(--height);
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      left: var(--left);
-      transition: $moderate-02;
-      border-top: var(--border-top) solid transparent;
-      border-bottom: var(--border-top) solid transparent;
-      border-left: var(--border-left) solid white;
-      will-change: left, transform, border;
-      backface-visibility: visible;
-    }
-    &::after {
-      box-sizing: border-box;
-    }
-    &.pause {
-      &::before {
-        --left: var(--border-left);
+      .progress {
+        position: relative;
+        width: 100%;
+        background-color: $light-02;
+        height: 3px;
+        margin-top: 5px;
+        margin-bottom: 1rem;
+        border-radius: 1em;
+        &::before {
+          content: '';
+          height: 120%;
+          top: -10%;
+          background-color: $primary;
+          width: var(--width);
+          position: absolute;
+          display: block;
+          transition: $slow-01;
+          border-radius: 1em 0 0 1em;
+        }
+        &::after { // bullet
+          --size: 0.5em;
+          content: '';
+          width: var(--size);
+          height: var(--size);
+          background-color: $primary;
+          left: clamp(calc(var(--size) / 2), var(--width), calc(100% - (var(--size) / 2)));
+          transform: translate(-50%, -33.3%);
+          border-radius: calc(var(--size) * 2);
+          position: absolute;
+          transition: $slow-01;
+        }
       }
-      &::after {
-        --left: calc(var(--width) - var(--border-left) * 2);
+      .controls {
+        display: flex;
+        justify-content: center;
+        margin: 1rem -0.75rem;
+        & > * {
+          display: flex;
+          height: var(--button-size-small);
+          width: var(--button-size-small);
+          justify-content: center;
+          align-items: center;
+          transition: transform $fast-02 $expressive;
+          margin: 0 0.75rem;
+          cursor: pointer;
+          -webkit-tap-highlight-color: transparent;
+          &:active {
+            transform: scale(0.95);
+          }
+          @media (hover: hover) and (pointer: fine) {
+            &:hover {
+              opacity: 0.5;
+            }
+          }
+        }
+      }
+      .soundcloud-icon {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        width: initial;
+        color: $white;
       }
     }
-    &.play {
-      --rotate: 0deg;
-      &::before,
-      &::after {
-        --height: calc(var(--width) / 2);
-        --border-top: calc(var(--width) / 4);
-        --border-left: calc(var(--width) / 2);
+    @media screen and (min-width: map-get($breakpoints, medium)) {
+      width: 100%;
+      flex-direction: row;
+      .cover-container {
+        --width: 200px;
+        min-width: var(--width);
+        img {
+          width: var(--width);
+          height: var(--width);
+        }
       }
-      &::before {
-        --left: calc(var(--width) * 0.1);
+      .lower {
+        justify-content: center;
+        padding-right: 0;
+        margin-top: 0;
+        padding: map-get($padding-sizes, large) 0;
+        margin-left: map-get($padding-sizes, xlarge);
+        width: 0;
+        .track-title,
+        .progress {
+          margin-bottom: auto;
+        }
+        .controls {
+          justify-content: flex-start;
+          margin: 0 -0.5rem;
+        }
+        .soundcloud-icon {
+          right: -1rem;
+        }
       }
-      &::after {
-        --left: calc(var(--width) * 0.6);
-      }
-    }
-  }
-  .progress {
-    position: relative;
-    width: 100%;
-    background-color: $light-02;
-    height: 3px;
-    margin-top: 5px;
-    &::before {
-      content: '';
-      height: 100%;
-      background-color: $primary;
-      width: var(--width);
-      position: absolute;
-      display: block;
-      transition: $slow-01;
     }
   }
 }
+$blur: 50px;
 .backdrop {
-  --blur: 50px;
+  transition: $extraslow-01 $expressive;
+  transition-property: opacity, background;
   position: fixed;
-  left: calc(var(--blur) * -2);
-  top: calc(var(--blur) * -2);
-  width: calc(100vw + var(--blur) * 4);
-  height: calc(100vh + var(--blur) * 4);
+  top: 0;
+  margin: calc(#{$blur} * -2);
+  width: calc(100vw + #{$blur} * 4);
+  height: calc(100% + #{$blur} * 4);
   z-index: 1;
   &::before {
     content: '';
-    width: 100%;
-    height: 100%;
-    background: #33333360;
+    width: 101%;
+    height: 101%;
+    background: rgba($black, 0.375);
     z-index: 1;
-  }
-  img {
-    filter: blur(var(--blur)) saturate(2);
+    backdrop-filter: blur($blur) saturate(2);
   }
   & ~ * {
     z-index: 2;
   }
-}
-</style>
-<style lang="scss">
-.musica {
-  color: white !important;
-  .wrap.page {
-    padding: 0 !important;
+  &.fade {
+    opacity: 0;
   }
-  p,
-  h2 {
-    color: white !important;
-  }
-  .title-container .string {
-    .logo,
-    .description {
-      color: white !important;
-    }
-  }
-}
-#app:not(.musica) {
-  .backdrop {
-    display: none;
-  }
-}
-footer {
-  z-index: 3;
 }
 </style>

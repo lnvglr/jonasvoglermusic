@@ -8,10 +8,10 @@
       idle: isAppIdle && isOpen && heroIsVideo && isPlaying,
     }"
   >
-    <transition name="fade">
+    <transition name="slide-in">
       <CloseButton class="element" v-if="isOpen" @click="close" />
     </transition>
-    <transition name="fade">
+    <transition name="slide-in">
       <ShareButton class="element" v-if="isOpen && experimental" :project="project" />
     </transition>
     <ProjectHeader :project="project" :isOpen="isOpen" :heroIsVideo="heroIsVideo" @playing="e => (isPlaying = e)" />
@@ -22,7 +22,6 @@
           <ProjectDetails :details="project.field.details" />
           <FestivalContainer :festivals="project.field.festivals" class="alignfull dynamic-padding" />
           <div v-html="gallery" class="project-gallery"></div>
-          <!-- <SocialSharing :project="project" /> -->
         </div>
       </div>
     </transition-expand>
@@ -30,13 +29,12 @@
 </template>
 
 <script>
-import _ from 'lodash'
 import { mapGetters } from 'vuex'
+import throttle from 'lodash.throttle'
 
 import TransitionExpand from '@/components/partials/TransitionExpand.vue'
 import CloseButton from '@/components/partials/CloseButton.vue'
 import ShareButton from '@/components/partials/ShareButton.vue'
-import SocialSharing from '@/components/partials/SocialSharing.vue'
 
 import ProjectHero from '@/components/Project/ProjectHero.vue'
 import ProjectDetails from '@/components/Project/ProjectDetails.vue'
@@ -50,7 +48,6 @@ export default {
   components: {
     CloseButton,
     ShareButton,
-    SocialSharing,
     ProjectDetails,
     ProjectHero,
     FestivalContainer,
@@ -113,17 +110,17 @@ export default {
       this.setupGallery(this.isOpen)
     })
 
-    window.addEventListener('resize', _.throttle(this.calculateOffset, 100))
-    window.addEventListener('resize', _.throttle(this.initialFadeIn, 100))
-    window.addEventListener('scroll', _.throttle(this.initialFadeIn, 30))
-    window.addEventListener('touchmove', _.throttle(this.initialFadeIn, 30))
+    window.addEventListener('resize', throttle(this.calculateOffset, 100))
+    window.addEventListener('resize', throttle(this.initialFadeIn, 100))
+    window.addEventListener('scroll', throttle(this.initialFadeIn, 30))
+    window.addEventListener('touchmove', throttle(this.initialFadeIn, 30))
     window.addEventListener('afterTransition', this.initialFadeIn)
   },
   unmounted() {
-    window.removeEventListener('resize', _.throttle(this.calculateOffset, 100))
-    window.removeEventListener('resize', _.throttle(this.initialFadeIn, 100))
-    window.removeEventListener('scroll', _.throttle(this.initialFadeIn, 30))
-    window.removeEventListener('touchmove', _.throttle(this.initialFadeIn, 30))
+    window.removeEventListener('resize', throttle(this.calculateOffset, 100))
+    window.removeEventListener('resize', throttle(this.initialFadeIn, 100))
+    window.removeEventListener('scroll', throttle(this.initialFadeIn, 30))
+    window.removeEventListener('touchmove', throttle(this.initialFadeIn, 30))
     window.addEventListener('afterTransition', this.initialFadeIn)
   },
   methods: {
@@ -192,7 +189,13 @@ export default {
 .project {
   position: relative;
   transition: $slow-02 $productive;
+  .project-gallery {
+    img {
+      background: rgba($light-02, 0.5);
+    }
+  }
 }
+
 </style>
 <style lang="scss" scoped>
 .project {
@@ -268,4 +271,5 @@ export default {
     }
   }
 }
+
 </style>

@@ -3,10 +3,13 @@
     <li
       v-for="(item, i) in items"
       :key="i"
-      :class="{ active: filter.includes(item[label]) || (filter.length === 0 && item[label] === 'all') }"
+      :class="{
+        active: filter.includes(item[label]) || (filter.length === 0 && item[label] === 'all'),
+      }"
       @click="toggleFilter(item[label])"
       v-html="item[value]"
     ></li>
+    <li></li>
   </ul>
 </template>
 
@@ -42,82 +45,46 @@ export default {
   padding: 0;
   @include dynamic-box($axis: horizontal);
   @include dynamic-box(margin, true, horizontal);
-  // max-width: 100% !important;
-  // width: 100% !important;
 
-  // $box: padding, $negative: false, $axis: both
+  --angle: 90deg;
+  &::before, &::after {
+    content: '';
+    width: 1.25rem;
+    height: 3em;
+    position: absolute;
+    background: linear-gradient(var(--angle), rgba(242, 242, 242, 0), var(--body-background) 70%);
+    margin-top: 1rem;
+    @include dynamic-box(margin, true, horizontal, false);
+    transition: opacity $slow-02 $expressive;
+  }
+
+  &::before{
+    left: 0;
+    --angle: -90deg;
+  }
+  &::after{
+    right: 0;
+  }
   li {
+    padding: 0.75rem 0;
+    margin: 1rem;
     white-space: nowrap;
     cursor: pointer;
-    padding: 0.75rem 1rem;
-    background: $light-02;
-    border-radius: $border-radius-small;
-    transition: $fast-02 $productive;
-    letter-spacing: $letter-spacing;
     &:first-child {
-      margin-left: -1rem;
+      margin-left: 0;
     }
-    & + * {
-      margin-left: 0.5rem;
+    &:last-child {
+      margin: 0rem;
+      height: 1em;
+      min-width: 0.1px;
     }
-    &:hover {
-      background: darken($light-02, 5);
-      transition: $fast-02 $productive;
+    &:hover,
+    &.active:hover {
+      color: $primary;
+      background: none;
     }
     &.active {
-      background: $primary;
-      color: white;
-    }
-    &.active:hover {
-      background: darken($primary, 5);
-    }
-  }
-}
-</style>
-
-
-<style lang="scss">
-.experimental {
-  .filter {
-    &::before {
-      content: '';
-      background: linear-gradient(90deg, rgba(242, 242, 242, 0), $light-01 90%);
-      width: 1.5rem;
-      height: 3em;
-      position: absolute;
-      right: -1rem;
-    }
-    &::after {
-      content: '';
-      display: block;
-      height: 1em;
-      min-width: 1rem;
-    }
-    li {
-      --shadow: -1px;
-      letter-spacing: 0;
-      border-radius: 0;
-      padding: 0.75rem 0;
-      margin: 0 1rem;
-      background: none !important;
-      &:first-child {
-        margin-left: 0;
-      }
-      &:last-child {
-        margin-right: 0rem;
-      }
-      &,
-      &.active {
-        color: inherit;
-      }
-      &:hover,
-      &.active:hover {
-        color: $primary;
-        background: none;
-      }
-      &.active {
-        box-shadow: inset 0 var(--shadow) 0 currentColor;
-      }
+      box-shadow: inset 0 -1px 0 -0.1px currentColor;
     }
   }
 }

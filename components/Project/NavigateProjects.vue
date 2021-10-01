@@ -95,10 +95,10 @@ nav {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: var(--button-size);
-    min-width: var(--button-size);
-    height: var(--button-size);
-    border-radius: var(--button-size);
+    width: var(--button-size-medium);
+    min-width: var(--button-size-medium);
+    height: var(--button-size-medium);
+    border-radius: var(--button-size-medium);
     background: #ffffff60;
     backdrop-filter: var(--blur);
     transform: scale(var(--scale)) rotate(var(--rotate-button));
@@ -114,7 +114,7 @@ nav {
       perspective: 1000px;
       display: block;
       height: var(--stroke);
-      width: calc(var(--button-size) / 3);
+      width: calc(var(--button-size-medium) / 3);
       position: absolute;
       background-color: currentColor;
       transform: translate(0, calc(var(--translate-stroke) * var(--stroke)))

@@ -1,15 +1,11 @@
 <template>
   <div class="wrap">
-
-    <Player v-if="$nuxt.$route.params.pageSlug === 'musica'" />
-<template v-else>
     <div class="not-found-container">
       <h1 class="not-found" v-html="notFoundTransformed"></h1>
       <img :src="gifs[Math.floor(Math.random() * gifs.length)]" />
     </div>
     <h2 v-html="congratsTransformed"></h2>
     <p>This is probably not the page you're looking for.</p>
-</template>
   </div>
 </template>
 

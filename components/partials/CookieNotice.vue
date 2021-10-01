@@ -13,7 +13,7 @@
       @decline="decline"
       theme="custom"
     ></cookie-law>
-    <transition name="fade">
+    <transition name="slide-in">
       <button
         v-if="isPrivacyPage && cookieConsent !== null"
         @click="revoke"
@@ -118,7 +118,7 @@ $button-padding: map-get($button-sizes, medium);
   color: $dark-01;
   flex-flow: column !important;
   width: initial !important;
-  max-width: $narrow;
+  max-width: map-get($breakpoints, large);
   border-radius: $border-radius-large;
   @include dynamic-box();
   @include dynamic-box(margin);
@@ -179,7 +179,7 @@ $button-padding: map-get($button-sizes, medium);
   font-weight: normal;
   border-radius: $border-radius-small;
   padding: $button-padding;
-  margin: map-get($padding-sizes, small);
+  margin: map-get($padding-sizes, medium);
 
   .Cookie__buttons &:nth-child(1) {
     margin-right: auto;
@@ -248,6 +248,7 @@ $button-padding: map-get($button-sizes, medium);
 .allow-cookie-notice {
   display: flex;
   flex-direction: column;
+  color: $dark-02;
   background: darken($light-01, 3);
   font-size: 0.875rem;
   font-family: var(--font-family);

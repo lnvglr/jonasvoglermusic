@@ -8,8 +8,8 @@
       :alt="project.title.rendered"
       @loaded="heroLoaded"
     />
-    <transition name="fade" mode="out-in">
-      <div ref="hero-container" v-if="open && hero.type">
+    <transition name="slide-in" mode="out-in">
+      <div ref="hero-container" v-if="open && hero.type" class="hero-container">
         <client-only v-if="hero.type === 'vimeo' && cookieConsent">
           <vimeo
             :class="hero.type"
@@ -182,5 +182,10 @@ export default {
 <style lang="scss" scoped>
 figure {
   margin: 0;
+}
+.hero-container {
+  width: 100%;
+  height: 100%;
+  position: absolute;
 }
 </style>
