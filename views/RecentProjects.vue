@@ -4,13 +4,14 @@
       ><NavigateProjects v-if="openProject" :projects="filteredProjects"
     /></transition>
     <FilterPills :items="filterElements" label="slug" value="name" class="filter-container" />
-    <transition-group tag="div" name="fade-list" class="projects">
+    <transition-group tag="div" name="fade-list" class="projects" :style="{ '--total': filteredProjects.length }">
       <Project
         v-for="(project, index) in filteredProjects"
         ref="project"
         :project="project"
         :index="index"
         :key="project.id"
+        :style="{'--i': index}"
         :isOpen="slug === project.slug"
         @open="slug = $event"
         @close="close"
@@ -79,6 +80,7 @@ export default {
       bloginfo: 'getBloginfo',
     }),
     filterElements() {
+      if (!this.initiated) return []
       const genres = this.projects?.map((project) => project?.field?.genre)
       const all = {
         term_id: -1,

@@ -1,14 +1,14 @@
 <template>
   <div>
-    <client-only>
-      <Player class="player" :soundcloud="soundcloud" />
-    </client-only>
+    <!-- <client-only> -->
+    <Player class="player" :playlistSlug="playlistSlug" />
+    <!-- s</client-only> -->
     <SocialMedia :links="links" class="social-media" :initialDelay="1000" />
   </div>
 </template>
 
 <script>
-import Player from '@/components/Music/Player.vue'
+import Player from '~/components/Music/PlayerHearthis.vue'
 import SocialMedia from '@/components/partials/SocialMediaLinks.vue'
 import { mapGetters } from 'vuex'
 
@@ -34,13 +34,8 @@ export default {
         ['bandcamp', 'soundcloud', 'spotify'].some((f) => e.url.includes(f))
       ).map(e => e.url)
     },
-    soundcloud() {
-      return {
-        client_id: this.page?.field?.client_id,
-        user_id: this.page?.field?.user_id,
-        playlist_id: this.page?.field?.playlist_id,
-        playlist_link: this.page?.field?.playlist_link,
-      }
+    playlistSlug() {
+      return this.page?.field?.playlist
     }
   },
 }

@@ -1,16 +1,21 @@
 <template>
-  <ul class="filter">
+  <transition-group
+    tag="ul"
+    name="staggered-fade"
+    class="filter"
+    :style="{ '--total': filterItems.length }"
+  >
     <li
-      v-for="(item, i) in items"
+      v-for="(item, i) in filterItems"
       :key="i"
+      :style="{'--i': i}"
       :class="{
         active: filter.includes(item[label]) || (filter.length === 0 && item[label] === 'all'),
       }"
       @click="toggleFilter(item[label])"
       v-html="item[value]"
     ></li>
-    <li></li>
-  </ul>
+  </transition-group>
 </template>
 
 <script>
@@ -32,6 +37,12 @@ export default {
     ...mapGetters({
       filter: 'filter',
     }),
+    filterItems() {
+      if (this.items.length === 0) return []
+      const i = [...this.items]
+      i.push({label: '', value: ''})
+      return i
+    }
   },
 }
 </script>
@@ -67,7 +78,7 @@ export default {
   }
   li {
     padding: 0.75rem 0;
-    margin: 1rem;
+    margin: 0 1rem;
     white-space: nowrap;
     cursor: pointer;
     &:first-child {
@@ -88,4 +99,27 @@ export default {
     }
   }
 }
+.staggered-fade {
+
+  &-leave-active {
+    transition: $slow-02 $productive;
+    transition-delay: calc( #{$fast-01} * (var(--total) - var(--i)) );
+  }
+
+  &-enter-active {
+    transition: $slow-02 $expressive;
+    transition-delay: calc( #{$slow-01} + #{$fast-01} * var(--i) );
+  }
+
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+  }
+
+  &-enter { transform: translateY(-20px); }
+  &-leave-to { transform: translateY(0); }
+
+}
+
+
 </style>

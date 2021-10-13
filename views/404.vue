@@ -10,13 +10,9 @@
 </template>
 
 <script>
-import Player from '@/components/Music/Player.vue'
 
 export default {
   name: 'not-found',
-  components: {
-    Player
-  },
   data () {
     return {
       notFound: '404',

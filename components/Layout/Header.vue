@@ -15,8 +15,8 @@
           </li>
           <li v-for="page in pages('header')" :key="page.id" class="page-link">
             <NuxtLink :to="{ name: 'Page', params: { pageSlug: page.slug } }">
-              {{ page.title.rendered }}</NuxtLink
-            >
+              {{ page.title.rendered }}
+            </NuxtLink>
           </li>
         </ul>
       </nav>
@@ -44,6 +44,7 @@ export default {
 <style lang="scss" scoped>
 header {
   z-index: 10;
+  position: relative;
   .logo-wrap {
     white-space: nowrap;
     margin-right: auto;

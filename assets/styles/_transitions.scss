@@ -23,7 +23,6 @@ $expressive: cubic-bezier(.5,0,.2,1);
   transform-origin: top;
   transform: translateY(0) scale(1);
 }
-
 .slide-in-enter {
   transform-origin: top;
   transform: translateY(0) scale(0.99);
@@ -53,10 +52,15 @@ $expressive: cubic-bezier(.5,0,.2,1);
 .fade-list-enter-from,
 .fade-list-leave-to {
   opacity: 0;
-  transform: scale(0.5) translateY(calc(10vh));
+  transform: scale(0.5) translateY(calc(20vw * var(--i)));
 }
 
+.fade-list-enter-active {
+  position: relative;
+  z-index: 2;
+}
 .fade-list-leave-active {
   position: absolute;
   width: 100%;
+  z-index: 0;
 }

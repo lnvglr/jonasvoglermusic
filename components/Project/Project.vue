@@ -199,6 +199,7 @@ export default {
 </style>
 <style lang="scss" scoped>
 .project {
+  z-index: 10;
   &.fade {
     opacity: 0;
     transform: scale(0.9);

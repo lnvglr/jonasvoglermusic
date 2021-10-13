@@ -1,9 +1,11 @@
 <template>
   <div id="app" :class="{ show: fontsLoaded, experimental, [currentPage]: currentPage }">
-    <Header />
-    <main class="wrap">
-      <Nuxt />
-    </main>
+    <div class="above-the-fold">
+      <Header />
+      <main class="wrap">
+        <Nuxt />
+      </main>
+    </div>
     <Footer />
   </div>
 </template>
@@ -63,6 +65,10 @@ export default {
   background-color: var(--body-background);
   &:not(.show) {
     opacity: 0;
+  }
+  .above-the-fold {
+    flex: 1;
+    min-height: 100vh;
   }
   main {
     flex: 1;
