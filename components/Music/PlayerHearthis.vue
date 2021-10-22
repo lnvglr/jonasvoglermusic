@@ -30,11 +30,11 @@
         </span>
         <span class="progress" :style="`--width: ${progress}%`"></span>
         <div class="controls">
-          <div @click="skipTrack(-1)">
+          <!-- <div @click="skipTrack(-1)">
             <ControlIcon name="Backward" :scale="1" />
-          </div>
+          </div> -->
           <div @click="togglePlay(isPlaying)">
-            <ControlIcon :name="isPlaying ? 'Pause' : 'Play'" :scale="1.5" />
+            <ControlIcon :name="isPlaying ? 'Pause' : 'Play'" :scale="1.75" />
           </div>
           <div @click="skipTrack(1)">
             <ControlIcon name="Forward" :scale="1" />
@@ -327,6 +327,9 @@ export default {
               opacity: 0.5;
             }
           }
+          &:first-child {
+            margin-left: 0.5rem;
+          }
         }
       }
       .player-logo {
@@ -370,23 +373,28 @@ export default {
     }
   }
 }
-$blur: max(6vw, 60px);
 .backdrop {
+  --blur: max(6vw, 60px);
   transition: $extraslow-01 $expressive;
-  transition-property: opacity, background;
+  transition-property: opacity;
   position: fixed;
   top: 0;
-  margin: calc(#{$blur} * -2);
-  width: calc(100vw + #{$blur} * 4);
-  height: calc(100% + #{$blur} * 4);
+  margin: calc(var(--blur) * -2);
+  width: calc(100vw + var(--blur) * 4);
+  height: calc(100% + var(--blur) * 4);
   z-index: 1;
-  &::before {
-    content: '';
-    width: 101%;
-    height: 101%;
-    background: rgba($black, 0.375);
-    z-index: 1;
-    backdrop-filter: blur($blur) saturate(2);
+  @supports (backdrop-filter: blur(var(--blur))) {
+    &::before {
+      content: '';
+      width: 101%;
+      height: 101%;
+      background: rgba($black, 0.375);
+      z-index: 1;
+      backdrop-filter: blur(var(--blur)) saturate(2);
+    }
+  }
+  @supports not (backdrop-filter: blur(var(--blur))) {
+    filter: blur(var(--blur)) saturate(1.5) brightness(0.8);
   }
   & ~ * {
     z-index: 2;
