@@ -3,11 +3,11 @@
     tag="ul"
     name="staggered-fade"
     class="filter"
-    :style="{ '--total': filterItems.length }"
+    :style="{ '--total': items.length }"
   >
     <li
-      v-for="(item, i) in filterItems"
-      :key="i"
+      v-for="(item, i) in items"
+      :key="item.name"
       :style="{'--i': i}"
       :class="{
         active: filter.includes(item[label]) || (filter.length === 0 && item[label] === 'all'),
@@ -40,7 +40,7 @@ export default {
     filterItems() {
       if (this.items.length === 0) return []
       const i = [...this.items]
-      i.push({label: '', value: ''})
+      // i.push({label: '', value: ''})
       return i
     }
   },

@@ -1,17 +1,31 @@
 <template>
+  <div>
+  <div class="reel" v-if="reel">
+    <Reel :project="reel" :isOpen="true" />
+  </div>
   <div style="position: relative">
     <transition name="slide-in"
       ><NavigateProjects v-if="openProject" :projects="filteredProjects"
     /></transition>
-    <FilterPills :items="filterElements" label="slug" value="name" class="filter-container" />
-    <transition-group tag="div" name="fade-list" class="projects" :style="{ '--total': filteredProjects.length }">
+    <FilterPills
+      :items="filterElements"
+      label="slug"
+      value="name"
+      class="filter-container"
+    />
+    <transition-group
+      tag="div"
+      name="fade-list"
+      class="projects"
+      :style="{ '--total': filteredProjects.length }"
+    >
       <Project
         v-for="(project, index) in filteredProjects"
         ref="project"
         :project="project"
         :index="index"
         :key="project.id"
-        :style="{'--i': index}"
+        :style="{ '--i': index }"
         :isOpen="slug === project.slug"
         @open="slug = $event"
         @close="close"
@@ -27,20 +41,23 @@
     </div>
     <Laurel />
   </div>
+  </div>
 </template>
 
 <script>
-import Project from '@/components/Project/Project.vue'
-import ProjectPhantom from '@/components/Project/ProjectPhantom.vue'
-import NavigateProjects from '@/components/Project/NavigateProjects.vue'
-import FilterPills from '~/components/partials/FilterPills.vue'
-import { mapGetters } from 'vuex'
-import Laurel from '~/assets/images/laurel.vue'
+import Project from "@/components/Project/Project.vue";
+import Reel from "@/components/Project/Reel.vue";
+import ProjectPhantom from "@/components/Project/ProjectPhantom.vue";
+import NavigateProjects from "@/components/Project/NavigateProjects.vue";
+import FilterPills from "~/components/partials/FilterPills.vue";
+import { mapGetters } from "vuex";
+import Laurel from "~/assets/images/laurel.vue";
 
 export default {
-  name: 'Projects',
+  name: "Projects",
   components: {
     Project,
+    Reel,
     ProjectPhantom,
     NavigateProjects,
     FilterPills,
@@ -49,124 +66,141 @@ export default {
   data() {
     return {
       initiated: false,
-    }
+    };
   },
   head() {
     return {
-      __dangerouslyDisableSanitizers: ['script'],
-      script: [{ innerHTML: JSON.stringify(this.structuredData), type: 'application/ld+json' }],
-    }
+      __dangerouslyDisableSanitizers: ["script"],
+      script: [
+        {
+          innerHTML: JSON.stringify(this.structuredData),
+          type: "application/ld+json",
+        },
+      ],
+    };
   },
   mounted() {
     setTimeout(() => {
-      this.initiated = true
-    }, 200)
+      this.initiated = true;
+    }, 200);
   },
   methods: {
     toggleFilter(slug) {
-      this.$store.dispatch('updateFilter', slug)
+      this.$store.dispatch("updateFilter", slug);
     },
     close() {
-      this.slug = null
+      this.slug = null;
       setTimeout(() => {
-        this.$refs.project.forEach((e) => e.initialFadeIn())
-      }, 500)
+        this.$refs.project.forEach((e) => e.initialFadeIn());
+      }, 500);
     },
   },
   computed: {
     ...mapGetters({
-      openProject: 'project/open',
-      filter: 'filter',
-      bloginfo: 'getBloginfo',
+      openProject: "project/open",
+      filter: "filter",
+      bloginfo: "getBloginfo",
     }),
     filterElements() {
-      if (!this.initiated) return []
-      const genres = this.projects?.map((project) => project?.field?.genre)
+      if (!this.initiated) return [];
+      const genres = this.projects?.filter((e) => !e?.field?.reel)?.map((project) => project?.field?.genre);
       const all = {
         term_id: -1,
-        name: 'All',
-        slug: 'all',
-      }
-      genres.unshift(all)
-      return genres.filter((e, i) => genres.findIndex((a) => a.slug === e.slug) === i)
+        name: "All",
+        slug: "all",
+      };
+      genres.unshift(all);
+      return genres.filter(
+        (e, i) => genres.findIndex((a) => a.slug === e.slug) === i
+      );
     },
     project() {
-      return this.projects?.find((e) => e.slug === this.slug)
+      return this.projects?.find((e) => e.slug === this.slug);
+    },
+    reel() {
+      return this.projects?.find((e) => e?.field?.reel);
     },
     filteredProjects() {
-      if (!this.initiated) return []
-      if (this.filter.length === 0) return this.projects
+      if (!this.initiated) return [];
+      if (this.filter.length === 0)
+        return this.projects.filter((project) => !project?.field?.reel);
       return this.projects.filter((project) => {
-        return this.filter.includes(project.field?.genre?.slug)
-      })
+        return (
+          !project?.field?.reel &&
+          this.filter.includes(project?.field?.genre?.slug)
+        );
+      });
     },
   },
   watch: {
     openProject(slug) {
-      this.slug = slug
+      this.slug = slug;
     },
   },
   updated() {
-    this.$meta().refresh()
+    this.$meta().refresh();
   },
   metaInfo() {
-    const siteTitle = this.bloginfo.name
+    const siteTitle = this.bloginfo.name;
     const title = this.project?.title.rendered
       ? `${this.project.title.rendered} – ${siteTitle}`
-      : siteTitle
-    const description = this.project?.excerpt.rendered?.replace(/<[^>]*>?/gm, '') || ''
+      : siteTitle;
+    const description =
+      this.project?.excerpt.rendered?.replace(/<[^>]*>?/gm, "") || "";
     return {
       title,
       meta: [
         {
-          name: 'description',
+          name: "description",
           content: description,
         },
         {
-          property: 'og:title',
+          property: "og:title",
           content: title,
         },
         {
-          property: 'og:image',
-          content: this.project?.thumbnail?.['cinema-medium']?.[0],
+          property: "og:image",
+          content: this.project?.thumbnail?.["cinema-medium"]?.[0],
         },
       ],
-    }
+    };
   },
   async asyncData({ $axios, params, req, store }) {
     // called every time before loading the component
     let { data: projects } = await $axios.get(
-      process.env.API_BASE_PATH + 'posts?order=asc&per_page=100'
-    )
+      process.env.API_BASE_PATH + "posts?order=asc&per_page=100"
+    );
     projects = projects
-      .sort((a, b) => (a.field.menu_order > b.field.menu_order ? 1 : -1))
+      .sort((a, b) => (a?.field.menu_order > b?.field.menu_order ? 1 : -1))
       .map((e) => {
-        e.link = e.link.replace('https://api.', 'https://')
-        return e
-      })
+        e.link = e.link.replace("https://api.", "https://");
+        return e;
+      });
 
-    const url = process.server ? req.url : null
-    const slug = url ? url.split(process.env.projectPath)[1]?.split('?')[0] : params.projectSlug
+    const url = process.server ? req.url : null;
+    const slug = url
+      ? url.split(process.env.projectPath)[1]?.split("?")[0]
+      : params.projectSlug;
     const structuredData = {
-      '@context': 'https://schema.org',
-      '@type': 'ItemList',
+      "@context": "https://schema.org",
+      "@type": "ItemList",
       itemListElement: projects.map((project, i) => {
         return {
-          '@type': 'ListItem',
+          "@type": "ListItem",
           position: i + 1,
           url: project.link,
-        }
+        };
       }),
-    }
-    store.dispatch('project/setProjects', projects)
-    store.dispatch('project/setOpen', slug)
+    };
+    store.dispatch("project/setProjects", projects);
+    store.dispatch("project/setOpen", slug);
     return {
       slug,
       projects,
       structuredData,
-    }
+    };
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -174,7 +208,7 @@ export default {
   position: relative;
   margin-bottom: 50px;
   & > *:not(:last-child):after {
-    content: '';
+    content: "";
     position: absolute;
     width: 100px;
     height: var(--stroke);
@@ -182,5 +216,8 @@ export default {
     transform: translateX(-50%);
     background: $light-02;
   }
+}
+.reel {
+  margin-inline: -2rem;
 }
 </style>

@@ -13,7 +13,6 @@
       <a href="http://www.leonvogler.de" rel="noopener" target="_blank">Leon Vogler</a>.
     </small>
     <small class="version" v-if="version">v{{ version }}</small>
-    <ExperimentalButton class="experimental-button" v-if="experimental" />
     <client-only>
       <CookieNotice />
     </client-only>

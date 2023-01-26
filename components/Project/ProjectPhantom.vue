@@ -18,11 +18,13 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .project-header {
   width: 100%;
   @include dynamic-box($axis: vertical);
 }
+</style>
+<style lang="scss">
 .phantom {
   opacity: 0;
   z-index: -1;

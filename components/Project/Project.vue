@@ -78,9 +78,9 @@ export default {
     }),
     projectSubtitle() {
       const details = [
-        this.project.field?.genre?.name,
-        this.project.field?.details.length > 0
-          ? this.project.field?.details.find((e) => e.label.toLowerCase().includes('year'))?.value
+        this.project?.field?.genre?.name,
+        this.project?.field?.details.length > 0
+          ? this.project?.field?.details.find((e) => e.label.toLowerCase().includes('year'))?.value
           : '',
       ]
       return details

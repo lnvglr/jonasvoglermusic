@@ -1,10 +1,10 @@
 <template>
-  <div class="project-header" :class="{ hasControls: heroIsVideo, active: isOpen }">
+  <div class="project-header" :class="{ hasControls: heroIsVideo, active: isOpen, reel }">
     <div
       class="clipped cinema"
       :class="{ hover }"
       :style="`padding-bottom: ${aspectRatio}%;`"
-      @click="open(project.slug)"
+      @click="clickHandler()"
       @mouseover="hover = true"
       @mouseleave="hover = false"
     >
@@ -25,6 +25,7 @@
         :open="isOpen"
         :project="project"
         @playing="(e) => $emit('playing', e)"
+        :muteMode="reel"
       />
     </div>
   </div>
@@ -47,6 +48,7 @@ export default {
     project: Object,
     isOpen: Boolean,
     heroIsVideo: Boolean,
+    reel: Boolean,
   },
   data() {
     return {
@@ -113,9 +115,10 @@ export default {
     },
   },
   methods: {
-    open(slug) {
-      this.$store.dispatch('changeRoute', slug)
-      this.$emit('open', slug)
+    clickHandler() {
+      if (this.reel) return
+      this.$store.dispatch('changeRoute', this.project.slug)
+      this.$emit('open', this.project.slug)
     },
     reduce(numerator, denominator) {
       let gcd = function gcd(a, b) {
@@ -157,6 +160,9 @@ export default {
   color: $white;
   z-index: 10;
   @include dynamic-box($axis: vertical);
+  &.reel {
+    padding-top: 0;
+  }
   .clipped {
     background: $black;
     margin: 0 auto;

@@ -31,6 +31,9 @@ import Forward from '@/components/Music/icons/forward.fill.svg'
 import Backward from '@/components/Music/icons/backward.fill.svg'
 import ForwardEnd from '@/components/Music/icons/forward.end.fill.svg'
 import BackwardEnd from '@/components/Music/icons/backward.end.fill.svg'
+import SpeakerSlash from '@/components/Music/icons/speaker.slash.fill.svg'
+import Speaker from '@/components/Music/icons/speaker.fill.svg'
+import SpeakerWave from '@/components/Music/icons/speaker.wave.3.fill.svg'
 
 export default {
   name: 'ControlIcon',
@@ -42,6 +45,9 @@ export default {
     Backward,
     ForwardEnd,
     BackwardEnd,
+    SpeakerSlash,
+    Speaker,
+    SpeakerWave
   },
   props: {
     name: {

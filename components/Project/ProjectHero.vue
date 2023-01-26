@@ -10,6 +10,15 @@
     />
     <transition name="slide-in" mode="out-in">
       <div ref="hero-container" v-if="open && hero.type" class="hero-container">
+        <div v-if="muteMode" class="mute-sheet" @click="handleMute()">
+          <!-- <ControlIcon v-if="muted" name="SpeakerSlash" :scale="2" /> -->
+        <transition
+      tag="div"
+      name="fade-list"
+      :style="{ '--total': 1 }" class="mute-controls" :class="{ muted }" mode="out-in">
+          <ControlIcon v-for="icon in [['SpeakerSlash', 'SpeakerWave'][muted ? 0 : 1]]" :key="icon" :name="icon" :scale="2" />
+        </transition>
+        </div>
         <client-only v-if="hero.type === 'vimeo' && cookieConsent">
           <vimeo
             :class="hero.type"
@@ -30,11 +39,14 @@
           @playing="playing"
           @paused="paused"
         ></youtube>
-        <figure v-else-if="hero.type === 'video_local'" ref="video">
+        <figure v-else-if="hero.type === 'video_local' || hero.type === 'video_link'" ref="video">
           <video
             @playing="updatePlaying"
             controls
             controlsList="nodownload"
+            :autoplay="muteMode"
+            playsinline
+            muted
             :class="hero.type"
             :src="hero.data"
             :alt="project.title.rendered"
@@ -56,18 +68,20 @@ import { mapGetters } from 'vuex'
 
 import LazyImage from '@/components/partials/LazyImage.vue'
 import CookieNotice from '@/components/partials/CookieNotice.vue'
-
+import ControlIcon from '@/components/Music/ControlIcon.vue'
 
 export default {
   name: 'Hero',
   props: {
     open: Boolean,
+    muteMode: Boolean,
     project: Object
   },
   components: {
     LazyImage,
     youtube: Youtube,
-    vimeo: vueVimeoPlayer
+    vimeo: vueVimeoPlayer,
+    ControlIcon,
   },
   data() {
     return {
@@ -77,6 +91,7 @@ export default {
         type: '',
         data: '',
       },
+      muted: true,
       player: null,
     }
   },
@@ -112,6 +127,11 @@ export default {
     })
   },
   methods: {
+    handleMute() {
+      this.muted = !this.muted
+      console.log(this.$refs.video.children[0])
+      this.$refs.video.children[0].muted = this.muted
+    },
     heroLoaded(value) {
       const val = this.project.thumbnail ? value : true
       this.$emit('loaded', val)
@@ -179,6 +199,11 @@ export default {
 }
 </script>
 
+<style lang="scss">
+.idle .mute-controls.muted {
+  opacity: 0;
+}
+</style>
 <style lang="scss" scoped>
 figure {
   margin: 0;
@@ -188,4 +213,12 @@ figure {
   height: 100%;
   position: absolute;
 }
+.mute-sheet {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: hsla(0, 0%, 0%, 0.2)}
 </style>

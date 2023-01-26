@@ -222,6 +222,9 @@ export default {
       position: relative;
       overflow: hidden;
       transition: $slow-01 $expressive;
+      &.loading {
+        transform: scale(0.95);
+      }
       img {
         transition: $moderate-02 $expressive;
         display: block;
@@ -239,9 +242,6 @@ export default {
             height: 100%;
           }
         }
-      }
-      &.loading {
-        transform: scale(0.95);
       }
     }
     .lower {
@@ -283,8 +283,7 @@ export default {
         border-radius: 1em;
         &::before {
           content: '';
-          height: 120%;
-          top: -10%;
+          height: 100%;
           background-color: $primary;
           width: var(--width);
           position: absolute;
@@ -292,19 +291,8 @@ export default {
           transition: $slow-01;
           border-radius: 1em 0 0 1em;
         }
-        &::after { // bullet
-          --size: 0.5em;
-          // content: '';
-          width: var(--size);
-          height: var(--size);
-          background-color: $primary;
-          left: clamp(calc(var(--size) / 2), var(--width), calc(100% - (var(--size) / 2)));
-          transform: translate(-50%, -33.3%);
-          border-radius: calc(var(--size) * 2);
-          position: absolute;
-          transition: $slow-01;
-        }
       }
+      
       .controls {
         display: flex;
         justify-content: center;
@@ -332,6 +320,7 @@ export default {
           }
         }
       }
+
       .player-logo {
         position: absolute;
         top: 0.5rem;
@@ -340,6 +329,7 @@ export default {
         color: $white;
       }
     }
+
     @media screen and (min-width: map-get($breakpoints, medium)) {
       width: 100%;
       flex-direction: row;
