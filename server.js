@@ -11,7 +11,7 @@ const config = require("./nuxt.config.js");
 const app = express();
 
 if (typeof PhusionPassenger != "undefined") {
-  app.listen("passenger");
+  app.listen(process.env.PORT || "passenger");
 } else {
   app.listen(process.env.PORT || 8282);
 }
