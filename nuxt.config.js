@@ -120,5 +120,8 @@ module.exports = {
       priority: 1,
       lastmod: new Date()
     }
+  },
+  output: {
+    hashFunction: "sha256"
   }
 };
