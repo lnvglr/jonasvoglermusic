@@ -20,8 +20,8 @@ export default {
       congrats: 'Congratulations, you broke the internet.',
       congratsTransformed: this.congrats,
       gifs: [
-        'https://media.giphy.com/media/1zjNTEctIuXcJ9ZTEP/giphy.gif',
         'https://media.giphy.com/media/6uGhT1O4sxpi8/giphy.gif',
+        'https://media.giphy.com/media/1zjNTEctIuXcJ9ZTEP/giphy.gif',
         'https://media.giphy.com/media/xULW8vi25RrpxQrmrm/giphy.gif',
         'https://media.giphy.com/media/xT0xewLy70uaFY3Vte/giphy.gif',
         'https://media.giphy.com/media/32aTqconrLrYKFqdAw/giphy.gif',
