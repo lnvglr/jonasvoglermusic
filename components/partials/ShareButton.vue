@@ -125,8 +125,9 @@ export default {
     position: absolute;
     display: block;
     left: 50%;
-    top: calc((var(--arrow-offset) * -0.4em) - var(--stroke));
-    box-shadow: inset var(--stroke) var(--stroke) 0 currentcolor;
+    top: 0;
+    /* top: calc((var(--arrow-offset, 1) * -0.4em) - 2px); */
+    box-shadow: inset 2px 2px 0 currentcolor;
     transform: rotate(45deg) translate(0, 0);
     transform-origin: 0 0;
   }

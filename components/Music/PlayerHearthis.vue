@@ -369,7 +369,7 @@ export default {
   transition-property: opacity;
   position: fixed;
   top: 0;
-  margin: calc(var(--blur) * -2);
+  margin: calc(max(6vw, 60px) * -2);
   width: calc(100vw + var(--blur) * 4);
   height: calc(100% + var(--blur) * 4);
   z-index: 1;
