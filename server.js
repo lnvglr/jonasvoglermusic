@@ -1,6 +1,6 @@
-if (typeof PhusionPassenger != "undefined") {
-  PhusionPassenger.configure({ autoInstall: false });
-}
+// if (typeof PhusionPassenger != "undefined") {
+//   PhusionPassenger.configure({ autoInstall: false });
+// }
 
 const express = require("express");
 const { Nuxt, Builder } = require("nuxt");
@@ -19,6 +19,8 @@ app.listen(process.env.PORT || 5000);
 
 // Enable production mode
 config.dev = false;
+
+config.host = process.env.HOST || "0.0.0.0";
 
 // Create instance of nuxt
 const nuxt = new Nuxt(config);

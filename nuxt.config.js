@@ -102,7 +102,7 @@ module.exports = {
     extractCSS: true
   },
   server: {
-    // host: '0.0.0.0'
+    host: '0.0.0.0'
   },
   devServer: {
     clientLogLevel: "silent"
