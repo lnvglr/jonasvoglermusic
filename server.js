@@ -10,11 +10,12 @@ const config = require("./nuxt.config.js");
 // Create new express app
 const app = express();
 
-if (typeof PhusionPassenger != "undefined") {
-  app.listen(process.env.PORT || "passenger");
-} else {
-  app.listen(process.env.PORT || 8282);
-}
+app.listen(process.env.PORT || 5000);
+// if (typeof PhusionPassenger != "undefined") {
+//   app.listen(process.env.PORT || "passenger");
+// } else {
+//   app.listen(process.env.PORT || 8282);
+// }
 
 // Enable production mode
 config.dev = false;
