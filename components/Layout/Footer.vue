@@ -35,7 +35,6 @@ export default {
   computed: {
     ...mapGetters({
       pages: 'pages/getPages',
-      allPages: 'pages/getAllPages',
       bloginfo: 'getBloginfo',
     }),
     experimental() {
