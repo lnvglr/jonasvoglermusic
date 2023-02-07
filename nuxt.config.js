@@ -44,22 +44,22 @@ module.exports = {
         {
           name: "Home",
           path: "/",
-          component: resolve(__dirname, "views/RecentProjects.vue")
+          component: resolve(__dirname, "pages/RecentProjects.vue")
         },
         {
           name: "Project",
           path: `${projectPath}:projectSlug`,
-          component: resolve(__dirname, "views/RecentProjects.vue")
+          component: resolve(__dirname, "pages/RecentProjects.vue")
         },
         {
           name: "Page",
           path: "/:pageSlug",
-          component: resolve(__dirname, "views/Page.vue")
+          component: resolve(__dirname, "pages/Page.vue")
         },
         {
           name: "Not Found",
           path: "*",
-          component: resolve(__dirname, "views/404.vue")
+          component: resolve(__dirname, "pages/404.vue")
         }
       );
     }
