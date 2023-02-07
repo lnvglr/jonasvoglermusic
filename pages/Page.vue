@@ -17,7 +17,7 @@ import { mapGetters } from 'vuex'
 import PageDefault from '@/components/Page/PageDefault.vue'
 import PageTable from '@/components/Page/PageTable.vue'
 import PageAbout from '@/components/Page/PageAbout.vue'
-import NotFound from '@/views/404.vue'
+import NotFound from './404.vue'
 
 import CookieNotice from '@/components/partials/CookieNotice.vue'
 
