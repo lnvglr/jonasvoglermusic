@@ -8,7 +8,7 @@
       @mouseover="hover = true"
       @mouseleave="hover = false"
     >
-      <div class="header-copy">
+      <div class="header-copy" v-if="!reel">
         <component :is="isOpen ? 'h2' : 'span'" class="title-container">
           <span v-if="projectSubtitle" class="project-category" v-html="projectSubtitle"></span>
           <span class="project-title" v-html="projectTitle"></span>
@@ -25,7 +25,7 @@
         :open="isOpen"
         :project="project"
         @playing="(e) => $emit('playing', e)"
-        :muteMode="reel"
+        :reel="reel"
       />
     </div>
   </div>
@@ -162,6 +162,9 @@ export default {
   @include dynamic-box($axis: vertical);
   &.reel {
     padding-top: 0;
+    .clipped::after {
+      content: unset;
+    }
   }
   .clipped {
     background: $black;

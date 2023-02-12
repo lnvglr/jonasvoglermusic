@@ -3,7 +3,7 @@
     <cookie-law
       ref="cookies"
       :message="message"
-      :buttonLink="{ name: 'Page', params: { pageSlug: privacySlug } }"
+      :buttonLink="privacySlug"
       :buttonLinkText="buttonLinkText"
       :buttonDecline="true"
       buttonDeclineClass="Cookie__button"
@@ -46,7 +46,7 @@ export default {
       return this.page(this.privacySlug)?.title.rendered
     },
     isPrivacyPage() {
-      return this.$nuxt.$route.params.pageSlug === this.privacySlug
+      return this.$nuxt.$route.params.slug === this.privacySlug
     },
     message() {
       return `This site uses cookies. If you continue to use the website, we will assume that you have given your consent. You can change your decision later in our ${this.buttonLinkText}.`

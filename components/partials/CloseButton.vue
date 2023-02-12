@@ -66,8 +66,8 @@ export default {
     }
   }
 
-  &.fade-enter-active,
-  &.fade-leave-active {
+  &.slide-in-enter-active,
+  &.slide-in-leave-active {
     & {
       transition: $moderate-02 $productive;
       transition-property: transform opacity margin;
@@ -77,8 +77,8 @@ export default {
       transition: transform $slow-02 $productive;
     }
   }
-  &.fade-enter,
-  &.fade-leave-to {
+  &.slide-in-enter,
+  &.slide-in-leave-to {
     margin-left: 0;
     &::before,
     &::after {

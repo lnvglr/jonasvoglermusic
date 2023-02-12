@@ -2,18 +2,23 @@ export const state = () => ({
   bloginfo: null,
   filter: [],
   experimental: true,
+  reelTimeStamp: 0,
   cookieConsent: false
 });
 
 // getters
 export const getters = {
   getBloginfo: state => state.bloginfo,
+  getReelTimeStamp: state => state.reelTimeStamp,
   filter: state => state.filter,
   getExperimental: state => state.experimental,
   getCookieConsent: state => state.cookieConsent
 };
 // actions
 export const actions = {
+  updateReelTimeStamp({ commit }, timeStamp) {
+    commit("updateReelTimeStamp", timeStamp);
+  },
   setBloginfo({ commit }, info) {
     commit("setBloginfo", info);
   },
@@ -41,6 +46,9 @@ export const mutations = {
   },
   setBloginfo(state, info) {
     state.bloginfo = info;
+  },
+  updateReelTimeStamp(state, timeStamp) {
+    state.reelTimeStamp = timeStamp;
   },
   setCookieConsent(state, value) {
     state.cookieConsent = value;

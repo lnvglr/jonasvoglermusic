@@ -6,7 +6,7 @@
         <ul class="pages">
           <li class="page-link">
             <NuxtLink
-              :to="{ name: 'Home' }"
+              to="/"
               @click.native="
                 $store.dispatch('updateFilter', null), $store.dispatch('project/setOpen', null)
               "
@@ -14,7 +14,7 @@
             >
           </li>
           <li v-for="page in pages('header')" :key="page.id" class="page-link">
-            <NuxtLink :to="{ name: 'Page', params: { pageSlug: page.slug } }">
+            <NuxtLink :to="page.slug">
               {{ page.title.rendered }}
             </NuxtLink>
           </li>

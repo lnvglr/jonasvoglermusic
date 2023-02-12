@@ -42,25 +42,10 @@ module.exports = {
     extendRoutes(routes, resolve) {
       routes.push(
         {
-          name: "Home",
-          path: "/",
-          component: resolve(__dirname, "pages/RecentProjects.vue")
-        },
-        {
           name: "Project",
           path: `${projectPath}:projectSlug`,
-          component: resolve(__dirname, "pages/RecentProjects.vue")
+          component: resolve(__dirname, "pages/index.vue")
         },
-        {
-          name: "Page",
-          path: "/:pageSlug",
-          component: resolve(__dirname, "pages/Page.vue")
-        },
-        {
-          name: "Not Found",
-          path: "*",
-          component: resolve(__dirname, "pages/404.vue")
-        }
       );
     }
   },

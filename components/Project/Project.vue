@@ -5,7 +5,7 @@
     :class="{
       fade: !fadedIn && !isOpen,
       active: isOpen,
-      idle: isAppIdle && isOpen && heroIsVideo && isPlaying,
+      idle: isIdle && isOpen && heroIsVideo && isPlaying,
     }"
   >
     <transition name="slide-in">
@@ -67,8 +67,15 @@ export default {
       offset: null,
       prepareDescription: null,
       gallery: null,
-      isPlaying: false
+      isPlaying: false,
+      isIdle: false
     }
+  },
+  onIdle() {
+    this.isIdle = true
+  },
+  onActive() {
+    this.isIdle = false
   },
   computed: {
     ...mapGetters({

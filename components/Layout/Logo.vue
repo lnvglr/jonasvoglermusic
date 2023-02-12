@@ -1,6 +1,6 @@
 <template>
   <div v-if="experimental">
-    <NuxtLink :to="{ name: 'Home' }" class="title-container" ref="title" @click.native="home"
+    <NuxtLink to="/" class="title-container" ref="title" @click.native="home"
       ><span class="string"
         ><h1 class="logo">{{ name }}</h1>
         <transition name="slide-in" mode="out-in" @enter="adjustHeight">
@@ -23,7 +23,7 @@
       </span>
     </NuxtLink>
   </div>
-  <NuxtLink v-else :to="{ name: 'Home' }" @click.native="home">
+  <NuxtLink v-else to="/" @click.native="home">
     <h1 class="logo">{{ name }}</h1>
     <span v-if="description" class="subtitle">{{ description }}</span>
   </NuxtLink>
@@ -42,15 +42,15 @@ export default {
       experimental: 'getExperimental',
     }),
     legal() {
-      return ['privacy-policy', 'legal-notice'].includes(this.$nuxt.$route.params.pageSlug)
+      return ['privacy-policy', 'legal-notice'].includes(this.$nuxt.$route.params.slug)
     },
     music() {
-      return 'music' === this.$nuxt.$route.params.pageSlug
+      return 'music' === this.$nuxt.$route.params.slug
         ? 'happens to also compose music without picture.'
         : false
     },
     aboutContact() {
-      return 'about-contact' === this.$nuxt.$route.params.pageSlug ? 'based in Berlin.' : false
+      return 'about-contact' === this.$nuxt.$route.params.slug ? 'based in Berlin.' : false
     },
   },
   methods: {

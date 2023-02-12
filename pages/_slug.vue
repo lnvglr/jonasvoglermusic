@@ -17,7 +17,7 @@ import { mapGetters } from 'vuex'
 import PageDefault from '@/components/Page/PageDefault.vue'
 import PageTable from '@/components/Page/PageTable.vue'
 import PageAbout from '@/components/Page/PageAbout.vue'
-import NotFound from './404.vue'
+import NotFound from '@/layouts/error.vue'
 
 import CookieNotice from '@/components/partials/CookieNotice.vue'
 
@@ -25,7 +25,7 @@ export default {
   name: 'Page',
   // transition: 'fade',
   transition(to, from, e) {
-    if (from && from.params?.pageSlug === 'music') {
+    if (from && from.params?.slug === 'music') {
       return 'fade'
     }
     return 'slide-in'
@@ -48,7 +48,7 @@ export default {
       cookieConsent: 'getCookieConsent',
     }),
     page() {
-      const page = this.getPage(this.$route.params.pageSlug)
+      const page = this.getPage(this.$route.params.slug)
       if (!page) return
       const pageObject = JSON.parse(JSON.stringify(page))
       if (this.cookieConsent) return pageObject
