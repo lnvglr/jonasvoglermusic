@@ -1,7 +1,4 @@
-// # NetCup Deployment
-// if (typeof PhusionPassenger != "undefined") {
-//   PhusionPassenger.configure({ autoInstall: false });
-// }
+
 
 const express = require("express");
 const { Nuxt, Builder } = require("nuxt");
@@ -11,14 +8,12 @@ const config = require("./nuxt.config.js");
 // Create new express app
 const app = express();
 
-// # NetCup Deployment
-if (typeof PhusionPassenger != "undefined") {
-  app.listen(process.env.PORT || "passenger");
+if (process.env.RAILWAY !== "TRUE" && typeof PhusionPassenger != "undefined") {
+	PhusionPassenger.configure({ autoInstall: false });
+	app.listen(process.env.PORT || "passenger");
 } else {
-  app.listen(process.env.PORT || 8282);
+	app.listen(process.env.PORT || 5000);
 }
-// # Railway Deployment
-// app.listen(process.env.PORT || 5000);
 
 
 // Enable production mode
