@@ -12,13 +12,13 @@ const config = require("./nuxt.config.js");
 const app = express();
 
 // # NetCup Deployment
-// if (typeof PhusionPassenger != "undefined") {
-//   app.listen(process.env.PORT || "passenger");
-// } else {
-//   app.listen(process.env.PORT || 8282);
-// }
+if (typeof PhusionPassenger != "undefined") {
+  app.listen(process.env.PORT || "passenger");
+} else {
+  app.listen(process.env.PORT || 8282);
+}
 // # Railway Deployment
-app.listen(process.env.PORT || 5000);
+// app.listen(process.env.PORT || 5000);
 
 
 // Enable production mode
