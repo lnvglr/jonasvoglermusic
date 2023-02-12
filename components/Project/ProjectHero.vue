@@ -23,10 +23,15 @@
             :class="{ muted: interacted }"
           >
             <div v-if="interacted" class="controls-container">
-            <div @click.stop="handlePause()" >
-              <ControlIcon :name="reelPlaying ? 'Pause' : 'Play'" :scale="1" class="play" />
-            </div>
-              <ControlIcon name="SpeakerWave" :scale="2" class="mute"/>
+              <div @click.stop="handlePause()" class="play-container">
+                <ControlIcon
+                  :name="reelPlaying ? 'Pause' : 'Play'"
+                  :scale="1"
+                  class="play"
+                />
+                <h2>{{ project.title.rendered }}</h2>
+              </div>
+              <ControlIcon name="SpeakerWave" :scale="2" class="mute" />
             </div>
           </transition>
         </div>
@@ -180,7 +185,7 @@ export default {
     },
     handleMute() {
       this.interacted = false;
-      const video = this.$refs.video.children[0]
+      const video = this.$refs.video.children[0];
       if (video) video.muted = false;
     },
     heroLoaded(value) {
@@ -252,9 +257,9 @@ export default {
     handlePause() {
       this.interacted = false;
       const video = this.$refs.video.children[0];
-      if (!video) return
-      video.pause()
-    }
+      if (!video) return;
+      video.pause();
+    },
   },
   watch: {
     reelPlaying(val, oldVal) {
@@ -281,12 +286,25 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  .play {
+  .play-container {
     position: absolute;
     top: 2rem;
     left: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    font-size: 0.875rem;
+    z-index: 1;
+    & > * {
+      margin: 0;
+      font-weight: normal;
+    }
   }
-  .play, .mute {
+  .mute {
+    height: 100%
+  }
+  .play-container,
+  .mute {
     opacity: 0.5;
     &:hover {
       opacity: 1;
