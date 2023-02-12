@@ -52,6 +52,7 @@
             @playing="updatePlaying"
             @loadeddata="setLoadedData"
             @timeupdate="updateTime"
+            @pause="updatePlaying"
             controls
             controlsList="nodownload"
             playsinline
@@ -120,6 +121,7 @@ export default {
     ...mapGetters({
       cookieConsent: "getCookieConsent",
       reelTimeStamp: "getReelTimeStamp",
+      reelPlaying: "getReelPlaying",
     }),
     imageSizes() {
       return this.generateSrcSet();
@@ -223,21 +225,31 @@ export default {
     },
 
     // music
-    playing() {
+    playing(e) {
+      if (this.reel) this.$store.dispatch('setReelPlaying', e)
       this.$emit("playing", true);
     },
     paused() {
+      if (this.reel) this.$store.dispatch('setReelPlaying', false)
       this.$emit("playing", false);
     },
     updatePlaying(value) {
-      if (value === 1) {
-        this.playing();
-      } else {
+      console.log(value)
+      if (value.target.paused) {
         this.paused();
+      } else {
+        this.playing(value.target);
       }
     },
   },
   watch: {
+    reelPlaying(val, oldVal) {
+      if (this.reel && !val && oldVal) oldVal.pause();
+    },
+    open() {
+      console.log('reel', this.reel)
+      if (!this.reel) this.$store.dispatch('setReelPlaying', false)
+    },
     imageSizes(val) {
       this.generateSrcSet();
     },

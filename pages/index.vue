@@ -1,46 +1,46 @@
 <template>
   <div>
-  <div class="reel" v-if="reel">
-    <Reel :project="reel" :isOpen="true" />
-  </div>
-  <div style="position: relative">
-    <transition name="slide-in"
-      ><NavigateProjects v-if="openProject" :projects="filteredProjects"
-    /></transition>
-    <FilterPills
-      :items="filterElements"
-      label="slug"
-      value="name"
-      class="filter-container"
-    />
-    <transition-group
-      tag="div"
-      name="fade-list"
-      class="projects"
-      :style="{ '--total': filteredProjects.length }"
-    >
-      <Project
-        v-for="(project, index) in filteredProjects"
-        ref="project"
-        :project="project"
-        :index="index"
-        :key="project.id"
-        :style="{ '--i': index }"
-        :isOpen="slug === project.slug"
-        @open="slug = $event"
-        @close="close"
-        :reference="$refs ? $refs : {}"
-      />
-    </transition-group>
-    <div class="projects phantom" aria-hidden="true">
-      <ProjectPhantom
-        v-for="project in filteredProjects"
-        :ref="`project-${project.slug}`"
-        :key="project.id"
-      />
+    <div class="reel" v-if="reel">
+      <Reel :project="reel" :isOpen="true" />
     </div>
-    <Laurel />
-  </div>
+    <div style="position: relative">
+      <transition name="slide-in"
+        ><NavigateProjects v-if="openProject" :projects="filteredProjects"
+      /></transition>
+      <FilterPills
+        :items="filterElements"
+        label="slug"
+        value="name"
+        class="filter-container"
+      />
+      <transition-group
+        tag="div"
+        name="fade-list"
+        class="projects"
+        :style="{ '--total': filteredProjects.length }"
+      >
+        <Project
+          v-for="(project, index) in filteredProjects"
+          ref="project"
+          :project="project"
+          :index="index"
+          :key="project.id"
+          :style="{ '--i': index }"
+          :isOpen="slug === project.slug"
+          @open="slug = $event"
+          @close="close"
+          :reference="$refs ? $refs : {}"
+        />
+      </transition-group>
+      <div class="projects phantom" aria-hidden="true">
+        <ProjectPhantom
+          v-for="project in filteredProjects"
+          :ref="`project-${project.slug}`"
+          :key="project.id"
+        />
+      </div>
+      <Laurel />
+    </div>
   </div>
 </template>
 
@@ -103,7 +103,9 @@ export default {
     }),
     filterElements() {
       if (!this.initiated) return [];
-      const genres = this.projects?.filter((e) => !e?.field?.reel)?.map((project) => project?.field?.genre);
+      const genres = this.projects
+        ?.filter((e) => !e?.field?.reel)
+        ?.map((project) => project?.field?.genre);
       const all = {
         term_id: -1,
         name: "All",
@@ -217,7 +219,9 @@ export default {
     background: $light-02;
   }
 }
-.reel {
-  margin-inline: -2rem;
+@media screen and (min-width: 1080px) {
+  .reel {
+    margin-inline: -2rem;
+  }
 }
 </style>

@@ -258,8 +258,8 @@ export default {
         img,
         iframe,
         figure {
-          transition: $slow-01 $expressive;
-          transform: scale(1.02) translateZ(0);
+          transition: 1.5s cubic-bezier(0.2, 0, 0, 1);
+          transform: scale(1.04) translateZ(0);
           will-change: transform;
         }
       }
