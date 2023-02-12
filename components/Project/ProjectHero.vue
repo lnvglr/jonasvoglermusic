@@ -10,18 +10,24 @@
     />
     <transition name="slide-in" mode="out-in">
       <div ref="hero-container" v-if="open && hero.type" class="hero-container">
-        <div v-if="reel" class="mute-sheet" :class="!muted && 'pointerevents-none'" @click="handleMute()">
+        <div
+          v-if="reel"
+          class="mute-sheet"
+          :class="!interacted && 'pointerevents-none'"
+          @click="handleMute()"
+        >
           <transition
             tag="div"
             name="fade"
             class="mute-controls"
-            :class="{ muted }"
+            :class="{ muted: interacted }"
           >
-            <ControlIcon
-              v-if="muted"
-              name="SpeakerWave"
-              :scale="2"
-            />
+            <div v-if="interacted" class="controls-container">
+            <div @click.stop="handlePause()" >
+              <ControlIcon :name="reelPlaying ? 'Pause' : 'Play'" :scale="1" class="play" />
+            </div>
+              <ControlIcon name="SpeakerWave" :scale="2" class="mute"/>
+            </div>
           </transition>
         </div>
         <client-only v-if="hero.type === 'vimeo' && cookieConsent">
@@ -112,9 +118,9 @@ export default {
         type: "",
         data: "",
       },
-      muted: true,
+      interacted: true,
       player: null,
-      loadeddata: false
+      loadeddata: false,
     };
   },
   computed: {
@@ -152,14 +158,16 @@ export default {
   },
   methods: {
     getAllVideos() {
-      return Array.from(document.querySelectorAll('video'));
+      return Array.from(document.querySelectorAll("video"));
     },
 
     isMounted() {
-      return !!this.getAllVideos().find(video => video.dataset.id === this.id);
+      return !!this.getAllVideos().find(
+        (video) => video.dataset.id === this.id
+      );
     },
     setLoadedData(e) {
-      this.loadeddata = true
+      this.loadeddata = true;
 
       if (this.reel && this.reelTimeStamp > 5) {
         e.target.currentTime = this.reelTimeStamp - 1;
@@ -168,11 +176,12 @@ export default {
       e.target.play();
     },
     updateTime(e) {
-      this.$store.dispatch('updateReelTimeStamp', e.target.currentTime)
+      this.$store.dispatch("updateReelTimeStamp", e.target.currentTime);
     },
     handleMute() {
-      this.muted = !this.muted;
-      if (this.$refs.video.children[0]) this.$refs.video.children[0].muted = this.muted;
+      this.interacted = false;
+      const video = this.$refs.video.children[0]
+      if (video) video.muted = false;
     },
     heroLoaded(value) {
       const val = this.project.thumbnail ? value : true;
@@ -226,29 +235,34 @@ export default {
 
     // music
     playing(e) {
-      if (this.reel) this.$store.dispatch('setReelPlaying', e)
+      if (this.reel) this.$store.dispatch("setReelPlaying", e);
       this.$emit("playing", true);
     },
     paused() {
-      if (this.reel) this.$store.dispatch('setReelPlaying', false)
+      if (this.reel) this.$store.dispatch("setReelPlaying", false);
       this.$emit("playing", false);
     },
     updatePlaying(value) {
-      console.log(value)
       if (value.target.paused) {
         this.paused();
       } else {
         this.playing(value.target);
       }
     },
+    handlePause() {
+      this.interacted = false;
+      const video = this.$refs.video.children[0];
+      if (!video) return
+      video.pause()
+    }
   },
   watch: {
     reelPlaying(val, oldVal) {
       if (this.reel && !val && oldVal) oldVal.pause();
     },
     open() {
-      console.log('reel', this.reel)
-      if (!this.reel) this.$store.dispatch('setReelPlaying', false)
+      console.log("reel", this.reel);
+      if (!this.reel) this.$store.dispatch("setReelPlaying", false);
     },
     imageSizes(val) {
       this.generateSrcSet();
@@ -260,6 +274,24 @@ export default {
 <style lang="scss">
 .idle .mute-controls.muted {
   opacity: 0;
+}
+.controls-container {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .play {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+  }
+  .play, .mute {
+    opacity: 0.5;
+    &:hover {
+      opacity: 1;
+    }
+  }
 }
 </style>
 <style lang="scss" scoped>
@@ -285,7 +317,7 @@ figure {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: hsla(0, 0%, 0%, 0.3);
+  background: hsla(0, 0%, 0%, 0.5);
   cursor: pointer;
   opacity: 0.5;
   transition: $slow-01;
