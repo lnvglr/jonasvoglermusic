@@ -1,5 +1,5 @@
 <template>
-  <button :style="`--size: ${String(size)}px; --scale: ${String(scale)}`" :class="{ circle, pulse, [name]: name, static: !animate }" >
+  <button :style="`--size: ${String(size)}px; --scale: ${String(scale)}`" :class="{ circle, pulse, [name]: name, static: !animate }" :name="name">
     <svg v-if="animate" :viewBox="`0 0 ${viewBox} ${viewBox}`">
       <path
         :d="iconPath(active)"

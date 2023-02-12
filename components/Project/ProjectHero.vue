@@ -23,12 +23,6 @@
               :scale="2"
             />
           </transition>
-            <!-- <ControlIcon
-              v-for="icon in [['SpeakerSlash', 'SpeakerWave'][muted ? 0 : 1]]"
-              :key="icon"
-              :name="icon"
-              :scale="2"
-            /> -->
         </div>
         <client-only v-if="hero.type === 'vimeo' && cookieConsent">
           <vimeo
