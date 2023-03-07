@@ -85,9 +85,9 @@ export default {
       margin-left: 0;
     }
     &:last-child {
-      margin: 0rem;
-      height: 1em;
-      min-width: 0.1px;
+      /* margin: 0rem; */
+      /* height: 1em; */
+      /* min-width: 0.1px; */
     }
     &:hover,
     &.active:hover {

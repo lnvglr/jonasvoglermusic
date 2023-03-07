@@ -120,6 +120,7 @@ export default {
       return this.projects?.find((e) => e.slug === this.slug);
     },
     reel() {
+      if (!this.initiated) return false;
       return this.projects?.find((e) => e?.field?.reel);
     },
     filteredProjects() {
@@ -179,7 +180,7 @@ export default {
         return e;
       });
 
-    const url = process.server ? req.url : null;
+    const url = process.server && req ? req.url : null;
     const slug = url
       ? url.split(process.env.projectPath)[1]?.split("?")[0]
       : params.projectSlug;
