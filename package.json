@@ -1,12 +1,13 @@
 {
   "name": "jonasvoglermusic",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": true,
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
+    "yarn": "yarn",
     "npm": "npm",
     "npx": "npx",
     "node": "node"

@@ -31,7 +31,7 @@ export default {
   line-height: 1.3;
   font-size: 0.75rem;
   .detail {
-    display: inline;
+    display: inline-block;
     text-align: center;
     margin-right: 0.5rem;
     &, & > * {
