@@ -9,20 +9,24 @@
   font-weight: bold;
   font-style: italic;
 }
+
 @font-face {
   font-family: "Addington";
   src: url("~@/assets/fonts/addingtoncf-thin-webfont.woff2") format("woff2");
 }
+
 @font-face {
   font-family: "Addington";
   src: url("~@/assets/fonts/addingtoncf-thinitalic-webfont.woff2") format("woff2");
   font-style: italic;
 }
+
 @font-face {
   font-family: "Raleway";
   src: url("~@/assets/fonts/raleway-bold-new.woff2") format("woff2");
   font-weight: 700;
 }
+
 @font-face {
   font-family: "Raleway";
   src: url("~@/assets/fonts/raleway-medium-new.woff2") format("woff2");
