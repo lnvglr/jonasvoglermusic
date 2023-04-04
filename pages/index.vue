@@ -183,7 +183,7 @@ export default {
     const url = process.server && req ? req.url : null;
     const slug = url
       ? url.split(process.env.projectPath)[1]?.split("?")[0]
-      : params.projectSlug;
+      : (params.projectSlug || '/');
     const structuredData = {
       "@context": "https://schema.org",
       "@type": "ItemList",

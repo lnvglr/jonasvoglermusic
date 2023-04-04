@@ -266,7 +266,6 @@ export default {
       if (this.reel && !val && oldVal) oldVal.pause();
     },
     open() {
-      console.log("reel", this.reel);
       if (!this.reel) this.$store.dispatch("setReelPlaying", false);
     },
     imageSizes(val) {
