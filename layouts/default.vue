@@ -47,8 +47,10 @@ export default {
   async fetch() {
     const { data: info } = await axios.get(process.env.API_BASE_PATH + 'bloginfo')
     const { data: pages } = await axios.get(process.env.API_BASE_PATH + 'pages')
+    const { data: menu } = await axios.get(process.env.API_BASE_PATH + 'pages')
     this.$store.dispatch('setBloginfo', info)
     this.$store.dispatch('pages/set', pages)
+    this.$store.dispatch('menu/set', menu)
   },
 }
 </script>

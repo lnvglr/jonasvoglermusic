@@ -34,9 +34,6 @@ export default {
     display: inline-block;
     text-align: center;
     margin-right: 0.5rem;
-    &, & > * {
-      white-space: nowrap;
-    }
     .detail-label {
       color: $dark-01;
       font-size: 0.625rem;

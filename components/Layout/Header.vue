@@ -10,7 +10,7 @@
               @click.native="
                 $store.dispatch('updateFilter', null), $store.dispatch('project/setOpen', null)
               "
-              >Projects</NuxtLink
+              >Work</NuxtLink
             >
           </li>
           <li v-for="page in pages('header')" :key="page.id" class="page-link">

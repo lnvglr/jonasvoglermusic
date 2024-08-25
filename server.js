@@ -12,7 +12,7 @@ if (process.env.RAILWAY !== "TRUE" && typeof PhusionPassenger != "undefined") {
 	PhusionPassenger.configure({ autoInstall: false });
 	app.listen(process.env.PORT || "passenger");
 } else {
-	app.listen(process.env.PORT || 5000);
+	app.listen(process.env.PORT || 3000);
 }
 
 
@@ -28,7 +28,7 @@ const nuxt = new Nuxt(config);
 app.use(nuxt.render);
 
 // Build on start
-// new Builder(nuxt).build().catch(err => {
-//   console.error(err);
-//   process.exit(1);
-// });
+new Builder(nuxt).build().catch(err => {
+  console.error(err);
+  process.exit(1);
+});
