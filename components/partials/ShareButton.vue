@@ -31,6 +31,9 @@ export default {
 <style lang="scss" scoped>
 .share {
   --shadow-opacity: 0.1;
+  --arrow-offset: 1;
+  --arrow-length: 1;
+  --arrow-head: 1;
   cursor: pointer;
   color: $white;
   position: absolute;
@@ -70,10 +73,10 @@ export default {
   &.fade-enter,
   &.fade-leave-to {
     margin-right: 0;
+    --arrow-offset: -0.25;
+    --arrow-length: 0.5;
+    --arrow-head: 0.25;
     .share-button {
-      --arrow-offset: -0.25;
-      --arrow-length: 0.5;
-      --arrow-head: 0.25;
       &::before,
       &::after {
         opacity: 0;
@@ -81,7 +84,7 @@ export default {
     }
   }
 
-  &:hover .share-button {
+  &:hover {
     --arrow-offset: 1.5;
     --arrow-head: 1.25;
   }
@@ -95,9 +98,6 @@ export default {
   }
 }
 .share-button {
-  --arrow-offset: 1;
-  --arrow-length: 1;
-  --arrow-head: 1;
   position: relative;
   font-size: 1rem;
   width: 1.5em;
@@ -133,9 +133,10 @@ export default {
     position: absolute;
     display: block;
     left: 50%;
-    top: calc((var(--arrow-offset, 1) * -0.4em) - 2px);
+    top: 0;
     box-shadow: inset 2px 2px 0 currentcolor;
-    transform: rotate(45deg) translate(0, 0);
+    transform: rotate(45deg)
+      translate(0, calc((var(--arrow-offset) * -0.4em) - 2px));
     transform-origin: 0 0;
   }
 }
