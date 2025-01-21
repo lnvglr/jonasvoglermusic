@@ -9,8 +9,8 @@ export default ({ app }) => {
         id: "G-4ERRMFBFD4",
         anonymize_ip: true,
       },
-      enabled: true,
-      bootstrap: true
+      enabled: false,
+      bootstrap: false
     },
     app.router
   );
