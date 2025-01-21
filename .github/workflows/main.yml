@@ -13,18 +13,19 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Node.js
+    - name: Set up Node.js 20
       uses: actions/setup-node@v2
       with:
-        node-version: '20' # Adjust according to your Nuxt version
+        node-version: '20' # Use Node.js version 20
 
-    - name: Install dependencies
+    - name: Install dependencies with Yarn
       run: |
-        npm install
+        yarn install --frozen-lockfile # Use --frozen-lockfile for reproducible builds
+      continue-on-error: true
 
     - name: Build Nuxt app
       run: |
-        npm run build
+        yarn build
 
     - name: Deploy to Netcup via SSH
       env:
@@ -33,14 +34,14 @@ jobs:
         mkdir -p ~/.ssh
         echo "$DEPLOY_SSH_KEY" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H your-server-ip >> ~/.ssh/known_hosts
-        scp -r ./dist/* user@your-server-ip:/path/to/your/nuxt-app/ # Replace with your server's path
+        ssh-keyscan -H 91.204.46.220 >> ~/.ssh/known_hosts
+        scp -r ./dist/* hosting158062@91.204.46.220:/jonasvoglermusic.com/ # Replace with your server's path
 
     - name: Restart app on Netcup server (optional)
       env:
         DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
       run: |
-        ssh -i ~/.ssh/id_rsa user@your-server-ip << EOF
+        ssh -i ~/.ssh/id_rsa hosting158062@91.204.46.220 << EOF
         cd /path/to/your/nuxt-app/
         pm2 restart nuxt-app || pm2 start npm --name "nuxt-app" -- start # Replace with your process manager
         EOF
