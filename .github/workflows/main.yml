@@ -34,14 +34,14 @@ jobs:
         mkdir -p ~/.ssh
         echo "$DEPLOY_SSH_KEY" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H your-server-ip >> ~/.ssh/known_hosts
-        scp -r ./dist/* user@your-server-ip:/path/to/your/nuxt-app/ # Replace with your server's path
+        ssh-keyscan -H 91.204.46.220 >> ~/.ssh/known_hosts
+        scp -r ./dist/* hosting158062@91.204.46.220:/jonasvoglermusic.com/static/ # Replace with your server's path
 
     - name: Restart app on Netcup server (optional)
       env:
         DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
       run: |
-        ssh -i ~/.ssh/id_rsa user@your-server-ip << EOF
+        ssh -i ~/.ssh/id_rsa hosting158062@91.204.46.220 << EOF
         cd /path/to/your/nuxt-app/
         pm2 restart nuxt-app || pm2 start npm --name "nuxt-app" -- start # Replace with your process manager
         EOF
