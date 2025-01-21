@@ -133,10 +133,9 @@ export default {
     position: absolute;
     display: block;
     left: 50%;
-    top: 0;
+    margin-top: calc(((var(--arrow-offset) * -0.4em)) - 2px);
     box-shadow: inset 2px 2px 0 currentcolor;
-    transform: rotate(45deg)
-      translate(0, calc((var(--arrow-offset) * -0.4em) - 2px));
+    transform: rotate(45deg);
     transform-origin: 0 0;
   }
 }
