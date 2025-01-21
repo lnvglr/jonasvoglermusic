@@ -35,7 +35,7 @@ jobs:
         echo "$DEPLOY_SSH_KEY" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H 91.204.46.220 >> ~/.ssh/known_hosts
-        scp -r ./dist/* hosting158062@91.204.46.220:/jonasvoglermusic.com/static/ # Replace with your server's path
+        scp -r ./dist/* hosting158062@91.204.46.220:/jonasvoglermusic.com/ # Replace with your server's path
 
     - name: Restart app on Netcup server (optional)
       env:
