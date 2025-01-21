@@ -26,48 +26,49 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import { bootstrap } from 'vue-gtag'
+import { mapGetters } from "vuex";
+import { bootstrap } from "vue-gtag";
 
 export default {
-  name: 'CookieNotice',
+  name: "CookieNotice",
   data() {
     return {
-      privacySlug: 'privacy-policy',
+      privacySlug: "privacy-policy",
       ignoreWatcher: false,
-    }
+    };
   },
   computed: {
     ...mapGetters({
-      page: 'pages/getPage',
-      cookieConsent: 'getCookieConsent',
+      page: "pages/getPage",
+      cookieConsent: "getCookieConsent",
     }),
     buttonLinkText() {
-      return this.page(this.privacySlug)?.title.rendered
+      return this.page(this.privacySlug)?.title.rendered;
     },
     isPrivacyPage() {
-      return this.$nuxt.$route.params.slug === this.privacySlug
+      return this.$nuxt.$route.params.slug === this.privacySlug;
     },
     message() {
-      return `This site uses cookies. If you continue to use the website, we will assume that you have given your consent. You can change your decision later in our ${this.buttonLinkText}.`
-    }
+      return `This site uses cookies. If you continue to use the website, we will assume that you have given your consent. You can change your decision later in our ${this.buttonLinkText}.`;
+    },
   },
   methods: {
     accept() {
-      this.$store.dispatch('setCookieConsent', true)
-      bootstrap().then((gtag) => {})
+      this.$store.dispatch("setCookieConsent", true);
+      bootstrap().then((gtag) => {});
     },
     decline() {
-      this.$store.dispatch('setCookieConsent', false)
+      this.$store.dispatch("setCookieConsent", false);
     },
     revoke() {
-      this.$refs.cookies.revoke()
-      this.$store.dispatch('setCookieConsent', null)
+      this.$refs.cookies.revoke();
+      this.$store.dispatch("setCookieConsent", null);
     },
     blockedIframes(string) {
-      if (this.cookieConsent) return string
-      const iframeRegex = /(?:<iframe.*?src=["'])(.*?)(?:["'])(?:.*>.*?<\/iframe>)/g
-      return string.replace(iframeRegex, (_, src) => this.blockedCookies(src))
+      if (this.cookieConsent) return string;
+      const iframeRegex =
+        /(?:<iframe.*?src=["'])(.*?)(?:["'])(?:.*>.*?<\/iframe>)/g;
+      return string.replace(iframeRegex, (_, src) => this.blockedCookies(src));
     },
     blockedCookies(url = null) {
       const link =
@@ -75,37 +76,37 @@ export default {
           ? `<a class="Cookie__button secondary" target="_blank" href="${url}">Open ${
               new URL(url).hostname
             }</a>`
-          : ''
+          : "";
       return `<div class="allow-cookie-notice">
         <span>External content blocked.</span>
         <span>${link}<button class="Cookie__button success allow-cookies">Allow cookies</button></span>
-      </div>`
+      </div>`;
     },
     isValidHttpUrl(string) {
-      let url
+      let url;
 
       try {
-        url = new URL(string)
+        url = new URL(string);
       } catch (_) {
-        return false
+        return false;
       }
 
-      return url.protocol === 'http:' || url.protocol === 'https:'
+      return url.protocol === "http:" || url.protocol === "https:";
     },
   },
   mounted() {
     this.$nextTick(function () {
-      this.$store.dispatch('setCookieConsent', this.$refs.cookies.isAccepted())
-    })
-    const self = this
-    document.addEventListener('click', function (e) {
-      if (e.target.classList.contains('allow-cookies')) {
-        self.$refs.cookies.accept()
-        e.stopPropagation()
+      this.$store.dispatch("setCookieConsent", this.$refs.cookies.isAccepted());
+    });
+    const self = this;
+    document.addEventListener("click", function (e) {
+      if (e.target.classList.contains("allow-cookies")) {
+        self.$refs.cookies.accept();
+        e.stopPropagation();
       }
-    })
+    });
   },
-}
+};
 </script>
 <style lang="scss">
 $primary: $secondary;
@@ -135,7 +136,7 @@ $button-padding: map-get($button-sizes, medium);
     line-height: 1.2;
     margin-bottom: 1rem;
     &:before {
-      content: '🍪';
+      content: "🍪";
       display: block;
       font-size: 2em;
       margin-right: 1em;

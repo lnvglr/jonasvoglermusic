@@ -4,18 +4,29 @@
       ><span class="string"
         ><h1 class="logo">{{ name }}</h1>
         <transition name="slide-in" mode="out-in" @enter="adjustHeight">
-          <span class="description" v-if="!legal && !music">is a composer for film and television</span>
+          <span class="description" v-if="!legal && !music"
+            >is a composer for film and television</span
+          >
           <span v-else key="blank"></span>
         </transition>
         <transition name="slide-in" mode="out-in" @enter="adjustHeight">
-          <span class="description" v-if="music" v-html="music" key="music"></span>
+          <span
+            class="description"
+            v-if="music"
+            v-html="music"
+            key="music"
+          ></span>
           <span
             class="description"
             v-else-if="aboutContact"
             v-html="aboutContact"
             key="aboutContact"
           ></span>
-          <span v-else-if="!legal" class="description" key="dot" style="margin-left: -0.375ch"
+          <span
+            v-else-if="!legal"
+            class="description"
+            key="dot"
+            style="margin-left: -0.375ch"
             >.</span
           >
           <span v-else key="blank"></span>
@@ -29,8 +40,8 @@
   </NuxtLink>
 </template>
 <script>
-import { mapGetters } from 'vuex'
-import throttle from 'lodash.throttle'
+import { mapGetters } from "vuex";
+import throttle from "lodash.throttle";
 
 export default {
   props: {
@@ -39,38 +50,43 @@ export default {
   },
   computed: {
     ...mapGetters({
-      experimental: 'getExperimental',
+      experimental: "getExperimental",
     }),
     legal() {
-      return ['privacy-policy', 'legal-notice'].includes(this.$nuxt.$route.params.slug)
+      return ["privacy-policy", "legal-notice"].includes(
+        this.$nuxt.$route.params.slug
+      );
     },
     music() {
-      return 'music' === this.$nuxt.$route.params.slug
-        ? 'happens to also compose music without picture.'
-        : false
+      return "music" === this.$nuxt.$route.params.slug
+        ? "happens to also compose music without picture."
+        : false;
     },
     aboutContact() {
-      return 'about-contact' === this.$nuxt.$route.params.slug ? 'based in Berlin.' : false
+      return "about-contact" === this.$nuxt.$route.params.slug
+        ? "based in Berlin."
+        : false;
     },
   },
   methods: {
     home() {
-      this.$store.dispatch('updateFilter', null)
-      this.$store.dispatch('project/setOpen', null)
+      this.$store.dispatch("updateFilter", null);
+      this.$store.dispatch("project/setOpen", null);
     },
     adjustHeight() {
       if (this.$refs.title && this.$refs.string) {
-        this.$refs.title.$el.style.height = this.$refs.string.$el.clientHeight + 'px'
+        this.$refs.title.$el.style.height =
+          this.$refs.string.$el.clientHeight + "px";
       }
     },
   },
   mounted() {
-    window.addEventListener('resize', throttle(this.adjustHeight, 100))
+    window.addEventListener("resize", throttle(this.adjustHeight, 100));
   },
   unmounted() {
-    window.removeEventListener('resize', throttle(this.adjustHeight, 100))
+    window.removeEventListener("resize", throttle(this.adjustHeight, 100));
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -96,10 +112,12 @@ export default {
       color: $light-03;
       font-weight: bold;
       transition: height $slow-02;
-      @media screen and (max-width: map-get($breakpoints, large)), (max-height: 480px)  {
+      @media screen and (max-width: map-get($breakpoints, large)),
+        (max-height: 480px) {
         font-size: 3rem;
       }
-      @media screen and (max-width: map-get($breakpoints, medium)), (max-height: 320px) {
+      @media screen and (max-width: map-get($breakpoints, medium)),
+        (max-height: 320px) {
         font-size: 2rem;
       }
       .string {
