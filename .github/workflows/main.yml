@@ -1,0 +1,46 @@
+name: Deploy Nuxt App to Netcup
+
+on:
+  push:
+    branches:
+      - main # Adjust if you're using a different branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20' # Adjust according to your Nuxt version
+
+    - name: Install dependencies
+      run: |
+        npm install
+
+    - name: Build Nuxt app
+      run: |
+        npm run build
+
+    - name: Deploy to Netcup via SSH
+      env:
+        DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+      run: |
+        mkdir -p ~/.ssh
+        echo "$DEPLOY_SSH_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H your-server-ip >> ~/.ssh/known_hosts
+        scp -r ./dist/* user@your-server-ip:/path/to/your/nuxt-app/ # Replace with your server's path
+
+    - name: Restart app on Netcup server (optional)
+      env:
+        DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+      run: |
+        ssh -i ~/.ssh/id_rsa user@your-server-ip << EOF
+        cd /path/to/your/nuxt-app/
+        pm2 restart nuxt-app || pm2 start npm --name "nuxt-app" -- start # Replace with your process manager
+        EOF
