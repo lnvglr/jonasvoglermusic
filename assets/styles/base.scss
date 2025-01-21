@@ -1,7 +1,6 @@
 @import "./_variables.scss";
 @import "./_gutenberg-styles.scss";
 
-
 :root {
   --font-family: #{$font-family-sans};
   --blur: blur(20px) saturate(2);
@@ -37,7 +36,7 @@ video {
 }
 .wrap {
   position: relative;
-  width: map-get($breakpoints, xlarge);
+  width: map-get($breakpoints, xxlarge);
   max-width: 100%;
   margin: 0 auto;
   @include dynamic-box($axis: vertical);
@@ -198,13 +197,13 @@ a {
     }
   }
   .alignfull {
-    width: map-get($breakpoints, xlarge);
+    width: map-get($breakpoints, xxlarge);
     @include dynamic-box(margin, $axis: vertical);
-    @media screen and (min-width: map-get($breakpoints, xlarge)) {
-      margin: 0 calc(-#{map-get($breakpoints, xlarge)} / 2 + 50%);
+    @media screen and (min-width: map-get($breakpoints, xxlarge)) {
+      margin: 0 calc(-#{map-get($breakpoints, xxlarge)} / 2 + 50%);
       max-width: initial;
     }
-    @media screen and (max-width: map-get($breakpoints, xlarge) - 1px) {
+    @media screen and (max-width: map-get($breakpoints, xxlarge) - 1px) {
       margin: 0 calc(-50vw + 50%);
       max-width: 100vw;
     }
@@ -306,7 +305,7 @@ a {
 }
 @keyframes pulse-background {
   0% {
-    background: rgba(var(--background-color, #{$light-02}), .5);
+    background: rgba(var(--background-color, #{$light-02}), 0.5);
   }
   70% {
     background: rgba(var(--background-color, #{$light-02}), 1);

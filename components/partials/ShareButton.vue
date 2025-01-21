@@ -1,10 +1,12 @@
 <template>
-  <div class="share" @click="share()" v-if="show"><i class="share-button"></i></div>
+  <div class="share" @click="share()" v-if="show">
+    <i class="share-button"></i>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'ShareButton',
+  name: "ShareButton",
   props: {
     project: {
       type: Object,
@@ -12,7 +14,7 @@ export default {
   },
   computed: {
     show() {
-      return navigator.share
+      return navigator.share;
     },
   },
   methods: {
@@ -20,10 +22,10 @@ export default {
       navigator.share({
         title: this.project.title.rendered,
         url: this.project.link,
-      })
+      });
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -103,30 +105,35 @@ export default {
   display: block;
   top: 0.5em;
   border-radius: 0 0 0.25em 0.25em;
-  box-shadow: inset var(--stroke) 0 0 currentcolor, inset 0 calc(-1 * var(--stroke)) 0 currentcolor,
+  box-shadow: inset var(--stroke) 0 0 currentcolor,
+    inset 0 calc(-1 * var(--stroke)) 0 currentcolor,
     inset calc(-1 * var(--stroke)) 0 0 currentcolor,
-    inset calc(0.625 * var(--stroke)) calc(-0.625 * var(--stroke)) 0 currentcolor,
-    inset calc(-0.625 * var(--stroke)) calc(-0.625 * var(--stroke)) 0 currentcolor;
+    inset calc(0.625 * var(--stroke)) calc(-0.625 * var(--stroke)) 0
+      currentcolor,
+    inset calc(-0.625 * var(--stroke)) calc(-0.625 * var(--stroke)) 0
+      currentcolor;
 
   &::before {
-    content: '';
+    content: "";
     width: var(--stroke);
     height: calc(1em * var(--arrow-length));
     background: currentcolor;
     position: absolute;
     display: block;
     left: 50%;
-    transform: translate(calc(var(--stroke) / -2), calc(var(--arrow-offset) * -0.4em));
+    transform: translate(
+      calc(var(--stroke) / -2),
+      calc(var(--arrow-offset) * -0.4em)
+    );
   }
   &::after {
-    content: '';
+    content: "";
     width: calc(0.5em * var(--arrow-head));
     height: calc(0.5em * var(--arrow-head));
     position: absolute;
     display: block;
     left: 50%;
-    top: 0;
-    /* top: calc((var(--arrow-offset, 1) * -0.4em) - 2px); */
+    top: calc((var(--arrow-offset, 1) * -0.4em) - 2px);
     box-shadow: inset 2px 2px 0 currentcolor;
     transform: rotate(45deg) translate(0, 0);
     transform-origin: 0 0;

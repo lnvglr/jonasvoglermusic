@@ -12,23 +12,23 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 
-import PageDefault from '@/components/Page/PageDefault.vue'
-import PageTable from '@/components/Page/PageTable.vue'
-import PageAbout from '@/components/Page/PageAbout.vue'
-import NotFound from '@/layouts/error.vue'
+import PageDefault from "@/components/Page/PageDefault.vue";
+import PageTable from "@/components/Page/PageTable.vue";
+import PageAbout from "@/components/Page/PageAbout.vue";
+import NotFound from "@/layouts/error.vue";
 
-import CookieNotice from '@/components/partials/CookieNotice.vue'
+import CookieNotice from "@/components/partials/CookieNotice.vue";
 
 export default {
-  name: 'Page',
+  name: "Page",
   // transition: 'fade',
   transition(to, from, e) {
-    if (from && from.params?.slug === 'music') {
-      return 'fade'
+    if (from && from.params?.slug === "music") {
+      return "fade";
     }
-    return 'slide-in'
+    return "slide-in";
   },
   components: {
     PageDefault,
@@ -39,79 +39,89 @@ export default {
   data() {
     return {
       fadedIn: false,
-    }
+    };
   },
   computed: {
     ...mapGetters({
-      getPage: 'pages/getPage',
-      bloginfo: 'getBloginfo',
-      cookieConsent: 'getCookieConsent',
+      getPage: "pages/getPage",
+      bloginfo: "getBloginfo",
+      cookieConsent: "getCookieConsent",
     }),
     page() {
-      const page = this.getPage(this.$route.params.slug)
-      if (!page) return
-      const pageObject = JSON.parse(JSON.stringify(page))
-      if (this.cookieConsent) return pageObject
-      pageObject.content.rendered = CookieNotice.methods.blockedIframes(pageObject.content.rendered)
-      return pageObject
+      const page = this.getPage(this.$route.params.slug);
+      if (!page) return;
+      const pageObject = JSON.parse(JSON.stringify(page));
+      if (this.cookieConsent) return pageObject;
+      pageObject.content.rendered = CookieNotice.methods.blockedIframes(
+        pageObject.content.rendered
+      );
+      return pageObject;
     },
     template() {
-      return this.page ? 'page-' + this.page.field.template : 'not-found'
+      return this.page ? "page-" + this.page.field.template : "not-found";
     },
   },
   mounted() {
-    this.$nextTick(() => setTimeout(() => this.fadedIn = !0, 200))
+    this.$nextTick(() => setTimeout(() => (this.fadedIn = !0), 200));
   },
   methods: {
     initialFadeIn() {
-      const hiddenElements = document.getElementsByClassName('hidden')
-      const self = this
-      if (!hiddenElements) return
+      const hiddenElements = document.getElementsByClassName("hidden");
+      const self = this;
+      if (!hiddenElements) return;
       Array.from(hiddenElements).forEach(function (element) {
-        if (self.isScrolledIntoView(element)) element.classList.remove('hidden')
-      })
+        if (self.isScrolledIntoView(element))
+          element.classList.remove("hidden");
+      });
     },
     isScrolledIntoView(el) {
-      const rect = el.getBoundingClientRect()
-      const tolerance = rect.height - window.innerHeight / 10
-      return rect.top + tolerance >= 0 && rect.bottom - tolerance <= window.innerHeight
+      const rect = el.getBoundingClientRect();
+      const tolerance = rect.height - window.innerHeight / 10;
+      return (
+        rect.top + tolerance >= 0 &&
+        rect.bottom - tolerance <= window.innerHeight
+      );
     },
   },
   metaInfo() {
-    if (!this.bloginfo) return
-    const div = document.createElement('div')
-    div.innerHTML = this.page ? this.page.content.rendered?.replace(/<[^>]*>?/gm, '') : ''
+    if (!this.bloginfo) return;
+    const div = document.createElement("div");
+    div.innerHTML = this.page
+      ? this.page.content.rendered?.replace(/<[^>]*>?/gm, "")
+      : "";
     const title = this.page
-      ? this.page.title.rendered + ' – ' + this.bloginfo.name
-      : this.bloginfo.name
+      ? this.page.title.rendered + " – " + this.bloginfo.name
+      : this.bloginfo.name;
     const description = this.page
       ? this.page.field.introduction
         ? this.page.field.introduction
-        : this.page.content.rendered?.replace(/<[^>]*>?/gm, '')
-      : this.bloginfo.description
+        : this.page.content.rendered?.replace(/<[^>]*>?/gm, "")
+      : this.bloginfo.description;
     return {
       title: title,
       meta: [
         {
-          name: 'description',
+          name: "description",
           content: description,
         },
         {
-          property: 'og:title',
+          property: "og:title",
           content: title,
         },
         {
-          property: 'og:image',
-          content: this.page ? this.page.thumbnail?.medium?.[0] : this.bloginfo.favicon,
+          property: "og:image",
+          content: this.page
+            ? this.page.thumbnail?.medium?.[0]
+            : this.bloginfo.favicon,
         },
         {
-          property: 'og:url',
+          property: "og:url",
           content: this.page ? this.page.link : this.bloginfo.url,
         },
       ],
-    }
+    };
   },
-}
+};
 </script>
 
 <style lang="scss">
@@ -202,7 +212,7 @@ export default {
       ul,
       ol,
       p {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
       }
     }
   }

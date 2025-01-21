@@ -7,7 +7,8 @@
       <div class="cover-container" :class="{ loading: showSpinner }">
         <img :src="cover" width="500" height="500" v-if="currentTrack" />
         <transition name="fade"
-          ><div class="spinner-container" v-if="showSpinner"><div class="spinner large"></div></div
+          ><div class="spinner-container" v-if="showSpinner">
+            <div class="spinner large"></div></div
         ></transition>
       </div>
 
@@ -15,7 +16,9 @@
         <span class="artist" :title="currentTrack.user.username">{{
           currentTrack.user.username
         }}</span>
-        <span class="track-title" :title="currentTrack.title">{{ currentTrack.title }}</span>
+        <span class="track-title" :title="currentTrack.title">{{
+          currentTrack.title
+        }}</span>
         <SocialMedia
           :links="[currentTrack.permalink_url]"
           class="player-logo"
@@ -47,20 +50,19 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import axios from "axios";
 
-import { mapGetters } from 'vuex'
-import axios from 'axios'
+import variables from "@/assets/styles/_variableExport.scss";
+import SocialMedia from "@/components/partials/SocialMediaLinks.vue";
 
-import variables from '@/assets/styles/_variableExport.scss'
-import SocialMedia from '@/components/partials/SocialMediaLinks.vue'
+import ControlIcon from "@/components/Music/ControlIcon.vue";
+import CookieNotice from "@/components/partials/CookieNotice.vue";
 
-import ControlIcon from '@/components/Music/ControlIcon.vue'
-import CookieNotice from '@/components/partials/CookieNotice.vue'
-
-import TransitionExpand from '@/components/partials/TransitionExpand.vue'
+import TransitionExpand from "@/components/partials/TransitionExpand.vue";
 
 export default {
-  name: 'Player',
+  name: "Player",
   components: {
     ControlIcon,
     TransitionExpand,
@@ -78,130 +80,150 @@ export default {
       tracks: [],
       order: [],
       currentTrack: null,
-      cover: '',
+      cover: "",
       currentTime: 0,
       duration: 0,
       fadedIn: false,
       isLoading: false,
       showSpinner: false,
-    }
+    };
   },
   mounted() {
-    this.initPlayer()
-    this.$nextTick(() => (this.fadedIn = true))
+    this.initPlayer();
+    this.$nextTick(() => (this.fadedIn = true));
   },
   destroyed() {
-    this.abortStream()
+    this.abortStream();
   },
   computed: {
     ...mapGetters({
-      cookieConsent: 'getCookieConsent',
+      cookieConsent: "getCookieConsent",
     }),
     progress() {
-      if (!this.audioStream) return 0
-      return parseInt((100 / parseInt(this.audioStream.duration)) * this.currentTime)
+      if (!this.audioStream) return 0;
+      return parseInt(
+        (100 / parseInt(this.audioStream.duration)) * this.currentTime
+      );
     },
     remainingTime() {
-      if (!this.duration) return 0
-      if (!this.currentTime) return this.duration
-      return this.duration - this.currentTime
+      if (!this.duration) return 0;
+      if (!this.currentTime) return this.duration;
+      return this.duration - this.currentTime;
     },
     cookies() {
-      return CookieNotice.methods.blockedCookies('https://hearthis.at/' + this.playlistSlug)
+      return CookieNotice.methods.blockedCookies(
+        "https://hearthis.at/" + this.playlistSlug
+      );
     },
   },
   methods: {
     async initPlayer() {
-      if (!this.cookieConsent) return
-      const { data: playlist } = await axios.get('https://api-v2.hearthis.at/' + this.playlistSlug)
-      this.tracks = playlist
-      this.order = this.shuffle(this.tracks.map((e, i) => i))
-      this.currentTrack = this.tracks[this.order[0]]
+      if (!this.cookieConsent) return;
+      const { data: playlist } = await axios.get(
+        "https://api-v2.hearthis.at/" + this.playlistSlug
+      );
+      this.tracks = playlist;
+      this.order = this.shuffle(this.tracks.map((e, i) => i));
+      this.currentTrack = this.tracks[this.order[0]];
     },
     shuffle(a) {
       for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        ;[a[i], a[j]] = [a[j], a[i]]
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
       }
-      return a
+      return a;
     },
     skipTrack(i = 1, isPlaying = !this.isPlaying) {
-      if (!this.currentTrack) return
-      const currentIndex = this.order.indexOf(this.tracks.indexOf(this.currentTrack))
-      const next = this.order[currentIndex + i]
-      const nextIndex = next !== undefined ? next : this.order[0]
-      this.currentTrack = this.tracks[nextIndex]
-      this.currentTime = 0
-      this.abortStream()
-      this.togglePlay(isPlaying, !isPlaying)
+      if (!this.currentTrack) return;
+      const currentIndex = this.order.indexOf(
+        this.tracks.indexOf(this.currentTrack)
+      );
+      const next = this.order[currentIndex + i];
+      const nextIndex = next !== undefined ? next : this.order[0];
+      this.currentTrack = this.tracks[nextIndex];
+      this.currentTime = 0;
+      this.abortStream();
+      this.togglePlay(isPlaying, !isPlaying);
     },
     togglePlay(isPlaying = null, setup = true) {
-      if (this.audioStream) return isPlaying ? this.audioStream.pause() : this.audioStream.play()
-      if (setup) this.setupStream(isPlaying)
+      if (this.audioStream)
+        return isPlaying ? this.audioStream.pause() : this.audioStream.play();
+      if (setup) this.setupStream(isPlaying);
     },
     setupTrack() {
-      if (!this.currentTrack) return
-      this.cover = this.currentTrack.artwork_url_retina
-      this.duration = this.currentTrack.duration
+      if (!this.currentTrack) return;
+      this.cover = this.currentTrack.artwork_url_retina;
+      this.duration = this.currentTrack.duration;
     },
     setupStream(pause = true) {
-      if (!this.currentTrack) return
+      if (!this.currentTrack) return;
       try {
-        this.audioStream = new Audio(this.currentTrack.stream_url)
+        this.audioStream = new Audio(this.currentTrack.stream_url);
       } catch (e) {
-        return error.log(e)
+        return error.log(e);
       }
-      this.audioStream.addEventListener('error', () => this.abortStream())
-      this.audioStream.addEventListener('loadstart', () => {
-        this.isLoading = true
-        setTimeout(() => (this.showSpinner = this.isLoading), 1000)
-      })
-      this.audioStream.addEventListener('canplaythrough', () => (this.isLoading = false))
-      this.audioStream.addEventListener('loadeddata', () => (this.isLoading = false))
+      this.audioStream.addEventListener("error", () => this.abortStream());
+      this.audioStream.addEventListener("loadstart", () => {
+        this.isLoading = true;
+        setTimeout(() => (this.showSpinner = this.isLoading), 1000);
+      });
+      this.audioStream.addEventListener(
+        "canplaythrough",
+        () => (this.isLoading = false)
+      );
+      this.audioStream.addEventListener(
+        "loadeddata",
+        () => (this.isLoading = false)
+      );
 
-      this.audioStream.addEventListener('timeupdate', () => {
-        this.currentTime = this.audioStream?.currentTime
-      })
-      this.audioStream.addEventListener('ended', () => this.skipTrack(1, false))
-      this.audioStream.addEventListener('pause', () => (this.isPlaying = false))
-      this.audioStream.addEventListener('play', () => (this.isPlaying = true))
+      this.audioStream.addEventListener("timeupdate", () => {
+        this.currentTime = this.audioStream?.currentTime;
+      });
+      this.audioStream.addEventListener("ended", () =>
+        this.skipTrack(1, false)
+      );
+      this.audioStream.addEventListener(
+        "pause",
+        () => (this.isPlaying = false)
+      );
+      this.audioStream.addEventListener("play", () => (this.isPlaying = true));
 
-      if (!pause) this.audioStream.play()
+      if (!pause) this.audioStream.play();
     },
     abortStream() {
-      this.audioStream?.pause()
-      this.audioStream?.removeAttribute('src')
+      this.audioStream?.pause();
+      this.audioStream?.removeAttribute("src");
       try {
-        this.audioStream?.load()
+        this.audioStream?.load();
       } catch (e) {}
-      this.audioStream = null
-      this.isLoading = false
+      this.audioStream = null;
+      this.isLoading = false;
     },
     time(time) {
-      if (isNaN(time)) return '0:00'
-      const sec_num = parseInt(time, 10)
-      const hours = Math.floor(sec_num / 3600)
-      const minutes = Math.floor(sec_num / 60) % 60
-      const seconds = sec_num % 60
+      if (isNaN(time)) return "0:00";
+      const sec_num = parseInt(time, 10);
+      const hours = Math.floor(sec_num / 3600);
+      const minutes = Math.floor(sec_num / 60) % 60;
+      const seconds = sec_num % 60;
 
       return [hours, minutes, seconds]
         .filter((v, i) => v != 0 || i > 0)
-        .map((v, i) => (v < 10 && i > 0 ? '0' + v : v))
-        .join(':')
+        .map((v, i) => (v < 10 && i > 0 ? "0" + v : v))
+        .join(":");
     },
   },
   watch: {
     currentTrack() {
-      this.setupTrack()
+      this.setupTrack();
     },
     cookieConsent() {
-      this.initPlayer()
+      this.initPlayer();
     },
     isLoading(val) {
-      if (!val) this.showSpinner = false
+      if (!val) this.showSpinner = false;
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -230,10 +252,10 @@ export default {
         display: block;
         width: 100%;
         height: auto;
-        &[src=''] {
+        &[src=""] {
           position: relative;
           &:after {
-            content: '';
+            content: "";
             position: absolute;
             background: $light-02;
             top: 0;
@@ -282,7 +304,7 @@ export default {
         margin-bottom: 1rem;
         border-radius: 1em;
         &::before {
-          content: '';
+          content: "";
           height: 100%;
           background-color: $primary;
           width: var(--width);
@@ -292,7 +314,7 @@ export default {
           border-radius: 1em 0 0 1em;
         }
       }
-      
+
       .controls {
         display: flex;
         justify-content: center;
@@ -346,7 +368,7 @@ export default {
         padding-right: 0;
         margin-top: 0;
         padding: map-get($padding-sizes, large) 0;
-        margin-left: map-get($padding-sizes, xlarge);
+        margin-left: map-get($padding-sizes, xxlarge);
         width: 0;
         .track-title,
         .progress {
@@ -375,7 +397,7 @@ export default {
   z-index: 1;
   @supports (backdrop-filter: blur(var(--blur))) {
     &::before {
-      content: '';
+      content: "";
       width: 101%;
       height: 101%;
       background: rgba($black, 0.375);

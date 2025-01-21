@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="projects-container">
     <div class="reel" v-if="reel">
       <Reel :project="reel" :isOpen="true" />
     </div>
@@ -183,7 +183,7 @@ export default {
     const url = process.server && req ? req.url : null;
     const slug = url
       ? url.split(process.env.projectPath)[1]?.split("?")[0]
-      : (params.projectSlug || '/');
+      : params.projectSlug || "/";
     const structuredData = {
       "@context": "https://schema.org",
       "@type": "ItemList",
@@ -207,6 +207,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.projects-container {
+  min-height: 100vh;
+}
 .projects {
   position: relative;
   margin-bottom: 50px;

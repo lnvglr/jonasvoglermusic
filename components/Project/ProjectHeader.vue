@@ -1,5 +1,8 @@
 <template>
-  <div class="project-header" :class="{ hasControls: heroIsVideo, active: isOpen, reel }">
+  <div
+    class="project-header"
+    :class="{ hasControls: heroIsVideo, active: isOpen, reel }"
+  >
     <div
       class="clipped cinema"
       :class="{ hover }"
@@ -10,7 +13,11 @@
     >
       <div class="header-copy" v-if="!reel">
         <component :is="isOpen ? 'h2' : 'span'" class="title-container">
-          <span v-if="projectSubtitle" class="project-category" v-html="projectSubtitle"></span>
+          <span
+            v-if="projectSubtitle"
+            class="project-category"
+            v-html="projectSubtitle"
+          ></span>
           <span class="project-title" v-html="projectTitle"></span>
         </component>
         <FestivalContainer
@@ -32,14 +39,14 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import throttle from 'lodash.throttle'
+import { mapGetters } from "vuex";
+import throttle from "lodash.throttle";
 
-import ProjectHero from '@/components/Project/ProjectHero.vue'
-import FestivalContainer from '@/components/Project/FestivalContainer.vue'
+import ProjectHero from "@/components/Project/ProjectHero.vue";
+import FestivalContainer from "@/components/Project/FestivalContainer.vue";
 
 export default {
-  name: 'ProjectHeader',
+  name: "ProjectHeader",
   components: {
     ProjectHero,
     FestivalContainer,
@@ -55,101 +62,105 @@ export default {
       cinemaScope: 0.4189,
       description: null,
       hover: null,
-    }
+    };
   },
   computed: {
     ...mapGetters({
-      experimental: 'getExperimental',
+      experimental: "getExperimental",
     }),
     projectTitle() {
-      const title = this.project.title.rendered
-      return title.length > 30 ? title.replace(/([.,!;:–])/g, '$1<br>') : title
+      const title = this.project.title.rendered;
+      return title.length > 30 ? title.replace(/([.,!;:–])/g, "$1<br>") : title;
     },
     projectSubtitle() {
       const details = [
         this.project.field?.genre?.name,
         this.project.field?.details.length > 0
-          ? this.project.field?.details.find((e) => e.label.toLowerCase().includes('year'))?.value
-          : '',
-      ]
+          ? this.project.field?.details.find((e) =>
+              e.label.toLowerCase().includes("year")
+            )?.value
+          : "",
+      ];
       return details
         .filter((e) => e !== null)
         .map((e) => `<span>${e}</span>`)
         .join('<span class="sr-only">,</span><span class="em-space"> </span>')
-        .concat('<span class="sr-only">:</span>')
+        .concat('<span class="sr-only">:</span>');
     },
     headerFestivals() {
-      if (!this.project.field?.festivals) return
-      return this.project.field.festivals.filter((e) => e.show_in_header)
+      if (!this.project.field?.festivals) return;
+      return this.project.field.festivals.filter((e) => e.show_in_header);
     },
     aspectRatio() {
       const ratioTmp =
-        this.isOpen && this.project.field?.hero ? this.project.field?.hero?.ratio : ''
+        this.isOpen && this.project.field?.hero
+          ? this.project.field?.hero?.ratio
+          : "";
       switch (ratioTmp) {
-        case '21_9': {
-          return 41.89
+        case "21_9": {
+          return 41.89;
         }
-        case '16_9': {
-          return 56.25
+        case "16_9": {
+          return 56.25;
         }
-        case '4_3': {
-          return 75
+        case "4_3": {
+          return 75;
         }
-        case 'custom': {
+        case "custom": {
           if (
             !this.project.field?.hero?.custom_ratio.num ||
             !this.project.field?.hero?.custom_ratio.den
           ) {
-            break
+            break;
           }
           const ratio = this.reduce(
             this.project.field?.hero?.custom_ratio.num,
             this.project.field?.hero?.custom_ratio.den
-          )
-          return (100 / ratio[0]) * ratio[1]
+          );
+          return (100 / ratio[0]) * ratio[1];
         }
         default: {
-          return this.cinemaScope * 100
+          return this.cinemaScope * 100;
         }
       }
     },
   },
   methods: {
     clickHandler() {
-      if (this.reel) return
-      this.$store.dispatch('changeRoute', this.project.slug)
-      this.$emit('open', this.project.slug)
+      if (this.reel) return;
+      this.$store.dispatch("changeRoute", this.project.slug);
+      this.$emit("open", this.project.slug);
     },
     reduce(numerator, denominator) {
       let gcd = function gcd(a, b) {
-        return b ? gcd(b, a % b) : a
-      }
-      gcd = gcd(numerator, denominator)
-      return [numerator / gcd, denominator / gcd]
+        return b ? gcd(b, a % b) : a;
+      };
+      gcd = gcd(numerator, denominator);
+      return [numerator / gcd, denominator / gcd];
     },
     isScrolledIntoView() {
-      if (!this.$el) return
+      if (!this.$el) return;
       if (
         // dont artificially hover if is not a touch device
-        !('ontouchstart' in window) &&
+        !("ontouchstart" in window) &&
         !(navigator.maxTouchPoints > 0) &&
         !(navigator.msMaxTouchPoints > 0)
       )
-        return
-      const rect = this.$el.getBoundingClientRect()
-      this.hover = rect.bottom < window.innerHeight - 100 && rect.top > 100
+        return;
+      const rect = this.$el.getBoundingClientRect();
+      this.hover = rect.bottom < window.innerHeight - 100 && rect.top > 100;
     },
   },
   mounted() {
     this.$nextTick(function () {
-      this.isScrolledIntoView()
-    })
-    window.addEventListener('scroll', throttle(this.isScrolledIntoView, 50))
+      this.isScrolledIntoView();
+    });
+    window.addEventListener("scroll", throttle(this.isScrolledIntoView, 50));
   },
   unmounted() {
-    window.removeEventListener('scroll', throttle(this.isScrolledIntoView, 50))
+    window.removeEventListener("scroll", throttle(this.isScrolledIntoView, 50));
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -170,13 +181,17 @@ export default {
     background: $black;
     margin: 0 auto;
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       top: 0;
       width: 100%;
       height: 100%;
       background: rgba(0, 0, 0, 0.25);
-      background: linear-gradient(0deg, rgba(0, 0, 0, 0.625) 0%, rgba(0, 0, 0, 0) 50%);
+      background: linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.625) 0%,
+        rgba(0, 0, 0, 0) 50%
+      );
       pointer-events: none;
       opacity: 0.75;
       transform: scale(1) translateY(0%);
@@ -350,7 +365,7 @@ export default {
         transform: translate3d(0, 0, 0);
       }
     }
-    @media screen and (max-width: map-get($breakpoints, xlarge)) {
+    @media screen and (max-width: map-get($breakpoints, xxlarge)) {
       &.active .project-header {
         & > * {
           border-radius: 0;

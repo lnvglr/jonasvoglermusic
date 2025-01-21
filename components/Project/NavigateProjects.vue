@@ -5,74 +5,75 @@
       @click="openProjectByIndex(currentIndex - 1)"
       :title="title([currentIndex - 1])"
     >
-      <span class="sr-only">{{title([currentIndex - 1])}}</span>
+      <span class="sr-only">{{ title([currentIndex - 1]) }}</span>
     </div>
     <div
       ref="next"
       @click="openProjectByIndex(currentIndex + 1)"
       :title="title([currentIndex + 1])"
     >
-      <span class="sr-only">{{title([currentIndex + 1])}}</span>
+      <span class="sr-only">{{ title([currentIndex + 1]) }}</span>
     </div>
   </nav>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 
 export default {
-  name: 'Details',
+  name: "Details",
   props: {
     projects: Array,
   },
   data() {
     return {
       currentIndex: -1,
-    }
+    };
   },
   computed: {
     ...mapGetters({
-      openProject: 'project/open',
+      openProject: "project/open",
     }),
   },
   mounted() {
-    if (this.projects) this.setIndex(this.projects, this.openProject)
+    if (this.projects) this.setIndex(this.projects, this.openProject);
     // document.addEventListener('keydown', this.keydown);
   },
   methods: {
     openProjectByIndex(index) {
-      const slug = this.projects[index] ? this.projects[index].slug : null
-      if (!slug && index === -1) window.scrollTo({ top: 0, behavior: 'smooth'})
-      this.$store.dispatch('changeRoute', slug)
+      const slug = this.projects[index] ? this.projects[index].slug : null;
+      if (!slug && index === -1)
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      this.$store.dispatch("changeRoute", slug);
     },
     title(index) {
-      return this.projects[index]?.title.rendered
+      return this.projects[index]?.title.rendered;
     },
     setIndex(projects, open) {
       this.currentIndex = projects.indexOf(
         projects.find((e) => e.slug === open)
-      )
+      );
     },
     keydown(e) {
-      switch(e.code) {
-        case 'ArrowLeft':
-          this.$refs.prev?.click()
-          break
-        case 'ArrowRight':
-          this.$refs.next?.click()
-          break
+      switch (e.code) {
+        case "ArrowLeft":
+          this.$refs.prev?.click();
+          break;
+        case "ArrowRight":
+          this.$refs.next?.click();
+          break;
       }
-    }
+    },
   },
   watch: {
     projects(projects) {
-      this.setIndex(projects, this.openProject)
+      this.setIndex(projects, this.openProject);
     },
     openProject(slug) {
-      this.setIndex(this.projects, slug)
+      this.setIndex(this.projects, slug);
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -85,7 +86,7 @@ nav {
   z-index: 999;
   @include dynamic-box(margin);
   @media screen and (pointer: coarse), (pointer: none) {
-    margin: map-get($padding-sizes, xlarge);
+    margin: map-get($padding-sizes, xxlarge);
   }
 
   div {
@@ -106,7 +107,7 @@ nav {
     margin: 0.25em;
     &::before,
     &::after {
-      content: '';
+      content: "";
       --translate-stroke: -0.5;
       --rotate-stroke: 45deg;
       will-change: opacity, transform;
