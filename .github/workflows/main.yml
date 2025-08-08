@@ -33,22 +33,15 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H 91.204.46.220 >> ~/.ssh/known_hosts
 
-          # Copy required files for SSR
+          # Copy all necessary SSR files to Netcup
           scp -r \
             .nuxt \
             static \
             nuxt.config.js \
+            server.js \
             package.json \
             yarn.lock \
             hosting158062@91.204.46.220:/jonasvoglermusic.com/
 
-      - name: Install & Restart app on Netcup server
-        env:
-          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-        run: |
-          ssh -i ~/.ssh/id_rsa hosting158062@91.204.46.220 << 'EOF'
-          cd /jonasvoglermusic.com
-          yarn install --production --frozen-lockfile
-          # Start or restart using pm2
-          pm2 restart nuxt-app || pm2 start yarn --name "nuxt-app" -- start
-          EOF
+      - name: Install dependencies on Netcup
+        e
