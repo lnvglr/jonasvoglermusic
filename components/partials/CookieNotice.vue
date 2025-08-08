@@ -112,7 +112,7 @@ export default {
   mounted() {
     this.$nextTick(function () {
       // Map vue-cookie-law's binary state to our two-tier consent
-      const accepted = this.$refs.cookies.isAccepted();
+      const accepted = this.$refs.cookies.isAccepted() || localStorage.getItem('cookie:accepted') === 'true';
       if (accepted) {
         this.$store.dispatch("setCookieConsent", true);
         this.$store.dispatch("setCookieTrackingConsent", true);

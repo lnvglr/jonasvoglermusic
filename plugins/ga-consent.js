@@ -24,6 +24,10 @@ export default ({ store }) => {
   const enableGa = () => {
     withId((id) => {
       if (!id) return;
+      // Force-disable any pending disable flags before bootstrap
+      Object.keys(window)
+        .filter((k) => k.startsWith('ga-disable-'))
+        .forEach((k) => (window[k] = false));
       window[`ga-disable-${id}`] = false;
       const boot = () => {
         if (!window.__GA_BOOTSTRAPPED__) {
@@ -81,6 +85,8 @@ export default ({ store }) => {
     // Full consent previously granted
     store.dispatch('setCookieConsent', true);
     store.dispatch('setCookieTrackingConsent', true);
+    // Proactively enable GA as soon as possible
+    setTimeout(enableGa, 500);
   }
 
   const functionalConsent = store.getters.getCookieConsent;
@@ -97,7 +103,8 @@ export default ({ store }) => {
     (val) => {
       if (val.functional === true && val.tracking === true) enableGa();
       else disableGa();
-    }
+    },
+    { immediate: true, deep: false }
   );
 };
 

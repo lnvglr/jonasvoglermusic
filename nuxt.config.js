@@ -65,8 +65,9 @@ module.exports = {
     { src: "~/plugins/idle-vue", mode: "client" },
     { src: "~/plugins/vue-cookie-law", mode: "client" },
     { src: "~/plugins/vue-gtag", mode: "client" },
-    { src: "~/plugins/ga-consent", mode: "client" },
     { src: "~/plugins/block-foreign-gtag", mode: "client" },
+    // Ensure consent runs last so it can finalize GA state
+    { src: "~/plugins/ga-consent", mode: "client" },
     { src: "~/plugins/vue-loadscript", mode: "client" }
   ],
 
