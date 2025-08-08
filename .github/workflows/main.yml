@@ -1,47 +1,54 @@
-name: Deploy Nuxt App to Netcup
+name: Deploy Nuxt SSR App to Netcup
 
 on:
   push:
     branches:
-      - main # Adjust if you're using a different branch
+      - main # Adjust if using a different branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js 20
-      uses: actions/setup-node@v2
-      with:
-        node-version: '20' # Use Node.js version 20
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
 
-    - name: Install dependencies with Yarn
-      run: |
-        yarn install --frozen-lockfile # Use --frozen-lockfile for reproducible builds
-      continue-on-error: true
+      - name: Install dependencies with Yarn
+        run: yarn install --frozen-lockfile
 
-    - name: Build Nuxt app
-      run: |
-        yarn build
+      - name: Build Nuxt SSR app
+        run: yarn build
 
-    - name: Deploy to Netcup via SSH
-      env:
-        DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-      run: |
-        mkdir -p ~/.ssh
-        echo "$DEPLOY_SSH_KEY" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H 91.204.46.220 >> ~/.ssh/known_hosts
-        scp -r ./dist/* hosting158062@91.204.46.220:/jonasvoglermusic.com/ # Replace with your server's path
+      - name: Deploy to Netcup via SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$DEPLOY_SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 91.204.46.220 >> ~/.ssh/known_hosts
 
-    - name: Restart app on Netcup server (optional)
-      env:
-        DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-      run: |
-        ssh -i ~/.ssh/id_rsa hosting158062@91.204.46.220 << EOF
-        cd /path/to/your/nuxt-app/
-        pm2 restart nuxt-app || pm2 start npm --name "nuxt-app" -- start # Replace with your process manager
-        EOF
+          # Copy required files for SSR
+          scp -r \
+            .nuxt \
+            static \
+            nuxt.config.js \
+            package.json \
+            yarn.lock \
+            hosting158062@91.204.46.220:/jonasvoglermusic.com/
+
+      - name: Install & Restart app on Netcup server
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          ssh -i ~/.ssh/id_rsa hosting158062@91.204.46.220 << 'EOF'
+          cd /jonasvoglermusic.com
+          yarn install --production --frozen-lockfile
+          # Start or restart using pm2
+          pm2 restart nuxt-app || pm2 start yarn --name "nuxt-app" -- start
+          EOF
