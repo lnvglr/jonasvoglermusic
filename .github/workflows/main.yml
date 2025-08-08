@@ -3,7 +3,7 @@ name: Deploy Nuxt SSR App to Netcup
 on:
   push:
     branches:
-      - main # Adjust if using a different branch
+      - main
 
 jobs:
   deploy:
@@ -33,21 +33,13 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H 91.204.46.220 >> ~/.ssh/known_hosts
 
-          # Copy all necessary SSR files to Netcup
+          # Upload everything needed to run app immediately
           scp -r \
             .nuxt \
             static \
+            node_modules \
             nuxt.config.js \
             server.js \
             package.json \
             yarn.lock \
             hosting158062@91.204.46.220:/jonasvoglermusic.com/
-
-      - name: Install dependencies on Netcup
-        env:
-          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-        run: |
-          ssh -i ~/.ssh/id_rsa hosting158062@91.204.46.220 << 'EOF'
-          cd /jonasvoglermusic.com
-          yarn install --production --frozen-lockfile
-          EOF
