@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import IdleVue from 'idle-vue'
-import Vuex from 'vuex'
 
-const store = new Vuex.Store({})
+// Use an event emitter as recommended by idle-vue so onIdle/onActive hooks fire
+const eventsHub = new Vue()
+
 Vue.use(IdleVue, {
-  store,
-  idleTime: 3000
+  eventEmitter: eventsHub,
+  idleTime: 3000,
 })
