@@ -14,7 +14,8 @@ module.exports = {
     API_BASE_PATH: apiBase,
     HOST_NAME: host,
     PACKAGE_VERSION: version,
-    projectPath
+    projectPath,
+    GTAG_ID: process.env.GTAG_ID || "G-4ERRMFBFD4",
   },
 
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -64,6 +65,8 @@ module.exports = {
     { src: "~/plugins/idle-vue", mode: "client" },
     { src: "~/plugins/vue-cookie-law", mode: "client" },
     { src: "~/plugins/vue-gtag", mode: "client" },
+    { src: "~/plugins/ga-consent", mode: "client" },
+    { src: "~/plugins/block-foreign-gtag", mode: "client" },
     { src: "~/plugins/vue-loadscript", mode: "client" }
   ],
 

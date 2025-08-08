@@ -27,7 +27,6 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { bootstrap } from "vue-gtag";
 
 export default {
   name: "CookieNotice",
@@ -49,20 +48,36 @@ export default {
       return this.$nuxt.$route.params.slug === this.privacySlug;
     },
     message() {
-      return `This site uses cookies. If you continue to use the website, we will assume that you have given your consent. You can change your decision later in our ${this.buttonLinkText}.`;
+      return `This site uses cookies. By accepting, you allow their use. You can change your decision later in our ${this.buttonLinkText}.`;
     },
   },
   methods: {
     accept() {
+      // Accept all: functional + tracking
       this.$store.dispatch("setCookieConsent", true);
-      bootstrap().then((gtag) => {});
+      this.$store.dispatch("setCookieTrackingConsent", true);
+      if (process.client) {
+        const id = window.GTAG_ID || window.__GTAG_ID__;
+        if (id) window[`ga-disable-${id}`] = false;
+      }
     },
     decline() {
-      this.$store.dispatch("setCookieConsent", false);
+      // Only functional cookies: allow embeds but disable tracking
+      this.$store.dispatch("setCookieConsent", true);
+      this.$store.dispatch("setCookieTrackingConsent", false);
+      if (process.client) {
+        const id = window.GTAG_ID || window.__GTAG_ID__;
+        if (id) window[`ga-disable-${id}`] = true;
+      }
     },
     revoke() {
       this.$refs.cookies.revoke();
       this.$store.dispatch("setCookieConsent", null);
+      this.$store.dispatch("setCookieTrackingConsent", null);
+      if (process.client) {
+        const id = window.GTAG_ID || window.__GTAG_ID__;
+        if (id) window[`ga-disable-${id}`] = true;
+      }
     },
     blockedIframes(string) {
       if (this.cookieConsent) return string;
@@ -96,7 +111,19 @@ export default {
   },
   mounted() {
     this.$nextTick(function () {
-      this.$store.dispatch("setCookieConsent", this.$refs.cookies.isAccepted());
+      // Map vue-cookie-law's binary state to our two-tier consent
+      const accepted = this.$refs.cookies.isAccepted();
+      if (accepted) {
+        this.$store.dispatch("setCookieConsent", true);
+        this.$store.dispatch("setCookieTrackingConsent", true);
+        const id = window.GTAG_ID || window.__GTAG_ID__;
+        if (id) window[`ga-disable-${id}`] = false;
+      } else {
+        this.$store.dispatch("setCookieConsent", true);
+        this.$store.dispatch("setCookieTrackingConsent", false);
+        const id = window.GTAG_ID || window.__GTAG_ID__;
+        if (id) window[`ga-disable-${id}`] = true;
+      }
     });
     const self = this;
     document.addEventListener("click", function (e) {

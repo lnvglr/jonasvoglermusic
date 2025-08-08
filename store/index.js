@@ -4,7 +4,10 @@ export const state = () => ({
   experimental: true,
   reelTimeStamp: 0,
   reelPlaying: false,
-  cookieConsent: false
+  // Functional cookies (e.g., embedded videos)
+  cookieConsent: false,
+  // Tracking/Analytics consent (Google Analytics)
+  cookieTrackingConsent: false,
 });
 
 // getters
@@ -14,7 +17,8 @@ export const getters = {
   getReelPlaying: state => state.reelPlaying,
   filter: state => state.filter,
   getExperimental: state => state.experimental,
-  getCookieConsent: state => state.cookieConsent
+  getCookieConsent: state => state.cookieConsent,
+  getCookieTrackingConsent: state => state.cookieTrackingConsent,
 };
 // actions
 export const actions = {
@@ -29,6 +33,9 @@ export const actions = {
   },
   setCookieConsent({ commit }, value) {
     commit("setCookieConsent", value);
+  },
+  setCookieTrackingConsent({ commit }, value) {
+    commit("setCookieTrackingConsent", value);
   },
   updateFilter({ commit }, slug) {
     commit("updateFilter", slug);
@@ -60,6 +67,9 @@ export const mutations = {
   },
   setCookieConsent(state, value) {
     state.cookieConsent = value;
+  },
+  setCookieTrackingConsent(state, value) {
+    state.cookieTrackingConsent = value;
   },
   toggleExperimental(state) {
     state.experimental = !state.experimental;
