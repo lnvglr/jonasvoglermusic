@@ -44,4 +44,10 @@ jobs:
             hosting158062@91.204.46.220:/jonasvoglermusic.com/
 
       - name: Install dependencies on Netcup
-        e
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          ssh -i ~/.ssh/id_rsa hosting158062@91.204.46.220 << 'EOF'
+          cd /jonasvoglermusic.com
+          yarn install --production --frozen-lockfile
+          EOF
