@@ -6,8 +6,9 @@
       :buttonLink="privacySlug"
       :buttonLinkText="buttonLinkText"
       :buttonDecline="true"
+      buttonText="Accept all"
       buttonDeclineClass="Cookie__button"
-      buttonDeclineText="Only functional cookies"
+      buttonDeclineText="Accept functional"
       transitionName="fade"
       @accept="accept"
       @decline="decline"
@@ -59,6 +60,20 @@ export default {
       if (process.client) {
         const id = window.GTAG_ID || window.__GTAG_ID__;
         if (id) window[`ga-disable-${id}`] = false;
+        console.log("accept", id, window[`ga-disable-${id}`]);
+        try {
+          // Inform gtag consent API per GA4 guidance
+          if (typeof window.gtag === 'function') {
+            window.gtag('consent', 'update', {
+              analytics_storage: 'granted',
+              functionality_storage: 'granted',
+              security_storage: 'granted',
+              ad_storage: 'denied',
+              ad_user_data: 'denied',
+              ad_personalization: 'denied',
+            });
+          }
+        } catch(_) {}
       }
     },
     decline() {
@@ -68,6 +83,18 @@ export default {
       if (process.client) {
         const id = window.GTAG_ID || window.__GTAG_ID__;
         if (id) window[`ga-disable-${id}`] = true;
+        try {
+          if (typeof window.gtag === 'function') {
+            window.gtag('consent', 'update', {
+              analytics_storage: 'denied',
+              functionality_storage: 'granted',
+              security_storage: 'granted',
+              ad_storage: 'denied',
+              ad_user_data: 'denied',
+              ad_personalization: 'denied',
+            });
+          }
+        } catch(_) {}
       }
     },
     revoke() {
@@ -77,6 +104,18 @@ export default {
       if (process.client) {
         const id = window.GTAG_ID || window.__GTAG_ID__;
         if (id) window[`ga-disable-${id}`] = true;
+        try {
+          if (typeof window.gtag === 'function') {
+            window.gtag('consent', 'update', {
+              analytics_storage: 'denied',
+              functionality_storage: 'denied',
+              security_storage: 'granted',
+              ad_storage: 'denied',
+              ad_user_data: 'denied',
+              ad_personalization: 'denied',
+            });
+          }
+        } catch(_) {}
       }
     },
     blockedIframes(string) {
@@ -118,11 +157,35 @@ export default {
         this.$store.dispatch("setCookieTrackingConsent", true);
         const id = window.GTAG_ID || window.__GTAG_ID__;
         if (id) window[`ga-disable-${id}`] = false;
+        try {
+          if (typeof window.gtag === 'function') {
+            window.gtag('consent', 'default', {
+              analytics_storage: 'granted',
+              functionality_storage: 'granted',
+              security_storage: 'granted',
+              ad_storage: 'denied',
+              ad_user_data: 'denied',
+              ad_personalization: 'denied',
+            });
+          }
+        } catch(_) {}
       } else {
         this.$store.dispatch("setCookieConsent", true);
         this.$store.dispatch("setCookieTrackingConsent", false);
         const id = window.GTAG_ID || window.__GTAG_ID__;
         if (id) window[`ga-disable-${id}`] = true;
+        try {
+          if (typeof window.gtag === 'function') {
+            window.gtag('consent', 'default', {
+              analytics_storage: 'denied',
+              functionality_storage: 'granted',
+              security_storage: 'granted',
+              ad_storage: 'denied',
+              ad_user_data: 'denied',
+              ad_personalization: 'denied',
+            });
+          }
+        } catch(_) {}
       }
     });
     const self = this;

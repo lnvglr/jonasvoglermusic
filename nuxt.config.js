@@ -47,6 +47,11 @@ module.exports = {
           path: `${projectPath}:projectSlug`,
           component: resolve(__dirname, "pages/index.vue")
         },
+        {
+          name: 'PageCatchAll',
+          path: '/:slug',
+          component: resolve(__dirname, 'pages/_slug.vue')
+        }
       );
     }
   },

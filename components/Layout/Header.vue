@@ -14,7 +14,7 @@
             >
           </li>
           <li v-for="page in pages('header')" :key="page.id" class="page-link">
-            <NuxtLink :to="page.slug">
+            <NuxtLink :to="'/' + page.slug">
               {{ page.title.rendered }}
             </NuxtLink>
           </li>

@@ -2,7 +2,7 @@
   <footer class="site-footer" v-if="bloginfo">
     <div class="wrap footer-wrap">
       <div v-for="page in pages('footer')" :key="page.id" class="page-link">
-        <NuxtLink :to="page.slug" v-if="page.title">
+        <NuxtLink :to="'/' + page.slug" v-if="page.title">
           {{ page.title.rendered }}</NuxtLink
         >
       </div>
