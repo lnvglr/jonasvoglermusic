@@ -13,11 +13,11 @@
         <div v-if="thumbnail" ref="portrait" class="clipped portrait">
           <img
             :src="page.thumbnail['1536x1536'][0]"
-            :alt="page.thumbnail.caption"
-            :title="page.thumbnail.caption"
+            :alt="imageAlt"
+            :title="imageCaption"
           />
         </div>
-        <small v-if="page.thumbnail.caption" class="caption">{{ page.thumbnail.caption }}</small>
+        <small v-if="imageCaption" class="caption">{{ imageCaption }}</small>
         <div class="contact">
           <Email v-if="page.field.email" :address="page.field.email" />
           <SocialMedia :links="page.field.social_media.map(e => e.url)" :initialDelay="2000" />
@@ -57,6 +57,19 @@ export default {
     ...mapGetters({
       experimental: 'getExperimental',
     }),
+    imageCaption() {
+      const t = this.page?.thumbnail
+      if (!t) return ''
+      return (
+        (typeof t.caption === 'object' ? t.caption?.rendered : t.caption) ||
+        ''
+      )
+    },
+    imageAlt() {
+      const t = this.page?.thumbnail
+      if (!t) return ''
+      return t.alt || t.alt_text || this.page?.title?.rendered || ''
+    },
   },
   mounted() {
     this.$nextTick(function () {

@@ -22,7 +22,7 @@ module.exports = {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: "Jonas Vogler",
+    title: "Jonas Vogler – Film Composer for Feature, Documentary & Advertising in Berlin",
     htmlAttrs: {
       lang: "en"
     },
@@ -35,7 +35,7 @@ module.exports = {
       {
         hid: "description",
         name: "description",
-        content: "Portfolio of Jonas Vogler"
+        content: "Jonas Vogler composes original scores for film, TV and advertising. Discover his work across feature film, documentary and commercial."
       }
     ],
     link: [
