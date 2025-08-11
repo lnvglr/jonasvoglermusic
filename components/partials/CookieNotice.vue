@@ -59,8 +59,13 @@ export default {
       this.$store.dispatch("setCookieTrackingConsent", true);
       if (process.client) {
         const id = window.GTAG_ID || window.__GTAG_ID__;
-        if (id) window[`ga-disable-${id}`] = false;
-        console.log("accept", id, window[`ga-disable-${id}`]);
+        if (id) {
+          window[`ga-disable-${id}`] = false;
+          setTimeout(() => {
+            window[`ga-disable-${id}`] = false;
+          }, 1000);
+          console.log("accept", id, !window[`ga-disable-${id}`]);
+        }
         try {
           // Inform gtag consent API per GA4 guidance
           if (typeof window.gtag === 'function') {
