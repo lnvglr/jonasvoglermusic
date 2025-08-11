@@ -2,7 +2,7 @@
   <header>
     <div class="wrap">
       <nav v-if="bloginfo">
-        <Logo class="logo-wrap" :name="bloginfo.name" :description="bloginfo.description" />
+        <Logo class="logo-wrap" :name="bloginfo.name" :description="bloginfo.description" v-if="$route.name !== 'archive-slug' && $route.name !== 'archive'" />
         <ul class="pages">
           <li class="page-link">
             <NuxtLink

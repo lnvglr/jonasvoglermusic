@@ -58,7 +58,7 @@ export default {
       return pageObject;
     },
     template() {
-      return this.page ? "page-" + this.page.field.template : "not-found";
+      return this.page?.field.template? "page-" + this.page.field.template : this.page ? "page-default" : "not-found";
     },
   },
   mounted() {

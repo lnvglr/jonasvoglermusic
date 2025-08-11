@@ -6,6 +6,9 @@
           {{ page.title.rendered }}</NuxtLink
         >
       </div>
+      <div class="page-link">
+        <NuxtLink to="/archive">Archive</NuxtLink>
+      </div>
     </div>
     <div class="copyright">{{ date }} &copy; {{ bloginfo.name }}</div>
     <small class="credits">

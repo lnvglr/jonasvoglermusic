@@ -199,9 +199,28 @@ export default {
     };
   },
   async asyncData({ $axios, params, req, store }) {
+    // Resolve the tag id for slug 'archive' and exclude it from results
+    let archiveTagId = null;
+    try {
+      const { data: tags } = await $axios.get(
+        process.env.API_BASE_PATH + "tags",
+        { params: { slug: "archive" } }
+      );
+      archiveTagId = Array.isArray(tags) && tags.length ? tags[0].id : null;
+    } catch (e) {
+      // ignore tag lookup failures; we'll just not exclude
+    }
     // called every time before loading the component
+
+    const searchParams = {
+      order: "asc",
+      per_page: 100,
+    };
+    if (archiveTagId) searchParams.tags_exclude = archiveTagId;
+
     let { data: projects } = await $axios.get(
-      process.env.API_BASE_PATH + "posts?order=asc&per_page=100"
+      process.env.API_BASE_PATH + "posts",
+      { params: searchParams }
     );
     projects = projects
       .sort((a, b) => (a?.field.menu_order > b?.field.menu_order ? 1 : -1))
