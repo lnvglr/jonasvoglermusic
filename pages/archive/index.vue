@@ -3,15 +3,20 @@
     <h1>Archive</h1>
     <ul class="archive-list" v-if="projects && projects.length">
       <li v-for="project in projects" :key="project.id" class="archive-item">
-        <NuxtLink :to="{ name: 'archive-slug', params: { slug: project.slug } }">
-          {{ project.plainTitle || project.slug }}
-        </NuxtLink>
-        <span
-          v-if="project.status && project.status !== 'publish'"
-          class="status"
+        <NuxtLink
+          :to="{ name: 'archive-slug', params: { slug: project.slug } }"
         >
-          [{{ project.status }}]
-        </span>
+          {{
+            [
+              project.plainTitle || project.slug,
+              project.field.details.find((e) =>
+                e.label.toLowerCase().includes("year")
+              )?.value,
+            ]
+              .filter((e) => e)
+              .join(", ")
+          }}
+        </NuxtLink>
       </li>
     </ul>
     <p v-else>No projects found.</p>
@@ -21,18 +26,29 @@
 <script>
 // Minimal HTML entity decoder that works in SSR and client
 function decodeEntities(input) {
-  if (!input || typeof input !== 'string') return '';
+  if (!input || typeof input !== "string") return "";
   // Strip HTML tags first
-  const noTags = input.replace(/<[^>]*>?/gm, '');
+  const noTags = input.replace(/<[^>]*>?/gm, "");
   const named = {
-    amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ',
-    ndash: '–', mdash: '—', hellip: '…', lsquo: '‘', rsquo: '’',
-    ldquo: '“', rdquo: '”'
+    amp: "&",
+    lt: "<",
+    gt: ">",
+    quot: '"',
+    apos: "'",
+    nbsp: " ",
+    ndash: "–",
+    mdash: "—",
+    hellip: "…",
+    lsquo: "‘",
+    rsquo: "’",
+    ldquo: "“",
+    rdquo: "”",
   };
   return noTags.replace(/&(#x?[0-9a-fA-F]+|[a-zA-Z]+);/g, (m, ent) => {
-    if (ent[0] === '#') {
+    if (ent[0] === "#") {
       try {
-        if (ent[1]?.toLowerCase() === 'x') return String.fromCodePoint(parseInt(ent.slice(2), 16));
+        if (ent[1]?.toLowerCase() === "x")
+          return String.fromCodePoint(parseInt(ent.slice(2), 16));
         return String.fromCodePoint(parseInt(ent.slice(1), 10));
       } catch (_) {
         return m;
@@ -60,8 +76,8 @@ export default {
       let archiveTagId = null;
       try {
         const { data: tags } = await $axios.get(
-          process.env.API_BASE_PATH + 'tags',
-          { params: { slug: 'archive' } }
+          process.env.API_BASE_PATH + "tags",
+          { params: { slug: "archive" } }
         );
         archiveTagId = Array.isArray(tags) && tags.length ? tags[0].id : null;
       } catch (e) {
@@ -69,20 +85,20 @@ export default {
       }
 
       const params = {
-        order: 'asc',
+        order: "asc",
         per_page: 100,
       };
-			if (archiveTagId) params.tags = archiveTagId;
+      if (archiveTagId) params.tags = archiveTagId;
 
       let { data: projects } = await $axios.get(
-        process.env.API_BASE_PATH + 'posts',
+        process.env.API_BASE_PATH + "posts",
         { params }
       );
       projects = projects
         .sort((a, b) => (a?.field?.menu_order > b?.field?.menu_order ? 1 : -1))
         .map((e) => {
-          e.link = e.link?.replace('https://api.', 'https://');
-          e.plainTitle = decodeEntities(e?.title?.rendered || '');
+          e.link = e.link?.replace("https://api.", "https://");
+          e.plainTitle = decodeEntities(e?.title?.rendered || "");
           return e;
         });
       return { projects };
@@ -98,7 +114,7 @@ export default {
 <style lang="scss" scoped>
 .archive-page {
   padding-top: 2rem;
-	padding-inline: 0;
+  padding-inline: 0;
   h1 {
     font-weight: normal;
   }
@@ -109,9 +125,9 @@ export default {
 }
 .archive-item {
   margin: 0.5rem 0;
-  .status {
-    margin-left: 0.5rem;
-    color: $dark-02;
+  a:hover {
+    text-decoration: underline;
+    color: $primary;
   }
 }
 </style>
