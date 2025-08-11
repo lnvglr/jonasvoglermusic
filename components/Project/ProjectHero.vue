@@ -1,10 +1,25 @@
 <template>
   <div>
+    <nuxt-img
+      v-if="open && project.thumbnail && project.thumbnail['cinema-small']"
+      :class="hero.type"
+      :src="preferHeroSrc"
+      :sizes="sizes || '100vw'"
+      format="webp"
+      preload
+      :fetchpriority="'high'"
+      decoding="async"
+      :alt="project.title.rendered"
+      @load="() => heroLoaded(true)"
+    />
     <LazyImage
-      v-if="project.thumbnail && project.thumbnail['cinema-small']"
+      v-else-if="project.thumbnail && project.thumbnail['cinema-small']"
       :class="hero.type"
       :lazySrc="project.thumbnail['cinema-small'][0]"
       :lazySrcset="srcSet"
+      :lazySizes="sizes"
+      :fetchPriority="isOpenLCP ? 'high' : 'auto'"
+      :loading="open ? 'eager' : 'lazy'"
       :alt="project.title.rendered"
       @loaded="heroLoaded"
     />
@@ -79,6 +94,8 @@
           <img
             :class="hero.type"
             :src="hero.data"
+            :fetchpriority="isOpenLCP ? 'high' : 'auto'"
+            decoding="async"
             :alt="project.title.rendered"
           />
         </figure>
@@ -93,8 +110,6 @@
 </template>
 
 <script>
-import { Youtube } from "vue-youtube";
-import { vueVimeoPlayer } from "vue-vimeo-player";
 import { mapGetters } from "vuex";
 
 import LazyImage from "@/components/partials/LazyImage.vue";
@@ -110,8 +125,9 @@ export default {
   },
   components: {
     LazyImage,
-    youtube: Youtube,
-    vimeo: vueVimeoPlayer,
+    // Lazy-load heavy video players only when needed
+    youtube: () => import("vue-youtube").then(m => m.Youtube),
+    vimeo: () => import("vue-vimeo-player").then(m => m.vueVimeoPlayer),
     ControlIcon,
   },
   data() {
@@ -153,6 +169,24 @@ export default {
           url = this.hero.data;
       }
       return CookieNotice.methods.blockedCookies(url);
+    },
+    isOpenLCP() {
+      return !!this.open;
+    },
+    preferHeroSrc() {
+      if (!this.project || !this.project.thumbnail) return "";
+      const order = [
+        "cinema-large",
+        "cinema-medium",
+        "cinema-small",
+        "thumbnail",
+      ];
+      for (const key of order) {
+        if (this.project.thumbnail[key]) return this.project.thumbnail[key][0];
+      }
+      // fallback: first available thumbnail
+      const first = Object.values(this.project.thumbnail)[0];
+      return Array.isArray(first) ? first[0] : "";
     },
   },
   mounted() {

@@ -3,6 +3,11 @@
     :data-srcset="lazySrcset"
     :data-src="lazySrc"
     :src="lazySrc"
+    :srcset="lazySrcset"
+    :sizes="lazySizes"
+    :fetchpriority="fetchPriority"
+    :loading="loading"
+    decoding="async"
     class="lazy-image"
   />
 </template>
@@ -20,6 +25,18 @@ export default {
     lazySrcset: {
       type: String,
       default: null
+    },
+    lazySizes: {
+      type: String,
+      default: '100vw'
+    },
+    fetchPriority: {
+      type: String,
+      default: 'auto'
+    },
+    loading: {
+      type: String,
+      default: 'auto'
     }
   },
   data () {

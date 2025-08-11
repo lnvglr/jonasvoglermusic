@@ -9,6 +9,8 @@ const projectPath = "/project/";
 module.exports = {
   // Target: https://go.nuxtjs.dev/config-target
   target: "server",
+  // Serve modern bundle to modern browsers to reduce legacy JS
+  modern: process.env.NODE_ENV === 'production' ? 'client' : false,
   rootDir: process.cwd(),
   env: {
     API_BASE_PATH: apiBase,
@@ -36,7 +38,14 @@ module.exports = {
         content: "Portfolio of Jonas Vogler"
       }
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
+    link: [
+      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+      // Connection hints for faster image and font fetching
+      { rel: 'preconnect', href: 'https://api.jonasvoglermusic.com', crossorigin: 'anonymous' },
+      { rel: 'dns-prefetch', href: 'https://api.jonasvoglermusic.com' },
+      { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' },
+      { rel: 'dns-prefetch', href: 'https://fonts.gstatic.com' },
+    ]
   },
 
   router: {
@@ -87,7 +96,7 @@ module.exports = {
     "@nuxtjs/axios",
     "@nuxtjs/style-resources",
     "@nuxtjs/sitemap",
-    "nuxt-svg-loader",
+    "nuxt-svg-loader"
   ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

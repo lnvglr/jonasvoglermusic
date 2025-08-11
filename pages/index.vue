@@ -69,6 +69,35 @@ export default {
     };
   },
   head() {
+    const links = [];
+    // Preload LCP hero image for open project page
+    if (this.project && this.project.thumbnail) {
+      const preferredOrder = [
+        "cinema-xlarge",
+        "cinema-large",
+        "cinema-medium",
+        "cinema-small",
+        "thumbnail",
+      ];
+      const entries = Object.entries(this.project.thumbnail)
+        .filter(([k]) => preferredOrder.includes(k))
+        .sort((a, b) => preferredOrder.indexOf(a[0]) - preferredOrder.indexOf(b[0]));
+      if (entries.length) {
+        const imagesrcset = entries
+          .map(([, val]) => `${val[0]} ${val[1]}w`)
+          .join(", ");
+        const href = entries.find(([k]) => k === "cinema-large")?.[1]?.[0]
+          || entries[entries.length - 1][1][0];
+        links.push({
+          rel: "preload",
+          as: "image",
+          href,
+          imagesrcset,
+          imagesizes: "100vw",
+          crossorigin: "anonymous",
+        });
+      }
+    }
     return {
       __dangerouslyDisableSanitizers: ["script"],
       script: [
@@ -77,6 +106,7 @@ export default {
           type: "application/ld+json",
         },
       ],
+      link: links,
     };
   },
   mounted() {

@@ -25,6 +25,15 @@ config.host = process.env.HOST || "0.0.0.0";
 const nuxt = new Nuxt(config);
 
 // Add nuxt middleware
+// Long-cache hashed build assets under /public
+app.use((req, res, next) => {
+  try {
+    if (req.url && req.url.startsWith('/public/')) {
+      res.set('Cache-Control', 'public, max-age=31536000, immutable');
+    }
+  } catch (_) {}
+  next();
+});
 app.use(nuxt.render);
 
 // Build on start
