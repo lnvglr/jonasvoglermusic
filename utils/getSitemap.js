@@ -1,7 +1,7 @@
 // utils/getSitemap.js
 const axios = require("axios");
 
-module.exports = async function getRoutes(base, projectPath) {
+module.exports = async function getRoutes(base, { projectPath, archivePath }) {
   const { data: projects } = await axios.get(base + "posts?per_page=100");
   const { data: pages } = await axios.get(base + "pages");
   const lowerPriority = ["legal-notice", "privacy-policy"];
@@ -9,7 +9,7 @@ module.exports = async function getRoutes(base, projectPath) {
   const routes = [
     ...projects.map(e => {
       return {
-        url: projectPath + e.slug,
+        url: e.tags.includes(14) ? archivePath + e.slug : projectPath + e.slug,
         lastmod: e.modified
       };
     }),

@@ -5,6 +5,7 @@ const version = JSON.parse(packageJson).version || 0;
 const apiBase = "https://api.jonasvoglermusic.com/wp-json/wp/v2/";
 const host = "https://jonasvoglermusic.com";
 const projectPath = "/project/";
+const archivePath = "/archive/";
 
 module.exports = {
   // Target: https://go.nuxtjs.dev/config-target
@@ -17,6 +18,7 @@ module.exports = {
     HOST_NAME: host,
     PACKAGE_VERSION: version,
     projectPath,
+    archivePath,
     GTAG_ID: process.env.GTAG_ID || "G-4ERRMFBFD4",
   },
 
@@ -102,7 +104,24 @@ module.exports = {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     publicPath: "/public",
-    extractCSS: true
+    extractCSS: true,
+    loaders: {
+      // Apply dart-sass options to both indented and SCSS syntaxes
+      sass: {
+        implementation: require('sass'),
+        sassOptions: {
+          quietDeps: true,
+          silenceDeprecations: ['global-builtin', 'import', 'legacy-js-api', 'mixed-decls', 'color-functions'],
+        }
+      },
+      scss: {
+        implementation: require('sass'),
+        sassOptions: {
+          quietDeps: true,
+          silenceDeprecations: ['global-builtin', 'import', 'legacy-js-api', 'mixed-decls', 'color-functions'],
+        }
+      }
+    }
   },
   server: {
     // host: '0.0.0.0'
@@ -116,7 +135,7 @@ module.exports = {
     hostname: host,
     gzip: true,
     routes() {
-      return getSitemap(apiBase, projectPath);
+      return getSitemap(apiBase, {projectPath, archivePath});
     },
     defaults: {
       changefreq: "weekly",
